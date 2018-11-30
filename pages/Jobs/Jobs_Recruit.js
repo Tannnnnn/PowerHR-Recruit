@@ -48,14 +48,17 @@ const HeaderContent = styled(Header)`
 `
 const LabelDate = styled.label`
   font-size: 18px !important ;
+  cursor : pointer ;
 `
 const LabelRecruit = styled.label`
   font-size: 23px !important ;
   padding-left : 54% !important ;
+  cursor : pointer ;
 `
 const LabelSalary = styled.label`
   font-size: 18px !important ;
   padding-left : 3% !important ;
+  cursor : pointer ;
 `
 const Paginations = styled(Pagination)`
   color : #707070 !important ;
