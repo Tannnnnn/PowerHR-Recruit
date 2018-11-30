@@ -7,7 +7,7 @@ const SegmentHeader = styled(Segment) `
     background : #ff5722 !important;
     padding-bottom : 0px !important;
     border-radius : 0px !important;
-    border-bottom: 6px solid #ee3900 !important;
+    border-bottom: 8px solid #ee3900 !important;
 `;
 
 const TextHeader = styled(Header)`
