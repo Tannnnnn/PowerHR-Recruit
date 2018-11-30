@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Segment , Icon , Container , Header } from 'semantic-ui-react'
+import { Segment , Icon , Container , Header , Pagination } from 'semantic-ui-react'
 import { compose , withHandlers , withState } from 'recompose'
 
 const SegmentHeader = styled(Segment)`
@@ -57,6 +57,14 @@ const LabelSalary = styled.label`
   font-size: 18px !important ;
   padding-left : 3% !important ;
 `
+const Paginations = styled(Pagination)`
+  color : #707070 !important ;
+  font-family : 'Kanit', sans-serif !important;
+  .active {
+    background : #ee3900 !important ;
+    color : #ffffff !important ;
+  }
+`
 
 const enhance = compose(
   withState('Jobs' , 'setJobs' , [{position: 'Fontend Developer' , date: '28 พฤศจิกายน 2561' , rate: 'สามารถต่อรองได้' , value: 2} , {position: 'UX/UI Design' , date: '28 พฤศจิกายน 2561' , rate: 'สามารถต่อรองได้' , value: 5} ,  {position: 'Backend Devloper' , date: '28 พฤศจิกายน 2561' , rate: 'สามารถต่อรองได้' , value: 3}]),
@@ -95,6 +103,19 @@ export default enhance((props) =>
           {props.handleShowData()}
         </ContainerContent>
     </ContainerHeader>
+    <Container>
+      <center>
+        <Paginations
+          defaultActivePage={1}
+          ellipsisItem={{ content: <Icon name='ellipsis horizontal' />, icon: true }}
+          firstItem={{ content: <Icon name='angle double left' />, icon: true }}
+          lastItem={{ content: <Icon name='angle double right' />, icon: true }}
+          prevItem={{ content: <Icon name='angle left' />, icon: true }}
+          nextItem={{ content: <Icon name='angle right' />, icon: true }}
+          totalPages={3}
+        />
+      </center>
+    </Container><br/><br/>
   </div>
 );
 export { default as Jobs_Recruit } from './Jobs_Recruit'
