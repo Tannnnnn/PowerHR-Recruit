@@ -22,11 +22,10 @@ const ContainerHeader = styled(Container)`
 
 const ContainerContent = styled(Container)`
   width: 1142px !important ;
-  margin-bottom : 39px ;
   background : #ffffff !important ;
 `
 
-const Panel = styled.p `
+const Panel = styled.div `
   padding-left : 70px ;
   padding-top : 26px ;
   padding-bottom : 16px ;
@@ -37,6 +36,7 @@ const Icons = styled(Icon)`
   height: 12px !important ;
   color: #ee3900;
   padding-right : 32px ;
+  font-size: 0.7em !important ;
 `
 
 const Label = styled.label `
@@ -50,7 +50,7 @@ const enhance = compose(
     handleBenefitdatalis: props => () => {
       return props.BebefitList.map( data => {
         return(
-          <div>
+          <div key={data}>
             <Label><Icons name="circle"/>{data}</Label><br/><br/>
           </div>
         )

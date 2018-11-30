@@ -4,20 +4,17 @@ import { Segment , Container } from 'semantic-ui-react'
 
 const Img = styled.img `
   border-bottom: 8px solid #ee3900 !important;
-`;
-
+`
 const LabelHeader = styled.label `
   font-size : 25px;
   color : #707070 ;
   height : 38px ;
 `
-
 const LabelContent = styled.p `
   font-size : 18px;
   color : #707070 ;
   height : 38px ;
 `
-
 const SegmentHeader = styled(Segment)`
   border-left : 15px solid #ee3900 !important;
   height : 75px ;
