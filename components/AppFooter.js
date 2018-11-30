@@ -1,6 +1,5 @@
-import { Segment , Header , Container , Menu } from 'semantic-ui-react'
+import { Segment , Icon , Container } from 'semantic-ui-react'
 import styled from 'styled-components'
-import Link from 'next/link'
 
 const SegmentFooter = styled(Segment) `
     overflow : none !important;
@@ -9,34 +8,29 @@ const SegmentFooter = styled(Segment) `
     border-radius : 0px !important;
     border-top: 8px solid #ee3900 !important;
     height : 130px ;
-`;
-
-const TextHeader = styled(Header)`
-    margin-bottom : 16px !important;
-    font-family: 'Kanit', sans-serif !important;
-    color : #fff !important;
-    position: relative ;
-    height: 20px ;
-`;
-
-const MenuItem = styled(Menu.Item)`
-    color : #fff !important;
-    cursor : pointer ;
-    &:hover {
-        color : #000 !important;
-    }
-`;
-
+`
+const ContentFooter = styled.div`
+    // padding-left : 73px ;
+    padding-top : 15px ;
+    color: #ffffff;
+`
+const LabelContact = styled.label`
+    font-size: 23px ;
+`
+const LabelAddress = styled.label`
+    font-size: 18px ;
+`
 export default () => (
     <div>
-        <SegmentFooter clearing >
+        <SegmentFooter>
             <Container>
-                <TextHeader as='h4' floated='right'>
-                    
-                </TextHeader>
-                <TextHeader as='h4' floated='right'>
-                    
-                </TextHeader>
+                <ContentFooter>
+                    <LabelContact>ติดต่อสอบถาม : oraphan@cupcodeteam.com</LabelContact><br/><br/>
+                    <LabelAddress>
+                        <Icon name="map marker alternate"/>
+                        1679/2 town in town 11 ladprao road, plabpla, wangthonglang กรุงเทพมหานคร 10310
+                    </LabelAddress>
+                </ContentFooter>
             </Container>
         </SegmentFooter>
     </div>
