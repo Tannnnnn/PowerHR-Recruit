@@ -29,14 +29,14 @@ export default () => (
         <SegmentHeader clearing >
             <Container>
                 <TextHeader as='h4' floated='right'>
-                    <Link href='#'>
+                    <Link href='../Interview/ListPositionInterview'>
                         <MenuItem>
                             ประกาศผลการสัมภาษณ์
                         </MenuItem>
                     </Link>
                 </TextHeader>
                 <TextHeader as='h4' floated='right'>
-                    <Link href='#'>
+                    <Link href='/index'>
                         <MenuItem>
                             ตำแหน่งเปิดรับ
                         </MenuItem>

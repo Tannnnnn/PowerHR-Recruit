@@ -68,7 +68,6 @@ const IMGSize = styled(Image)`
 
 const enhance = compose(
     withState('detail','setDetail',[{text: 'พัฒนา website ด้วย React , NodeJs framework ,HTML5 ,CSS3 ได้'},{text: 'มีความรู้ความเข้าใจ React Native (will be effective consider)'},{text: 'คุ้นเคยกับ JavaScript frameworks, Gulp, NPM'},{text: 'มีประสบการณ์ด้าน CSS preprocessors เช่น SASS, SCSS, LESS'},{text: 'เข้าใจในวิธีการออกแบบของ MVC framework'}]),
-    withState('jobDetail','setJobDetail'),
     withProps({
         pageTitle: 'Job Detail'
     }),
