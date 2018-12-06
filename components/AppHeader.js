@@ -31,7 +31,7 @@ export default () => (
                 <TextHeader as='h4' floated='right'>
                     <Link href='#'>
                         <MenuItem>
-                            ประกาศผล
+                            ประกาศผลการสัมภาษณ์
                         </MenuItem>
                     </Link>
                 </TextHeader>

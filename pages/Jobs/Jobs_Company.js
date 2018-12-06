@@ -1,10 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Segment , Container } from 'semantic-ui-react'
+import {CarouselCompane} from '../../components/Carousel'
 
-const Img = styled.img `
-  border-bottom: 8px solid #ee3900 !important;
-`
 const LabelHeader = styled.label `
   font-size : 25px;
   color : #707070 ;
@@ -27,17 +25,17 @@ const SegmentHeader = styled(Segment)`
 const ContainerHeader = styled(Container)`
   width: 1142px !important ;
   margin-bottom : 39px ;
-  margin-top: 39px
+  margin-top: 39px;
 `
 const ContainerContent = styled(Container)`
   width: 1070px !important ;
   padding-bottom : 39px ;
-  margin-top: 39px
+  margin-top: 39px;
 `
 
-export default ()=> (
+export default (props)=> (
   <div>
-    <Img src="https://scontent.fbkk2-7.fna.fbcdn.net/v/t1.15752-9/47093765_2009896885771923_8186172748091883520_n.png?_nc_cat=111&_nc_ht=scontent.fbkk2-7.fna&oh=925ec6b5c0697f68aac17d2db0c13860&oe=5CA63401" alt="Smiley face" height="600" width="100%" />
+    {CarouselCompane ('CUPCODE CO., LTD.')}
     <ContainerHeader>
       <SegmentHeader>CUPCODE CO., LTD.</SegmentHeader>
     </ContainerHeader>

@@ -1,7 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Segment , Icon , Container , Header , Pagination } from 'semantic-ui-react'
+import { Segment , Icon , Container , Header , Pagination , Image } from 'semantic-ui-react'
 import { compose , withHandlers , withState } from 'recompose'
+import Link from 'next/link'
 
 const SegmentHeader = styled(Segment)`
   height : 80px ;
@@ -69,29 +70,40 @@ const Paginations = styled(Pagination)`
   }
 `
 
+const IMGSize = styled(Image)`
+    width: 24px !important;
+    height: 24px !important;
+    display: inline-block !important;
+`;
+
+
 const enhance = compose(
-  withState('Jobs' , 'setJobs' , [{position: 'Fontend Developer' , date: '28 พฤศจิกายน 2561' , rate: 'สามารถต่อรองได้' , value: 2} , {position: 'UX/UI Design' , date: '28 พฤศจิกายน 2561' , rate: 'สามารถต่อรองได้' , value: 5} ,  {position: 'Backend Devloper' , date: '28 พฤศจิกายน 2561' , rate: 'สามารถต่อรองได้' , value: 3}]),
+  withState('Jobs' , 'setJobs' , [{position: 'Fontend Developer', company: 'Cupcode' , date: '28 พฤศจิกายน 2561' , rate: 'สามารถต่อรองได้' , value: 2} , {position: 'UX/UI Design' , date: '28 พฤศจิกายน 2561' , rate: 'สามารถต่อรองได้' , value: 5} ,  {position: 'Backend Devloper' , date: '28 พฤศจิกายน 2561' , rate: 'สามารถต่อรองได้' , value: 3}]),
   withHandlers({
     handleShowData: props => () => {
       return  props.Jobs.map( (data , i) => {
                 return(
-                    <SegmentContent key={i}>
-                        <HeaderContent floated='right'>
-                          <LabelDate>
-                            {data.date}
-                          </LabelDate><br/><br/>
-                          <LabelRecruit>
-                            {data.value} อัตรา
-                          </LabelRecruit>
-                        </HeaderContent>
-                        <HeaderContent floated='left'>
-                          {i+1}. {data.position}<br/><br/>
-                          <LabelSalary>
-                          <Icon name="dollar sign"/>
+                  <div>
+                    <Link href='../JobDetail/JobDetail'>
+                      <SegmentContent key={i}>
+                          <HeaderContent floated='right'>
+                            <LabelDate>
+                              {data.date}
+                            </LabelDate><br/><br/>
+                            <LabelRecruit>
+                              {data.value} อัตรา
+                            </LabelRecruit>
+                          </HeaderContent>
+                          <HeaderContent floated='left'>
+                            {i+1}. {data.position}<br/><br/>
+                            <LabelSalary>
+                            <IMGSize src='https://www.img.in.th/images/5d8d89d8b5d3db32c8d66c2b5db62234.png' /> &nbsp;
                             {data.rate}
-                          </LabelSalary>
-                        </HeaderContent>
-                    </SegmentContent>
+                            </LabelSalary>
+                          </HeaderContent>
+                      </SegmentContent>
+                    </Link>
+                  </div>
                 )
               })
       }
