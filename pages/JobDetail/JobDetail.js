@@ -107,7 +107,7 @@ export default enhance( (props)=>
                                     สมัครงาน
                                 </ColorBTN>
                                 <Colorlabel as='a' icon>
-                                    <Image src='https://www.img.in.th/images/45f10cc6b067d6fda8ff1316f210422b.png' size='small' />
+                                    <Image src='https://www.img.in.th/images/68c0f730b867d22a3086b9fdfd7cf787.png' size='small' />
                                 </Colorlabel>
                             </MarginBTN>
                         </Grid.Column>

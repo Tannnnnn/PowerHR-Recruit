@@ -4,7 +4,6 @@ import { compose, withProps , withState , withHandlers} from 'recompose'
 import {CarouselCompane} from '../../components/Carousel'
 import styled from 'styled-components'
 import { Container , Divider , Segment , Header , Image , Pagination , Icon } from 'semantic-ui-react'
-import {Breadcrumb2Page} from '../../components/Breadcrumb'
 import Link from 'next/link'
 
 
@@ -49,6 +48,7 @@ const HeaderContent = styled(Header)`
   font-family : 'Kanit', sans-serif !important;
   ${SegmentContent}:hover & {
     color: #fff !important ;
+    font-weight: 600 !important; 
   }
 `
 const LabelDate = styled.label`
@@ -117,7 +117,7 @@ const enhance = compose(
                                 <HeaderContent floated='left'>
                                   {i+1}. {data.position}<br/><br/>
                                   <LabelSalary>
-                                  <IMGSize src='https://www.img.in.th/images/5d8d89d8b5d3db32c8d66c2b5db62234.png' /> &nbsp;
+                                  <Icon name='usd' />
                                   {data.rate}
                                   </LabelSalary>
                                 </HeaderContent>

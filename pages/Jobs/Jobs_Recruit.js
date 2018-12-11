@@ -45,6 +45,7 @@ const HeaderContent = styled(Header)`
   font-family : 'Kanit', sans-serif !important;
   ${SegmentContent}:hover & {
     color: #fff !important ;
+    font-weight: 600 !important; 
   }
 `
 const LabelDate = styled.label`
@@ -70,13 +71,6 @@ const Paginations = styled(Pagination)`
   }
 `
 
-const IMGSize = styled(Image)`
-    width: 24px !important;
-    height: 24px !important;
-    display: inline-block !important;
-`;
-
-
 const enhance = compose(
   withState('Jobs' , 'setJobs' , [{position: 'Fontend Developer', company: 'Cupcode' , date: '28 พฤศจิกายน 2561' , rate: 'สามารถต่อรองได้' , value: 2} , {position: 'UX/UI Design' , date: '28 พฤศจิกายน 2561' , rate: 'สามารถต่อรองได้' , value: 5} ,  {position: 'Backend Devloper' , date: '28 พฤศจิกายน 2561' , rate: 'สามารถต่อรองได้' , value: 3}]),
   withHandlers({
@@ -97,7 +91,7 @@ const enhance = compose(
                           <HeaderContent floated='left'>
                             {i+1}. {data.position}<br/><br/>
                             <LabelSalary>
-                            <IMGSize src='https://www.img.in.th/images/5d8d89d8b5d3db32c8d66c2b5db62234.png' /> &nbsp;
+                            <Icon name='usd' />
                             {data.rate}
                             </LabelSalary>
                           </HeaderContent>
