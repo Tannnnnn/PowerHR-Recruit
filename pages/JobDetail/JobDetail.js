@@ -5,6 +5,8 @@ import {CarouselCompane} from '../../components/Carousel'
 import styled from 'styled-components'
 import { Container , Divider , Grid , Button , Image , Label} from 'semantic-ui-react'
 import {Breadcrumb2Page} from '../../components/Breadcrumb'
+import Link from 'next/link'
+import {btn_orange} from '../../components/Button'
 
 const BodyBox = styled.div`
     background : #ffffff;
@@ -102,14 +104,9 @@ export default enhance( (props)=>
                         </Grid.Column>
                         <Grid.Column width={5}>
                             <TextTopics3>วันที่ : <ColorTextSmall1>17 - 28 พฤศจิกายน 2561</ColorTextSmall1> </TextTopics3>
-                            <MarginBTN as='div' labelPosition='right'>
-                                <ColorBTN>
-                                    สมัครงาน
-                                </ColorBTN>
-                                <Colorlabel as='a' icon>
-                                    <Image src='https://www.img.in.th/images/68c0f730b867d22a3086b9fdfd7cf787.png' size='small' />
-                                </Colorlabel>
-                            </MarginBTN>
+                            <Link href='../ApplyJob/Personal_information'>
+                                {btn_orange('สมัครงาน','https://www.img.in.th/images/68c0f730b867d22a3086b9fdfd7cf787.png')}
+                            </Link>
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>

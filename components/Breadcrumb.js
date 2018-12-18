@@ -23,3 +23,21 @@ export const Breadcrumb2Page = (home , pre , path) => (
         <Divider hidden />
     </div>
 )
+
+export const Breadcrumb3Page = (home , befor , pre , path1 , path2) => (
+    <div>
+        <Divider hidden />
+            <Breadcrumb size='large'>
+                <Link href={path1}>
+                    <ColorTextHome link>{home}</ColorTextHome>
+                </Link>
+                <Breadcrumb.Divider icon='right chevron' />
+                <Link href={path2}>
+                    <ColorTextHome>{befor}</ColorTextHome>
+                </Link>
+                <Breadcrumb.Divider icon='right chevron' />
+                <ColorBreadcrumb active>{pre}</ColorBreadcrumb>
+            </Breadcrumb>
+        <Divider hidden />
+    </div>
+)
