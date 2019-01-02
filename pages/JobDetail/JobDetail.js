@@ -1,6 +1,6 @@
 import React from 'react'
 import { withLayout } from '../../hoc'
-import { compose, withProps , withState , withHandlers , lifecycle } from 'recompose'
+import { compose , withState , lifecycle } from 'recompose'
 import {CarouselCompane} from '../../components/Carousel'
 import styled from 'styled-components'
 import { Container , Divider , Grid , Button , Image , Label} from 'semantic-ui-react'
@@ -98,7 +98,6 @@ const enhance = compose(
                 const end_options = { year: 'numeric', month: 'long', day: 'numeric' };
                 this.props.setEnddate(end_localDate.toLocaleDateString('th-TH', end_options))
             })
-            
         }
     })
 )
