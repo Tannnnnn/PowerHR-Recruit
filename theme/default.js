@@ -34,6 +34,8 @@ const colors = {
     elementBackground: '#ffffff',
     boxShadow : '0 3px 6px 0 rgba(0, 0, 0, 0.16)',
     orange: '#ee3900',
+    Boxgray: '#e9e9e9',
+    
 }
 
 const dimens = {

@@ -6,8 +6,9 @@ import { Container , Step , Icon , Divider , Grid , Image , Form , Radio } from 
 import {Breadcrumb3Page} from '../../components/Breadcrumb'
 import Link from 'next/link'
 import theme from '../../theme/default'
-import {input2GrideGrideMG , input2Gride , redio2 , input4GrideMG , input4Gride , redio4 , redio5 } from '../../components/Input'
+import {input2GrideGrideMG , input2Gride , input4GrideMG , input4Gride } from '../../components/Input'
 import {btn_orange} from '../../components/Button'
+import {stepApplyJobInfomation} from '../../components/Step'
 
 const BoxHead = styled.div`
     background-color: ${theme.colors.elementBackground};
@@ -120,46 +121,25 @@ const MgRedio = styled(Radio)`
 
 const enhance = compose(
     withState('sex','setSex'),
+    withState('status','setStatus'),
+    withState('soldier','setSoldier'),
+    withState('congenitalDisease','SetCongenitalDisease'),
     withProps({
         pageTitle: 'Personal information'
     }),
     withLayout,
     withHandlers({
-        handleShowStep: props => () => {
-            return(
-                <center>
-                    <Step.Group>
-                        <ColorStep1 active>
-                            <Step.Content>
-                                <StepStyle1>ข้อมูลส่วนบุคคล</StepStyle1>
-                            </Step.Content>
-                        </ColorStep1>
-                        <Step>
-                            <Step.Content>
-                                <StepStyle>ที่อยู่ผู้สมัคร</StepStyle>
-                            </Step.Content>
-                        </Step>
-                        <Step>
-                            <Step.Content>
-                                <StepStyle>ประวัติการศึกษา</StepStyle>
-                            </Step.Content>
-                        </Step>
-                        <Step>
-                            <Step.Content>
-                                <StepStyle>ความสามรถพิเศษ</StepStyle>
-                            </Step.Content>
-                        </Step>
-                        <Step>
-                            <Step.Content>
-                                <StepStyle>ประสบการณ์ทำงาน</StepStyle>
-                            </Step.Content>
-                        </Step>
-                    </Step.Group>
-                </center>
-            )
-        },
-        handleChange: props => (sex) => event => {
+        handleChangeSex: props => (sex) => event => {
             props.setSex(sex)
+        },
+        handleChangeStatus: props =>(status) => event =>{
+            props.setStatus(status)
+        },
+        handleChangeSoldier: props =>(soldier)=> event =>{
+            props.setSoldier(soldier)
+        },
+        handleChangeCongenitalDisease: props => (congenitalDisease) => event =>{
+            props.SetCongenitalDisease(congenitalDisease)
         }
     })
 )
@@ -173,7 +153,7 @@ export default enhance( (props)=>
         <BoxHead2/>
         <Box>
             <br/>
-                {props.handleShowStep()}
+                {stepApplyJobInfomation('ข้อมูลส่วนบุคคล','ที่อยู่ผู้สมัคร','ประวัติการศึกษา','ความสามรถพิเศษ','ประสบการณ์ทำงาน')}
             <br/>
             <center>
                 <FontInfo>ข้อมูลส่วนบุคคลของผู้สมัคร</FontInfo>
@@ -239,7 +219,7 @@ export default enhance( (props)=>
                             <RadioSex> 
                                 <Form>
                                     <SizeFontRadio>
-                                        เพศ
+                                        เพศ :
                                     </SizeFontRadio>
                                     <Form.Field>
                                         <MgRedio
@@ -247,14 +227,14 @@ export default enhance( (props)=>
                                             name='male'
                                             value='male'
                                             checked={props.sex === 'male'}
-                                            onChange={props.handleChange('male')}
+                                            onChange={props.handleChangeSex('male')}
                                         />
                                         <MgRedio
                                             label='หญิง'
                                             name='female'
                                             value='female'
                                             checked={props.sex === 'female'}
-                                            onChange={props.handleChange('female')}
+                                            onChange={props.handleChangeSex('female')}
                                         />
                                     </Form.Field>
                                 </Form>
@@ -316,17 +296,118 @@ export default enhance( (props)=>
             </Grid>
             <Grid columns={1} padded='horizontally'>
                 <Grid.Column>
-                    <MgRedioStatus>{redio4('สถานภาพการสมรส :','โสด','สมรส','หย่า' , 'หม้าย')}</MgRedioStatus>
+                    <MgRedioStatus>
+                        <Form>
+                            <SizeFontRadio>
+                                สถานภาพการสมรส :
+                            </SizeFontRadio>
+                            <Form.Field>
+                                <MgRedio
+                                    label='โสด'
+                                    name='single'
+                                    value='single'
+                                    checked={props.status === 'single'}
+                                    onChange={props.handleChangeStatus('single')}
+                                />
+                                <MgRedio
+                                    label='สมรส'
+                                    name='married'
+                                    value='married'
+                                    checked={props.status === 'married'}
+                                    onChange={props.handleChangeStatus('married')}
+                                />
+                                <MgRedio
+                                    label='หย่า'
+                                    name='divorce'
+                                    value='divorce'
+                                    checked={props.status === 'divorce'}
+                                    onChange={props.handleChangeStatus('divorce')}
+                                />
+                                <MgRedio
+                                    label='หม้าย'
+                                    name='widow'
+                                    value='widow'
+                                    checked={props.status === 'widow'}
+                                    onChange={props.handleChangeStatus('widow')}
+                                />
+                            </Form.Field>
+                        </Form>
+                    </MgRedioStatus>
                 </Grid.Column>
             </Grid>
             <Grid columns={1} padded='horizontally'>
                 <Grid.Column>
-                    <MgRedioStatus>{redio5('การรับราชการทหาร :','รับราชการทหารแล้ว','สมรส','จบ ร.ด.' , 'จับใบดำ' , 'ได้รับการยกเว้น')}</MgRedioStatus>
+                    <MgRedioStatus>
+                        <Form>
+                            <SizeFontRadio>
+                                การรับราชการทหาร :
+                            </SizeFontRadio>
+                            <Form.Field>
+                                <MgRedio
+                                    label='รับราชการทหารแล้ว'
+                                    name='militaryService'
+                                    value='militaryService'
+                                    checked={props.soldier === 'militaryservice'}
+                                    onChange={props.handleChangeSoldier('militaryservice')}
+                                />
+                                <MgRedio
+                                    label='ได้รับการผ่อนผัน'
+                                    name='receivedWaiver'
+                                    value='receivedWaiver'
+                                    checked={props.soldier === 'receivedWaiver'}
+                                    onChange={props.handleChangeSoldier('receivedWaiver')}
+                                />
+                                <MgRedio
+                                    label='จบ ร.ด.'
+                                    name='graduate'
+                                    value='graduate'
+                                    checked={props.soldier === 'graduate'}
+                                    onChange={props.handleChangeSoldier('graduate')}
+                                />
+                                <MgRedio
+                                    label='จับใบดำ'
+                                    name='blackLeaf'
+                                    value='blackLeaf'
+                                    checked={props.soldier === 'blackLeaf'}
+                                    onChange={props.handleChangeSoldier('blackLeaf')}
+                                />
+                                <MgRedio
+                                    label='ได้รับการยกเว้น'
+                                    name='except'
+                                    value='except'
+                                    checked={props.soldier === 'except'}
+                                    onChange={props.handleChangeSoldier('except')}
+                                />
+                            </Form.Field>
+                        </Form>
+                    </MgRedioStatus>
                 </Grid.Column>
             </Grid>
             <Grid columns={1} padded='horizontally'>
                 <Grid.Column>
-                    <MgRedioStatus>{redio2('ท่านมีโรคประจำตัวหรือไม่ :','มี','ไม่มี')}</MgRedioStatus>
+                    <MgRedioStatus>
+                        <Form>
+                            <SizeFontRadio>
+                                ท่านมีโรคประจำตัวหรือไม่ :
+                            </SizeFontRadio>
+                            <Form.Field>
+                                <MgRedio
+                                    label='มี'
+                                    name='yes'
+                                    value='yes'
+                                    checked={props.congenitalDisease === 'yes'}
+                                    onChange={props.handleChangeCongenitalDisease('yes')}
+                                />
+                                <MgRedio
+                                    label=' ไม่มี'
+                                    name='no'
+                                    value='no'
+                                    checked={props.congenitalDisease === 'no'}
+                                    onChange={props.handleChangeCongenitalDisease('no')}
+                                />
+                            </Form.Field>
+                        </Form>
+                    </MgRedioStatus>
                 </Grid.Column>
             </Grid>
             <Grid columns={2} padded='horizontally'>
@@ -368,9 +449,13 @@ export default enhance( (props)=>
                 </Grid.Column>
             </Grid>
             <br/><br/>
-                <MgBTNOrange>{btn_orange('ถัดไป','https://www.img.in.th/images/c0dce936813662e607bd5798e68fd712.png')}</MgBTNOrange>
+                <MgBTNOrange>
+                    <Link href='/ApplyJob/Address_information'>
+                        {btn_orange('ถัดไป','https://www.img.in.th/images/c0dce936813662e607bd5798e68fd712.png')}
+                    </Link>
+                </MgBTNOrange>
             <br/><br/>
         </Box>
         <Divider hidden />
-    </Container>
+    </Container>    
 )

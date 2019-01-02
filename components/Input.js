@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components';
-import { Form , Radio } from 'semantic-ui-react'
+import { Form , TextArea } from 'semantic-ui-react'
 
 const SizeText1 = styled.label`
     font-size: 16px !important;
@@ -30,14 +30,9 @@ const WidthFormRight4GridMG = styled(Form.Field)`
     margin-left: 60% !important;
 `;
 
-const MgRedio = styled(Radio)`
-    margin-left: 2%;
+const FontTextArea = styled(TextArea)`
     font-size: 16px !important;
-`;
-
-const SizeFont = styled(Form.Field)`
-    font-size: 16px !important;
-    font-weight: 600 !important;
+    font-family : 'Kanit', sans-serif !important;
 `;
 
 export const input2GrideGrideMG = (firstName , placeholder) => (
@@ -84,82 +79,20 @@ export const input4GrideMG = (firstName , placeholder) => (
     </div>
 )
 
-export const redio2 = (firstName, name1 , name2) => (
+export const InputTextArea = (firstName,placeholder) =>(
     <div>
         <Form>
-            <SizeFont>
-                {firstName}
-            </SizeFont>
-            <Form.Field>
-                <MgRedio
-                    label={name1}
-                    name='radioGroup1'
-                />
-                <MgRedio
-                    label={name2}
-                    name='radioGroup2'
-                />
-            </Form.Field>
+            <SizeText1>{firstName}</SizeText1>
+            <FontTextArea autoHeight placeholder={placeholder} rows={4} />
         </Form>
     </div>
 )
 
-export const redio4 = (firstName, nameRadio1 , nameRadio2 , nameRadio3 , nameRadio4 ) => (
+export const InputTextAreaMini = (firstName,placeholder) =>(
     <div>
         <Form>
-            <SizeFont>
-                {firstName}
-            </SizeFont>
-            <Form.Field>
-                <MgRedio
-                    label={nameRadio1}
-                    name='radioGroup1'
-                />
-                <MgRedio
-                    label={nameRadio2}
-                    name='radioGroup2'
-                />
-                <MgRedio
-                    label={nameRadio3}
-                    name='radioGroup3'
-                />
-                <MgRedio
-                    label={nameRadio4}
-                    name='radioGroup4'
-                />
-            </Form.Field>
-        </Form>
-    </div>
-)
-
-export const redio5 = (firstName, nameRadio1 , nameRadio2 , nameRadio3 , nameRadio4 , nameRadio5 ) => (
-    <div>
-        <Form>
-            <SizeFont>
-                {firstName}
-            </SizeFont>
-            <Form.Field>
-                <MgRedio
-                    label={nameRadio1}
-                    name='radioGroup1'
-                />
-                <MgRedio
-                    label={nameRadio2}
-                    name='radioGroup2'
-                />
-                <MgRedio
-                    label={nameRadio3}
-                    name='radioGroup3'
-                />
-                <MgRedio
-                    label={nameRadio4}
-                    name='radioGroup4'
-                />
-                <MgRedio
-                    label={nameRadio5}
-                    name='radioGroup5'
-                />
-            </Form.Field>
+            <SizeText1>{firstName}</SizeText1>
+            <FontTextArea autoHeight placeholder={placeholder} rows={1} />
         </Form>
     </div>
 )
