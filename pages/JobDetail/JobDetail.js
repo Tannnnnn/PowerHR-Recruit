@@ -6,6 +6,7 @@ import styled from 'styled-components'
 import { Container , Divider , Grid , Button , Image , Label} from 'semantic-ui-react'
 import {Breadcrumb2Page} from '../../components/Breadcrumb'
 import axios from 'axios'
+import Link from 'next/link'
 
 const BodyBox = styled.div`
     background : #ffffff;
