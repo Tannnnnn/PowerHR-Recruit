@@ -1,8 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Segment , Icon , Container , Header , Pagination , Image } from 'semantic-ui-react'
-import { compose , withHandlers , withState } from 'recompose'
+import { compose , withHandlers , withState , lifecycle } from 'recompose'
 import Link from 'next/link'
+import axios from 'axios'
 
 const SegmentHeader = styled(Segment)`
   height : 80px ;
@@ -53,7 +54,7 @@ const LabelDate = styled.label`
   cursor : pointer ;
 `
 const LabelRecruit = styled.label`
-  font-size: 23px !important ;
+  font-size: 18px !important ;
   padding-left : 54% !important ;
   cursor : pointer ;
 `
@@ -73,34 +74,52 @@ const Paginations = styled(Pagination)`
 
 const enhance = compose(
   withState('Jobs' , 'setJobs' , [{position: 'Fontend Developer', company: 'Cupcode' , date: '28 พฤศจิกายน 2561' , rate: 'สามารถต่อรองได้' , value: 2} , {position: 'UX/UI Design' , date: '28 พฤศจิกายน 2561' , rate: 'สามารถต่อรองได้' , value: 5} ,  {position: 'Backend Devloper' , date: '28 พฤศจิกายน 2561' , rate: 'สามารถต่อรองได้' , value: 3}]),
+  withState('recruit' , 'setRecruit'),
+  lifecycle({
+    async componentDidMount(){
+      const url = 'http://localhost:4000/joinPosition'
+      const res = await axios.get(url)
+      this.props.setRecruit(res.data)
+    }
+  }),
   withHandlers({
     handleShowData: props => () => {
-      return  props.Jobs.map( (data , i) => {
-                return(
-                  <div>
-                    <Link href='../JobDetail/JobDetail'>
-                      <SegmentContent key={i}>
-                          <HeaderContent floated='right'>
-                            <LabelDate>
-                              {data.date}
-                            </LabelDate><br/><br/>
-                            <LabelRecruit>
-                              {data.value} อัตรา
-                            </LabelRecruit>
-                          </HeaderContent>
-                          <HeaderContent floated='left'>
-                            {i+1}. {data.position}<br/><br/>
-                            <LabelSalary>
-                            <Icon name='usd' />
-                            {data.rate}
-                            </LabelSalary>
-                          </HeaderContent>
-                      </SegmentContent>
-                    </Link>
-                  </div>
-                )
-              })
+      if (props.recruit !== undefined) {
+        return  props.recruit.map( (data , i) => {
+          let event = data.startdate.split('-')
+          const years = parseInt(event[0])
+          const month = parseInt(event[1]) 
+          const days  = parseInt(event[2])                  
+          let localDate = new Date(Date.UTC(years,month,days));
+          let options = { year: 'numeric', month: 'long', day: 'numeric' };          
+          return(
+            <div key={i}>
+              <Link href={{ pathname : '../JobDetail/JobDetail' , query : { id : data.id} }}>
+                <SegmentContent >
+                    <HeaderContent floated='right'>
+                      <LabelDate>
+                        {localDate.toLocaleDateString('th-TH', options)}
+                      </LabelDate><br/><br/>
+                      <LabelRecruit>
+                        {data.value} อัตรา
+                      </LabelRecruit>
+                    </HeaderContent>
+                    <HeaderContent floated='left'>
+                      {i+1}. {data.position_name}&nbsp;&nbsp;&nbsp;&nbsp;<br/><br/>
+                      <LabelSalary>
+                        <Icon name='usd' />สามารถต่อรองได้
+                      </LabelSalary>
+                    </HeaderContent>
+                </SegmentContent>
+              </Link>
+            </div>
+          )
+        })
       }
+      else{
+        return null
+      }
+    }
   })
 )
 
