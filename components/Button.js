@@ -24,8 +24,8 @@ export  const btn_primary =(name)=> {
     return <Button>{name}</Button>
 }
 
-export const btn_orange = (name , link) =>{
-    return <MarginBTN as='div' labelPosition='right'>
+export const btn_orange = (name , link , fn) =>{
+    return <MarginBTN as='div' labelPosition='right' onClick={fn}>
                 <ColorBTN>
                     {name}
                 </ColorBTN>

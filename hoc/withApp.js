@@ -22,7 +22,6 @@ export default function withApp(WrappedComponent) {
                             <link href="/static/vendor/node_modules/froala-editor/css/froala_style.min.css" rel="stylesheet"/>
                             <link href="/static/vendor/node_modules/froala-editor/css/froala_editor.pkgd.min.css" rel="stylesheet"/>
                             <link href="/static/vendor/node_modules/font-awesome/css/font-awesome.min.css" rel="stylesheet"/>
-                            <link href="/static/vendor/node_modules/animate.css/animate.min.css" rel="stylesheet"/>
                             <link href="/static/vendor/node_modules/toastr/build/toastr.min.css" rel="stylesheet"/>
                             <link href="/static/vendor/node_modules/react-dates/lib/css/_datepicker.css" rel="stylesheet"/>
                             <link href="/static/vendor/node_modules/react-select/dist/react-select.css" rel="stylesheet"/>

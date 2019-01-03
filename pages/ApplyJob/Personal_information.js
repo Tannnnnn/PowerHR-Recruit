@@ -1,13 +1,22 @@
 import React from 'react'
 import { withLayout } from '../../hoc'
-import { compose, withProps , withState , withHandlers} from 'recompose'
+import { compose, withProps , withState , withHandlers , lifecycle } from 'recompose'
 import styled from 'styled-components'
 import { Container , Step , Icon , Divider , Grid , Image , Form , Radio } from 'semantic-ui-react'
 import {Breadcrumb3Page} from '../../components/Breadcrumb'
 import Link from 'next/link'
 import theme from '../../theme/default'
-import {input2GrideGrideMG , input2Gride , redio2 , input4GrideMG , input4Gride , redio4 , redio5 } from '../../components/Input'
+import {input2GrideGrideMG , input2Gride , redio2 , input4GrideMG , input4Gride , redio4 , redio5 , inputGridePosition } from '../../components/Input'
 import {btn_orange} from '../../components/Button'
+
+const buildFileSelector = (fn) => {        
+    const fileSelector = document.createElement('input');
+    fileSelector.setAttribute('type', 'file');
+    fileSelector.setAttribute('multiple', 'multiple');
+    fileSelector.setAttribute('accept', 'image/x-png,image/jpeg');
+    fileSelector.onchange = fn
+    return fileSelector;
+}
 
 const BoxHead = styled.div`
     background-color: ${theme.colors.elementBackground};
@@ -120,15 +129,26 @@ const MgRedio = styled(Radio)`
 
 const enhance = compose(
     withState('sex','setSex'),
+    withState('salary','setSalary'),
+    withState('image' , 'setImage' , undefined),
     withProps({
         pageTitle: 'Personal information'
     }),
     withLayout,
+    lifecycle({
+        async componentWillMount(){
+            localStorage.getItem('salary') && this.props.setSalary(JSON.parse(localStorage.getItem('salary')))
+        },
+        async componentDidMount(){
+
+        }
+    }),
     withHandlers({
         handleShowStep: props => () => {
             return(
                 <center>
                     <Step.Group>
+                        {console.log(props.salary)}
                         <ColorStep1 active>
                             <Step.Content>
                                 <StepStyle1>ข้อมูลส่วนบุคคล</StepStyle1>
@@ -160,6 +180,33 @@ const enhance = compose(
         },
         handleChange: props => (sex) => event => {
             props.setSex(sex)
+        },
+        handleFileSelect: props => (fn) => event => {
+            event.preventDefault();
+            buildFileSelector(fn).click();
+        },
+        onChangeInputFile: props => () => event => {
+            props.setImage(URL.createObjectURL(event.target.files[0]))
+        },
+        handleShowImage: props => () => {
+            if (props.image === undefined) {
+                return(
+                    <center>
+                        <ImgUser src='https://www.img.in.th/images/42b597219a8880bf0c8769a8eb93e38f.png' size='mini'/>
+                        <TextImg>ขนาด 177 x 181<br/>คลิกเพื่อเพิ่มรูป</TextImg>
+                    </center>
+                )
+            }
+            else{
+                return( <img src={props.image} style={{ width : '177px' , height : '181px' }}/> )
+            }
+        },
+        onChangeSalary: props => () => event => {
+            console.log(event.target.value , event.keyCode);
+            props.setSalary(event.target.value)
+        },
+        saveThisPage: props => () => event => {
+            localStorage.setItem('salary' , JSON.stringify(props.salary))
         }
     })
 )
@@ -175,29 +222,26 @@ export default enhance( (props)=>
             <br/>
                 {props.handleShowStep()}
             <br/>
-            <center>
+             <center>
                 <FontInfo>ข้อมูลส่วนบุคคลของผู้สมัคร</FontInfo>
                 <MgIcon name='window minimize outline' size='big'/>
             </center>
             <br/>
             <Grid columns={2} padded='horizontally'>
                 <Grid.Column>
-                    <BoxImg>
-                        <center>
-                            <ImgUser src='https://www.img.in.th/images/42b597219a8880bf0c8769a8eb93e38f.png' size='mini'/>
-                            <TextImg>ขนาด 177*181<br/>คลิกเพื่อเพิ่มรูป</TextImg>
-                        </center>
+                    <BoxImg onClick={props.handleFileSelect(props.onChangeInputFile())}>
+                        {props.handleShowImage()}
                     </BoxImg>
                 </Grid.Column>
                 <Grid.Column>
-                    {input2Gride('ตำแหน่งงานที่รับสมัคร :','กรุณากรอกตำแหน่งงงานที่รับสมัคร')}<br/><br/>
-                    {input2Gride('เงินเดือนที่ต้องการ :','กรุณากรอกเงินเดือนที่ต้องการ')}
+                    {inputGridePosition('ตำแหน่งงานที่รับสมัคร :','กรุณากรอกตำแหน่งงงานที่รับสมัคร', props.url.query.position )}<br/><br/>
+                    {input2Gride('เงินเดือนที่ต้องการ :','กรุณากรอกเงินเดือนที่ต้องการ',props.onChangeSalary() , 'number' , props.salary)}
                 </Grid.Column>
             </Grid>
             <Grid columns={2} padded='horizontally'>
                 <Grid.Column>
                     <MgGridLeft>{input2GrideGrideMG('ชื่อ (ภาษาไทย) :','กรุณากรอกชื่อ (ภาษาไทย)')}</MgGridLeft>
-                </Grid.Column>
+                </Grid.Column>  
                 <Grid.Column>
                     {input2Gride('นามสกุล (ภาษาไทย) :','กรุณากรอกนามสกุล (ภาษาไทย)')}
                 </Grid.Column>
@@ -368,7 +412,7 @@ export default enhance( (props)=>
                 </Grid.Column>
             </Grid>
             <br/><br/>
-                <MgBTNOrange>{btn_orange('ถัดไป','https://www.img.in.th/images/c0dce936813662e607bd5798e68fd712.png')}</MgBTNOrange>
+                <MgBTNOrange>{btn_orange('ถัดไป','https://www.img.in.th/images/c0dce936813662e607bd5798e68fd712.png' , props.saveThisPage())}</MgBTNOrange>
             <br/><br/>
         </Box>
         <Divider hidden />

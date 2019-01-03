@@ -51,12 +51,23 @@ export const input2GrideGrideMG = (firstName , placeholder) => (
     </div>
 )
 
-export const input2Gride = (firstName , placeholder) => (
+export const input2Gride = (firstName , placeholder , fn , type , value) => (
     <div>
         <Form>
             <WidthFormRight>
                 <SizeText1>{firstName}</SizeText1>
-                <SizeTextinput placeholder={placeholder} />
+                <SizeTextinput placeholder={placeholder} onKeyUp={fn} type={type} defaultValue={value}/>
+            </WidthFormRight>
+        </Form>
+    </div>
+)
+
+export const inputGridePosition = (firstName , placeholder , name) => (
+    <div>
+        <Form>
+            <WidthFormRight>
+                <SizeText1>{firstName}</SizeText1>
+                <SizeTextinput placeholder={placeholder} value={name} disabled/>
             </WidthFormRight>
         </Form>
     </div>

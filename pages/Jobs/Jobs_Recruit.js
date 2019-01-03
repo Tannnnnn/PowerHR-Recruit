@@ -73,7 +73,6 @@ const Paginations = styled(Pagination)`
 `
 
 const enhance = compose(
-  withState('Jobs' , 'setJobs' , [{position: 'Fontend Developer', company: 'Cupcode' , date: '28 พฤศจิกายน 2561' , rate: 'สามารถต่อรองได้' , value: 2} , {position: 'UX/UI Design' , date: '28 พฤศจิกายน 2561' , rate: 'สามารถต่อรองได้' , value: 5} ,  {position: 'Backend Devloper' , date: '28 พฤศจิกายน 2561' , rate: 'สามารถต่อรองได้' , value: 3}]),
   withState('recruit' , 'setRecruit'),
   lifecycle({
     async componentDidMount(){
@@ -105,9 +104,9 @@ const enhance = compose(
                       </LabelRecruit>
                     </HeaderContent>
                     <HeaderContent floated='left'>
-                      {i+1}. {data.position_name}&nbsp;&nbsp;&nbsp;&nbsp;<br/><br/>
+                      {i+1}. {data.position_name}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/><br/>
                       <LabelSalary>
-                        <Icon name='usd' />สามารถต่อรองได้
+                        <Icon name='usd' />{data.rate}
                       </LabelSalary>
                     </HeaderContent>
                 </SegmentContent>

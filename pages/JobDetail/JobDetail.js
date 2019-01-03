@@ -1,6 +1,6 @@
 import React from 'react'
 import { withLayout } from '../../hoc'
-import { compose , withState , lifecycle } from 'recompose'
+import { compose , withState , lifecycle , withHandlers } from 'recompose'
 import {CarouselCompane} from '../../components/Carousel'
 import styled from 'styled-components'
 import { Container , Divider , Grid , Button , Image , Label} from 'semantic-ui-react'
@@ -100,6 +100,22 @@ const enhance = compose(
                 this.props.setEnddate(end_localDate.toLocaleDateString('th-TH', end_options))
             })
         }
+    }),
+    withHandlers({
+        handleButtonApplyJob: props => (name) => {
+            return(
+                <Link href={{ pathname : '../ApplyJob/Personal_information' , query : { position : name }}}>
+                    <MarginBTN as='div' labelPosition='right'>
+                        <ColorBTN>
+                            สมัครงาน
+                        </ColorBTN>
+                        <Colorlabel as='a' icon>
+                            <Image src='https://www.img.in.th/images/68c0f730b867d22a3086b9fdfd7cf787.png' size='small' />
+                        </Colorlabel>
+                    </MarginBTN>
+                </Link>
+            )
+        }
     })
 )
 
@@ -122,14 +138,7 @@ export default enhance( (props)=>
                                     </Grid.Column>
                                     <Grid.Column width={5}>
                                         <TextTopics3>วันที่รับสมัคร : <ColorTextSmall1>{props.startdate} - {props.enddate}</ColorTextSmall1> </TextTopics3>
-                                        <MarginBTN as='div' labelPosition='right'>
-                                            <ColorBTN>
-                                                สมัครงาน
-                                            </ColorBTN>
-                                            <Colorlabel as='a' icon>
-                                                <Image src='https://www.img.in.th/images/68c0f730b867d22a3086b9fdfd7cf787.png' size='small' />
-                                            </Colorlabel>
-                                        </MarginBTN>
+                                        {props.handleButtonApplyJob(data.position_name)}
                                     </Grid.Column>
                                 </Grid.Row>
                             </Grid>
