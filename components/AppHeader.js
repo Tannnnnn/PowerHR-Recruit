@@ -44,7 +44,7 @@ export default () => (
                     </MenuItem>
                 </TextHeader>
                 <ImageHeader as='h4' floated='right'>
-                    <Image  src='https://www.img.in.th/images/ecf962ecc609572d108c0a069d31da13.png' size='small' />
+                    <Image  src='https://www.img.in.th/images/687206af74ec86d36b815002c694b34e.png' size='small' />
                 </ImageHeader>
                 <TextHeader as='h4' floated='right'>
                     <Link href='../Interview/ListPositionInterview'>

@@ -286,6 +286,7 @@ export default enhance( (props)=>
                                             </Link>
                                             <br/><br/>
                                         </center>
+                                        <p>*หมายเหตุ : ผู้ที่ผ่านการพิจารณาเบื้องต้นทางฝ่ายบุคคลจะติดต่อไปหาผู้สมัครโดยตรง</p>
                                     </Modal.Description>
                                 </Modal.Content>
                             </Modal>

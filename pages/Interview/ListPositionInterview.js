@@ -68,18 +68,43 @@ const TextTopic = styled.p`
 `;
 
 const TextContant = styled.small`
-    font-size: 18px;
+    font-size: 16px;
     color: ${theme.colors.textGray};
 `;
 
+const MgRow = styled(Grid.Row)`
+    margin-left: 8%;
+`;
+
 const enhance = compose(
-    withState('detail','setDetail',[{text: 'พัฒนา website ด้วย React , NodeJs framework ,HTML5 ,CSS3 ได้'},{text: 'มีความรู้ความเข้าใจ React Native (will be effective consider)'},{text: 'คุ้นเคยกับ JavaScript frameworks, Gulp, NPM'},{text: 'มีประสบการณ์ด้าน CSS preprocessors เช่น SASS, SCSS, LESS'},{text: 'เข้าใจในวิธีการออกแบบของ MVC framework'}]),
-    withState('Jobs' , 'setJobs' , [{position: 'Fontend Developer', company: 'Cupcode' , date: '28 พฤศจิกายน 2561' , rate: 'สามารถต่อรองได้' , value: 2} , {position: 'UX/UI Design' , date: '28 พฤศจิกายน 2561' , rate: 'สามารถต่อรองได้' , value: 5} ,  {position: 'Backend Devloper' , date: '28 พฤศจิกายน 2561' , rate: 'สามารถต่อรองได้' , value: 3}]),
-    withState('jobDetail','setJobDetail'),
+    withState('position','setPosition',[{position: 'Fontend Developer',  date: '28 พฤศจิกายน 2561', status:'รอการพิจารณา' }]),
     withProps({
-        pageTitle: 'Job Detail'
+        pageTitle: 'List position interview'
     }),
     withLayout,
+    withHandlers({
+        handleShowData: props => () => {
+            return  props.position.map( (data) => {
+                return(
+                    <CardName>
+                        <Grid columns={3}>
+                            <MgRow>
+                                <Grid.Column>
+                                    <TextTopic>ตำแหน่ง : <TextContant>{data.position}</TextContant></TextTopic>
+                                </Grid.Column>
+                                <Grid.Column>
+                                    <TextTopic>วันที่สมัคร : <TextContant>{data.date}</TextContant></TextTopic>
+                                </Grid.Column>
+                                <Grid.Column>
+                                    <TextTopic>สถานะ : <TextContant>{data.status}</TextContant></TextTopic>
+                                </Grid.Column>
+                            </MgRow>
+                        </Grid>
+                    </CardName>
+                )
+            })
+        }
+    })
     
 )
 
@@ -92,24 +117,7 @@ export default enhance( (props)=>
                 <br/>
                 <center><TextHeadInterview>ประกาศผล</TextHeadInterview></center>
             </BoxText>
-            <CardName>
-                <Grid columns={4}>
-                  <Grid.Row>
-                    <Grid.Column>
-                      <TextTopic>ตำแหน่ง : <TextContant>Fontend Developer</TextContant></TextTopic>
-                    </Grid.Column>
-                    <Grid.Column>
-                      <TextTopic>วันที่สมัคร : <TextContant>19 พฤศจิกายน 2561</TextContant></TextTopic>
-                    </Grid.Column>
-                    <Grid.Column>
-                      <TextTopic>สถานะ : <TextContant>รอพิจารณาการสมัคร</TextContant></TextTopic>
-                    </Grid.Column>
-                    <Grid.Column>
-                      <TextTopic><center>ดูรายละเอียด</center></TextTopic>
-                    </Grid.Column>
-                  </Grid.Row>
-                </Grid>
-            </CardName>
+            {props.handleShowData()}
         </Container>
         <Divider hidden />
     </div>
