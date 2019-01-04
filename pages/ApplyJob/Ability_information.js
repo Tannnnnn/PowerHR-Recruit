@@ -2,12 +2,11 @@ import React from 'react'
 import { withLayout } from '../../hoc'
 import { compose, withProps , withState , withHandlers} from 'recompose'
 import styled from 'styled-components'
-import { Container , Radio  , Icon , Divider , Grid , Checkbox , Form } from 'semantic-ui-react'
+import { Container , Radio  , Icon , Divider , Grid , Form } from 'semantic-ui-react'
 import {Breadcrumb3Page} from '../../components/Breadcrumb'
-import Link from 'next/link'
 import theme from '../../theme/default'
 import {input2GrideGrideMG , input2Gride , InputTextArea} from '../../components/Input'
-import {btn_orange} from '../../components/Button'
+import {btn_NextBack} from '../../components/Button'
 import {StepApplyJobAbility} from '../../components/Step'
 
 const BoxHead = styled.div`
@@ -46,7 +45,7 @@ const MgGridLeft = styled.div`
 `;
 
 const MgBTNOrange = styled.div`
-    margin-left: 80%;
+    margin-left: 70%;
 `;
 
 const TextSelect = styled.p`
@@ -246,9 +245,7 @@ export default enhance( (props)=>
             </MgTextArea>
             <br/><br/>
                 <MgBTNOrange>
-                    <Link href='/ApplyJob/Task_information'>
-                        {btn_orange('ถัดไป','https://www.img.in.th/images/c0dce936813662e607bd5798e68fd712.png')}
-                    </Link>
+                    {btn_NextBack('ย้อนกลับ', '/ApplyJob/School_information', 'ถัดไป' ,'https://www.img.in.th/images/c0dce936813662e607bd5798e68fd712.png' , '/ApplyJob/Task_information')}
                 </MgBTNOrange>
             <br/><br/>
         </Box>

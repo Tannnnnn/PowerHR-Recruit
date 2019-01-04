@@ -2,12 +2,11 @@ import React from 'react'
 import { withLayout } from '../../hoc'
 import { compose, withProps , withState , withHandlers} from 'recompose'
 import styled from 'styled-components'
-import { Container , Step , Icon , Divider , Grid , Checkbox } from 'semantic-ui-react'
+import { Container , Icon , Divider , Grid , Checkbox } from 'semantic-ui-react'
 import {Breadcrumb3Page} from '../../components/Breadcrumb'
-import Link from 'next/link'
 import theme from '../../theme/default'
-import {input2GrideGrideMG , input2Gride , redio2 , input4GrideMG , input4Gride} from '../../components/Input'
-import {btn_orange} from '../../components/Button'
+import {input2GrideGrideMG , input2Gride , input4GrideMG , input4Gride} from '../../components/Input'
+import {btn_NextBack} from '../../components/Button'
 import {stepApplyJobAddress} from '../../components/Step'
 
 const BoxHead = styled.div`
@@ -71,7 +70,7 @@ const MgChackbox = styled(Checkbox)`
 `;
 
 const MgBTNOrange = styled.div`
-    margin-left: 80%;
+    margin-left: 70%;
 `;
 
 const enhance = compose(
@@ -212,9 +211,7 @@ export default enhance( (props)=>
             </Grid>
             <br/><br/>
                 <MgBTNOrange>
-                    <Link href='/ApplyJob/School_information'>
-                        {btn_orange('ถัดไป','https://www.img.in.th/images/c0dce936813662e607bd5798e68fd712.png')}
-                    </Link>
+                    {btn_NextBack('ย้อนกลับ', '/ApplyJob/Personal_information', 'ถัดไป' ,'https://www.img.in.th/images/c0dce936813662e607bd5798e68fd712.png' , '/ApplyJob/Ability_information')}
                 </MgBTNOrange>
             <br/><br/>
         </Box>
