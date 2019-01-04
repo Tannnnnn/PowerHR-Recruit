@@ -3,8 +3,8 @@ import { withLayout } from '../../hoc'
 import { compose, withProps , withState , withHandlers} from 'recompose'
 import {CarouselCompane} from '../../components/Carousel'
 import styled from 'styled-components'
-import { Container , Divider , Segment , Header , Image , Pagination , Icon } from 'semantic-ui-react'
-import Link from 'next/link'
+import { Container , Divider , Segment , Header , Image , Pagination , Grid  } from 'semantic-ui-react'
+import theme from '../../theme/default'
 
 
 const SegmentHeader = styled(Segment)`
@@ -31,16 +31,7 @@ const SegmentContent = styled(Segment)`
     background: #6a6a6a ;
   }
 `
-const ContainerHeader = styled(Container)`
-  width: 1142px !important ;
-  margin-top: 26px;
-  box-shadow: 0 1px 2px 0 rgba(34,36,38,.15);
-`
-const ContainerContent = styled(Container)`
-  width: 1142px !important ;
-  margin-bottom : 39px ;
-  background : #ffffff !important ;
-`
+
 const HeaderContent = styled(Header)`
   font-size: 23px !important ;
   font-weight : normal !important ;
@@ -51,83 +42,70 @@ const HeaderContent = styled(Header)`
     font-weight: 600 !important; 
   }
 `
-const LabelDate = styled.label`
-  font-size: 18px !important ;
-  cursor : pointer ;
-`
-const LabelRecruit = styled.label`
-  font-size: 23px !important ;
-  padding-left : 54% !important ;
-  cursor : pointer ;
-`
-const LabelSalary = styled.label`
-  font-size: 18px !important ;
-  padding-left : 3% !important ;
-  cursor : pointer ;
-`
-const Paginations = styled(Pagination)`
-  color : #707070 !important ;
-  font-family : 'Kanit', sans-serif !important;
-  .active {
-    background : #ee3900 !important ;
-    color : #ffffff !important ;
-  }
-`
-
-const IMGSize = styled(Image)`
-    width: 24px !important;
-    height: 24px !important;
-    display: inline-block !important;
-`;
 
 const BoxText = styled.div`
     width: 100%;
     height: 87px;
-    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+    background-color: ${theme.colors.orangePosonal};
 `;
 
 const TextHeadInterview = styled.p`
+    color: ${theme.colors.elementBackground} !important;
     font-size: 30px;
     color: #000000;
 `;
 
+const CardName = styled.div`
+    width: 100%;
+    height: 56px;
+    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+    background-color: #ffffff;
+    margin-top: 2%;
+`;
+
+const TextTopic = styled.p`
+    font-size: 18px;
+`;
+
+const TextContant = styled.small`
+    font-size: 16px;
+    color: ${theme.colors.textGray};
+`;
+
+const MgRow = styled(Grid.Row)`
+    margin-left: 8%;
+`;
+
 const enhance = compose(
-    withState('detail','setDetail',[{text: 'พัฒนา website ด้วย React , NodeJs framework ,HTML5 ,CSS3 ได้'},{text: 'มีความรู้ความเข้าใจ React Native (will be effective consider)'},{text: 'คุ้นเคยกับ JavaScript frameworks, Gulp, NPM'},{text: 'มีประสบการณ์ด้าน CSS preprocessors เช่น SASS, SCSS, LESS'},{text: 'เข้าใจในวิธีการออกแบบของ MVC framework'}]),
-    withState('Jobs' , 'setJobs' , [{position: 'Fontend Developer', company: 'Cupcode' , date: '28 พฤศจิกายน 2561' , rate: 'สามารถต่อรองได้' , value: 2} , {position: 'UX/UI Design' , date: '28 พฤศจิกายน 2561' , rate: 'สามารถต่อรองได้' , value: 5} ,  {position: 'Backend Devloper' , date: '28 พฤศจิกายน 2561' , rate: 'สามารถต่อรองได้' , value: 3}]),
-    withState('jobDetail','setJobDetail'),
+    withState('position','setPosition',[{position: 'Fontend Developer',  date: '28 พฤศจิกายน 2561', status:'รอการพิจารณา' }]),
     withProps({
-        pageTitle: 'Job Detail'
+        pageTitle: 'List position interview'
     }),
     withLayout,
     withHandlers({
         handleShowData: props => () => {
-            return  props.Jobs.map( (data , i) => {
-                      return(
-                        <div>
-                          <Link href='../Interview/ListNameInterview'>
-                            <SegmentContent key={i}>
-                                <HeaderContent floated='right'>
-                                  <LabelDate>
-                                    {data.date}
-                                  </LabelDate><br/><br/>
-                                  <LabelRecruit>
-                                    {data.value} อัตรา
-                                  </LabelRecruit>
-                                </HeaderContent>
-                                <HeaderContent floated='left'>
-                                  {i+1}. {data.position}<br/><br/>
-                                  <LabelSalary>
-                                  <Icon name='usd' />
-                                  {data.rate}
-                                  </LabelSalary>
-                                </HeaderContent>
-                            </SegmentContent>
-                          </Link>
-                        </div>
-                      )
-                    })
-            }
+            return  props.position.map( (data) => {
+                return(
+                    <CardName>
+                        <Grid columns={3}>
+                            <MgRow>
+                                <Grid.Column>
+                                    <TextTopic>ตำแหน่ง : <TextContant>{data.position}</TextContant></TextTopic>
+                                </Grid.Column>
+                                <Grid.Column>
+                                    <TextTopic>วันที่สมัคร : <TextContant>{data.date}</TextContant></TextTopic>
+                                </Grid.Column>
+                                <Grid.Column>
+                                    <TextTopic>สถานะ : <TextContant>{data.status}</TextContant></TextTopic>
+                                </Grid.Column>
+                            </MgRow>
+                        </Grid>
+                    </CardName>
+                )
+            })
+        }
     })
+    
 )
 
 export default enhance( (props)=> 
@@ -137,27 +115,9 @@ export default enhance( (props)=>
         <Container>
             <BoxText>
                 <br/>
-                <center><TextHeadInterview>ประกาศผลการสัมภาษณ์</TextHeadInterview></center>
+                <center><TextHeadInterview>ประกาศผล</TextHeadInterview></center>
             </BoxText>
-            <ContainerHeader>
-                <SegmentHeader>เลือกตำแหน่งงาน :</SegmentHeader>
-                <ContainerContent>
-                {props.handleShowData()}
-                </ContainerContent>
-            </ContainerHeader>
-            <Container>
-                <center>
-                    <Paginations
-                    defaultActivePage={1}
-                    ellipsisItem={{ content: <Icon name='ellipsis horizontal' />, icon: true }}
-                    firstItem={{ content: <Icon name='angle double left' />, icon: true }}
-                    lastItem={{ content: <Icon name='angle double right' />, icon: true }}
-                    prevItem={{ content: <Icon name='angle left' />, icon: true }}
-                    nextItem={{ content: <Icon name='angle right' />, icon: true }}
-                    totalPages={3}
-                    />
-                </center>
-            </Container><br/><br/>
+            {props.handleShowData()}
         </Container>
         <Divider hidden />
     </div>

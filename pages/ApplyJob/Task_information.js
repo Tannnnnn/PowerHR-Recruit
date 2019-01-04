@@ -1,14 +1,13 @@
 import React from 'react'
 import { withLayout } from '../../hoc'
-import { compose, withProps , withState , withHandlers} from 'recompose'
+import { compose, withProps , withState , withHandlers } from 'recompose'
 import styled from 'styled-components'
-import { Container , Radio  , Icon , Divider , Grid , Checkbox  , Form , Label , Image } from 'semantic-ui-react'
-import {Breadcrumb3Page} from '../../components/Breadcrumb'
-import Link from 'next/link'
+import { Container , Icon , Divider , Grid , Checkbox , Button , Header , Label , Modal , Image } from 'semantic-ui-react'
+import { Breadcrumb3Page } from '../../components/Breadcrumb'
 import theme from '../../theme/default'
-import {input2GrideGrideMG , input2Gride , InputTextArea , InputTextAreaMini} from '../../components/Input'
-import {btn_orange , btn_orangeBasic} from '../../components/Button'
-import {StepApplyJobTask} from '../../components/Step'
+import { input2GrideGrideMG , input2Gride , InputTextArea , InputTextAreaMini } from '../../components/Input'
+import { StepApplyJobTask } from '../../components/Step'
+import Link from 'next/link'
 
 const BoxHead = styled.div`
     background-color: ${theme.colors.elementBackground};
@@ -51,7 +50,7 @@ const MgGridLeft = styled.div`
 `;
 
 const MgBTNOrange = styled.div`
-    margin-left: 80%;
+    margin-left: 63%;
 `;
 
 const MgTextArea = styled.div`
@@ -64,10 +63,6 @@ const TextSort = styled.p`
     font-size: 18px;
     color: ${theme.colors.gray} !important;
     margin-left: 14.5% !important;
-`;
-
-const MgBtnColorOrangeBasic = styled.div`
-    margin-left: 75%;
 `;
 
 const BoxGray = styled.div`
@@ -85,6 +80,40 @@ const MgChackbox = styled(Checkbox)`
     font-size: 16px !important;  
     font-weight: 500;        
     line-height: 1.5;                                              
+`;
+
+const BtnBack = styled(Button)`
+    box-shadow: 0 0 0px 1px #ee3900 !important;
+    font-family : 'Kanit', sans-serif !important;
+    background : #ee3900 !important;
+    color : #fff !important;
+    font-weight: 500 !important;
+    height: 46px;
+    width: 30%;
+`;
+
+const BtnSuccess = styled(Button)`
+    box-shadow: 0 0 0px 1px #ee3900 !important;
+    font-family : 'Kanit', sans-serif !important;
+    background : #ee3900 !important;
+    color : #fff !important;
+    font-weight: 500 !important;
+`;
+
+const Colorlabel = styled(Label)`
+    box-shadow: 0 0 0px 1px #ee3900 !important;
+    background : #ee3900 !important;
+    color : #fff !important;
+`;
+
+const TextModelTaskSuccess = styled.p`
+    font-size: 18px;
+    margin-top: 2%;
+`;
+
+const ButtonClick = styled(Button)`
+    font-family : 'Kanit', sans-serif !important;
+    font-size: 18px !important;
 `;
 
 const enhance = compose(
@@ -195,19 +224,73 @@ export default enhance( (props)=>
                 {InputTextAreaMini('สาเหตุที่ลาออก :', 'กรุณากรอกรายได้สุทธิต่อเดือน')}
             </MgTextArea>
             <br/>
-            <MgBtnColorOrangeBasic>
-                {btn_orangeBasic('เพิ่มบริษัท')}
-            </MgBtnColorOrangeBasic>
+            <center>
+                <FontInfo><MgIconBlack name='window minimize outline' size='big'/></FontInfo>
+            </center>
             <br/>
+            <Grid columns={2} padded='horizontally'>
+                <Grid.Column>
+                    <MgGridLeft>{input2GrideGrideMG('บริษัท :','กรุณากรอกบริษัท')}</MgGridLeft>
+                </Grid.Column>
+                <Grid.Column>
+                    {input2Gride('ตำแหน่ง :','กรุณากรอกตำแหน่ง')}
+                </Grid.Column>
+            </Grid>
+            <Grid columns={2} padded='horizontally'>
+                <Grid.Column>
+                    <MgGridLeft>{input2GrideGrideMG('เงินเดือนสุดท้าย :','กรุณากรอกเงินเดือนสุดท้าย')}</MgGridLeft>
+                </Grid.Column>
+            </Grid>
+            <Grid columns={2} padded='horizontally'>
+                <Grid.Column>
+                    <MgGridLeft>{input2GrideGrideMG('ระยะเวลาเริ่มต้นการทำงานตั้งแต่ :','เลือกระยะเวลา')}</MgGridLeft>
+                </Grid.Column>
+                <Grid.Column>
+                    {input2Gride('ระยะเวลาสิ้นสุดการทำงานตั้งแต่ :','กรุณากรอกตำแหน่ง')}
+                </Grid.Column>
+            </Grid>
+            <MgTextArea>
+                {InputTextAreaMini('สาเหตุที่ลาออก :', 'กรุณากรอกรายได้สุทธิต่อเดือน')}
+            </MgTextArea>
+            <br/><br/>
             <BoxGray>
                 <MgChackbox label='ข้าพเจ้าขอรับรองว่า ข้อความที่ได้กล่าวมาข้างต้นทั้งหมดนี้เป็นความจริงทุกประการ หากสำนักงานฯ 
                 ตรวจพบภายหลังว่าข้อมูลไม่ตรงกับความเป็นจริง สำนักงานฯ สามารถยกเลิกสิทธิการเป็นเจ้าหน้าที่ของข้าพเจ้าโดยชอบธรรม' />
             </BoxGray>
             <br/><br/>
                 <MgBTNOrange>
-                    <Link href='/ApplyJob/Task_information'>
-                        {btn_orange('ถัดไป','https://www.img.in.th/images/c0dce936813662e607bd5798e68fd712.png')}
-                    </Link>
+                        <div>
+                            <Link href='/ApplyJob/Ability_information'>
+                                <BtnBack basic color='orange'>
+                                    ย้อนกลับ
+                                </BtnBack>
+                            </Link>&nbsp;
+                            <Modal trigger={
+                                    <Button as='div' labelPosition='right'>
+                                        <BtnSuccess>
+                                            ยืนยันการสมัคร
+                                        </BtnSuccess>
+                                        <Colorlabel as='a' icon>
+                                            <Image src='https://www.img.in.th/images/4ecc343bc0f151339a458ed57dfe5618.png' size='small' />
+                                        </Colorlabel>
+                                    </Button>
+                                } size='tiny' closeIcon>
+                                <Modal.Content image>
+                                    <Modal.Description>
+                                        <center>
+                                            <br/>
+                                            <Image size='medium' src='https://www.img.in.th/images/89c1a7fb5aeca8818567de71964a74f0.png' size='tiny' />
+                                            <TextModelTaskSuccess>สมัครงานเรียบร้อย</TextModelTaskSuccess>
+                                            <Link>
+                                                <ButtonClick>ดาวน์โหลดเอกสารใบสมัคร</ButtonClick>
+                                            </Link>
+                                            <br/><br/>
+                                        </center>
+                                        <p>*หมายเหตุ : ผู้ที่ผ่านการพิจารณาเบื้องต้นทางฝ่ายบุคคลจะติดต่อไปหาผู้สมัครโดยตรง</p>
+                                    </Modal.Description>
+                                </Modal.Content>
+                            </Modal>
+                        </div>
                 </MgBTNOrange>
             <br/><br/>
         </Box>

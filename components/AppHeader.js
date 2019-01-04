@@ -1,4 +1,4 @@
-import { Segment , Header , Container , Menu } from 'semantic-ui-react'
+import { Segment , Header , Container , Menu , Image , Icon , Dropdown } from 'semantic-ui-react'
 import styled from 'styled-components'
 import Link from 'next/link'
 
@@ -14,6 +14,12 @@ const TextHeader = styled(Header)`
     margin-bottom : 16px !important;
     font-family: 'Kanit', sans-serif !important;
     color : #fff !important;
+    margin-top: 0.6% !important;
+`;
+
+const ImageHeader = styled(Header)`
+    margin-top: 0% !important;
+    margin-right: 0rem !important;
 `;
 
 const MenuItem = styled(Menu.Item)`
@@ -24,14 +30,26 @@ const MenuItem = styled(Menu.Item)`
     }
 `;
 
+const options = [
+    { key: 'logOut', text: ' ออกจากระบบ', value: 'logOut' }
+]
+
 export default () => (
     <div>
         <SegmentHeader clearing >
             <Container>
                 <TextHeader as='h4' floated='right'>
+                    <MenuItem compact>
+                         <Dropdown simple item options={options} text='พงศธร จันด้วง' />
+                    </MenuItem>
+                </TextHeader>
+                <ImageHeader as='h4' floated='right'>
+                    <Image  src='https://www.img.in.th/images/687206af74ec86d36b815002c694b34e.png' size='small' />
+                </ImageHeader>
+                <TextHeader as='h4' floated='right'>
                     <Link href='../Interview/ListPositionInterview'>
                         <MenuItem>
-                            ประกาศผลการสัมภาษณ์
+                            ประกาศผล
                         </MenuItem>
                     </Link>
                 </TextHeader>
