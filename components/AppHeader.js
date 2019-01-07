@@ -39,7 +39,7 @@ export default () => (
         <SegmentHeader clearing >
             <Container>
                 <TextHeader as='h4' floated='right'>
-                    <MenuItem compact>
+                    <MenuItem>
                          <Dropdown simple item options={options} text='พงศธร จันด้วง' />
                     </MenuItem>
                 </TextHeader>

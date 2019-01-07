@@ -84,9 +84,9 @@ const enhance = compose(
     withLayout,
     withHandlers({
         handleShowData: props => () => {
-            return  props.position.map( (data) => {
+            return  props.position.map( (data,i) => {
                 return(
-                    <CardName>
+                    <CardName key={i}>
                         <Grid columns={3}>
                             <MgRow>
                                 <Grid.Column>
