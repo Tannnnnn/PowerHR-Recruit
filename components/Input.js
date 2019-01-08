@@ -90,11 +90,11 @@ export const input4GrideMG = (data , placeholder , fn , type , value) => (
     </div>
 )
 
-export const InputTextArea = (data,placeholder) =>(
+export const InputTextArea = (data , placeholder , fn , value) =>(
     <div>
         <Form>
             <SizeText1>{data}</SizeText1>
-            <FontTextArea autoHeight placeholder={placeholder} rows={4} />
+            <FontTextArea autoHeight placeholder={placeholder} rows={4} onChange={fn} value={value}/>
         </Form>
     </div>
 )

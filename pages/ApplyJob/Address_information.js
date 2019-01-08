@@ -103,7 +103,7 @@ const enhance = compose(
     lifecycle({
         async componentDidMount(){
             window.scrollTo(0, 0)
-            if (localStorage) {
+            if (localStorage.Address_page) {
                 this.props.setPrimary_hno(JSON.parse(localStorage.getItem('Address_page')).primary_hno)
                 this.props.setPrimary_vilno(JSON.parse(localStorage.getItem('Address_page')).primary_vilno)
                 this.props.setPrimary_alley(JSON.parse(localStorage.getItem('Address_page')).primary_alley)
@@ -245,7 +245,7 @@ const enhance = compose(
                 'present_tel' : props.present_tel,
                 'present_phone' : props.present_phone
             }))            
-            Router.push({ pathname : '/ApplyJob/Ability_information' , query : { position : props.url.query.position }})
+            Router.push({ pathname : '/ApplyJob/School_information' , query : { position : props.url.query.position }})
         },
         saveThisPagePrev: props => () => event => {
             localStorage.setItem('Address_page', JSON.stringify({

@@ -195,7 +195,7 @@ const enhance = compose(
     withLayout,
     lifecycle({
         async componentDidMount() {
-            if (localStorage) {
+            if (localStorage.Personal_page) {
                 this.props.setSalary(JSON.parse(localStorage.getItem('Personal_page')).salary)            
                 this.props.setSex(JSON.parse(localStorage.getItem('Personal_page')).sex)
                 this.props.setSoldier(JSON.parse(localStorage.getItem('Personal_page')).soldier)
