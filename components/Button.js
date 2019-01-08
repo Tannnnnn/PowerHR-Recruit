@@ -49,23 +49,19 @@ export const btn_orange = (name , link , fn) =>{
             </Button>
 }
 
-export const btn_NextBack = (nameBack , linkBack , nameNext , linkImgNext , linkNext ) => {
+export const btn_NextBack = (nameBack , nameNext , linkImgNext , fnSaveNext , fnSavePrev ) => {
     return  <div>
-                <Link href={linkBack}>
-                    <BtnBack basic color='orange'>
-                        {nameBack}
-                    </BtnBack>
-                </Link>&nbsp;
-                <Link href={linkNext}>
-                    <Button as='div' labelPosition='right'>
-                        <ColorBTN>
-                            {nameNext}
-                        </ColorBTN>
-                        <Colorlabel as='a' icon>
-                            <Image src={linkImgNext} size='small' />
-                        </Colorlabel>
-                    </Button>
-                </Link>
+                <BtnBack basic color='orange' onClick={fnSavePrev}>
+                    {nameBack}
+                </BtnBack>&nbsp;
+                <Button as='div' labelPosition='right' onClick={fnSaveNext}>
+                    <ColorBTN>
+                        {nameNext}
+                    </ColorBTN>
+                    <Colorlabel as='a'>
+                        <Image src={linkImgNext} size='small' />
+                    </Colorlabel>
+                </Button>
             </div>
 }
 
@@ -81,7 +77,7 @@ export const btn_Success = (nameBack , linkBack , nameNext , linkImgNext , linkN
                         <BtnSuccess>
                             {nameNext}
                         </BtnSuccess>
-                        <Colorlabel as='a' icon>
+                        <Colorlabel as='a'>
                             <Image src={linkImgNext} size='small' />
                         </Colorlabel>
                     </Button>

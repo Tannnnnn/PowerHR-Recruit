@@ -195,7 +195,6 @@ const enhance = compose(
     withLayout,
     lifecycle({
         async componentDidMount() {
-            
             if (localStorage) {
                 this.props.setSalary(JSON.parse(localStorage.getItem('Personal_page')).salary)            
                 this.props.setSex(JSON.parse(localStorage.getItem('Personal_page')).sex)
@@ -348,7 +347,7 @@ const enhance = compose(
                 'refer_phone' : props.refer_phone ,
                 'refer_career' : props.refer_career ,
             }))            
-            // Router.push('/ApplyJob/Address_information')
+            Router.push({ pathname : '/ApplyJob/Address_information' , query : { position : props.url.query.position }})
         },
         onChangeSalary: props => () => event => {
             props.setSalary(event.target.value)
@@ -479,7 +478,6 @@ const enhance = compose(
         handleReferCareer: props => () => event => {
             props.setRefer_career(event.target.value)
         },
-
         showPanelStatus: props => (firstName , lastname , child , company) => {
             if (props.check_status === true) {
                 return (
@@ -527,7 +525,6 @@ const enhance = compose(
                 return null
             }
         },
-
     })
 )
 
