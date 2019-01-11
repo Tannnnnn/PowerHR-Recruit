@@ -51,7 +51,7 @@ export const input2Gride = (data , placeholder , fn , type , value) => (
         <Form>
             <WidthFormRight>
                 <SizeText1>{data}</SizeText1>
-                <SizeTextinput placeholder={placeholder} onKeyUp={fn} type={type} defaultValue={value}/>
+                <SizeTextinput placeholder={placeholder} onChange={fn} type={type} defaultValue={value}/>
             </WidthFormRight>
         </Form>
     </div>
@@ -99,11 +99,11 @@ export const InputTextArea = (data , placeholder , fn , value) =>(
     </div>
 )
 
-export const InputTextAreaMini = (data,placeholder) =>(
+export const InputTextAreaMini = (data , placeholder , fn , value) =>(
     <div>
         <Form>
             <SizeText1>{data}</SizeText1>
-            <FontTextArea autoHeight placeholder={placeholder} rows={1} />
+            <FontTextArea autoHeight placeholder={placeholder} rows={1} onChange={fn} value={value}/>
         </Form>
     </div>
 )

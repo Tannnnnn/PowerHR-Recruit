@@ -226,7 +226,7 @@ const enhance = compose(
                 'otherSchool_congrate' : props.otherSchool_congrate,
             }))      
             Router.push({ pathname : '/ApplyJob/Address_information' , query : { position : props.url.query.position }})      
-         },
+        },
     })
 )
 

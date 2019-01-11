@@ -203,7 +203,7 @@ const enhance = compose(
                 this.props.setLname_thai(JSON.parse(localStorage.getItem('Personal_page')).lname_thai)
                 this.props.setFname_eng(JSON.parse(localStorage.getItem('Personal_page')).fname_eng)
                 this.props.setLname_eng(JSON.parse(localStorage.getItem('Personal_page')).lname_eng)
-                this.props.setEmail( JSON.parse(localStorage.getItem('Personal_page')).email)
+                this.props.setEmail(JSON.parse(localStorage.getItem('Personal_page')).email)
                 this.props.setFacebook(JSON.parse(localStorage.getItem('Personal_page')).facebook)
                 this.props.setIdcard(JSON.parse(localStorage.getItem('Personal_page')).idcard)
                 this.props.setTel(JSON.parse(localStorage.getItem('Personal_page')).tel)
@@ -378,6 +378,8 @@ const enhance = compose(
         },
         handleBirthday: props => () => event => {
             props.setBirthday(event.target.value)
+            console.log(event.target.value);
+            
         },
         handleAge: props => () => event => {
             props.setAge(event.target.value)

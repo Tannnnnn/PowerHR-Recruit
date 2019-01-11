@@ -27,7 +27,7 @@ export default function withApp(WrappedComponent) {
                             <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick.min.css" />
                             <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.6.0/slick-theme.min.css" />  
                             <script src="/static/vendor/node_modules/jquery/dist/jquery.min.js"/>
-                            <script src="/static/vendor/node_modules/froala-editor/js/froala_editor.pkgd.min.js"/>                            
+                            <script src="/static/vendor/node_modules/froala-editor/js/froala_editor.pkgd.min.js"/>                           
                         </Head>
                         <WrappedComponent {...this.props}/>
                     </main>
