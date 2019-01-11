@@ -30,6 +30,7 @@
     "next": "^4.1.4",
     "node-sass": "^4.7.2",
     "normalize.css": "^7.0.0",
+    "pdfmake": "^0.1.40",
     "postcss-easy-import": "^3.0.0",
     "postcss-loader": "^2.0.8",
     "raw-loader": "^0.5.1",
