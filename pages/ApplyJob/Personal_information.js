@@ -231,7 +231,7 @@ const enhance = compose(
 
                 const local_status = JSON.parse(localStorage.getItem('Personal_page')).status
                 this.props.setStatus(local_status)    
-                if (local_status === 'married') {
+                if (local_status === 'สมรส') {
                     this.props.setCheck_status(true)
                     this.setState({
                         status_married_fname: JSON.parse(localStorage.getItem('Personal_page')).status_married_fname,
@@ -243,9 +243,12 @@ const enhance = compose(
 
                 const local_congenitalDisease = JSON.parse(localStorage.getItem('Personal_page')).congenitalDisease
                 this.props.SetCongenitalDisease(local_congenitalDisease)
-                if (local_congenitalDisease === 'yes') {
+                if (local_congenitalDisease === 'มี') {
                     this.props.setCheck_status_congenitalDisease(true)
                     this.props.SetCongenitalDisease_name(JSON.parse(localStorage.getItem('Personal_page')).congenitalDisease_name)
+                }
+                else{
+                    this.props.SetCongenitalDisease_name('')
                 }
             }
         },
@@ -422,7 +425,7 @@ const enhance = compose(
         },
         handleChangeStatus: props => (data) => event => {
             props.setStatus(data)
-            if (data === 'married') {
+            if (data === 'สมรส') {
                 props.setCheck_status(true)
             }
             else {
@@ -446,11 +449,12 @@ const enhance = compose(
         },
         handleChangeCongenitalDisease: props => (congenitalDisease) => event => {
             props.SetCongenitalDisease(congenitalDisease)
-            if (congenitalDisease === 'yes') {
+            if (congenitalDisease === 'มี') {
                 props.setCheck_status_congenitalDisease(true)
             }
             else{
                 props.setCheck_status_congenitalDisease(false)
+                props.SetCongenitalDisease_name('')
             }
         },
         handleCongenitalDiseaseName: props => () => event => {
@@ -688,30 +692,30 @@ export default enhance((props) =>
                                 <MgRedio
                                     label='โสด'
                                     name='status'
-                                    value='single'
-                                    checked={props.status === 'single'}
-                                    onChange={props.handleChangeStatus('single')}
+                                    value='โสด'
+                                    checked={props.status === 'โสด'}
+                                    onChange={props.handleChangeStatus('โสด')}
                                 />
                                 <MgRedio
                                     label='สมรส'
                                     name='status'
-                                    value='married'
-                                    checked={props.status === 'married'}
-                                    onChange={props.handleChangeStatus('married')}
+                                    value='สมรส'
+                                    checked={props.status === 'สมรส'}
+                                    onChange={props.handleChangeStatus('สมรส')}
                                 />
                                 <MgRedio
                                     label='หย่า'
                                     name='status'
-                                    value='divorce'
-                                    checked={props.status === 'divorce'}
-                                    onChange={props.handleChangeStatus('divorce')}
+                                    value='หย่า'
+                                    checked={props.status === 'หย่า'}
+                                    onChange={props.handleChangeStatus('หย่า')}
                                 />
                                 <MgRedio
                                     label='หม้าย'
                                     name='status'
-                                    value='widow'
-                                    checked={props.status === 'widow'}
-                                    onChange={props.handleChangeStatus('widow')}
+                                    value='หม้าย'
+                                    checked={props.status === 'หม้าย'}
+                                    onChange={props.handleChangeStatus('หม้าย')}
                                 />
                             </Form.Field>
                         </Form>
@@ -730,37 +734,37 @@ export default enhance((props) =>
                                 <MgRedio
                                     label='รับราชการทหารแล้ว'
                                     name='militaryService'
-                                    value='militaryService'
-                                    checked={props.soldier === 'militaryservice'}
-                                    onChange={props.handleChangeSoldier('militaryservice')}
+                                    value='รับราชการทหารแล้ว'
+                                    checked={props.soldier === 'รับราชการทหารแล้ว'}
+                                    onChange={props.handleChangeSoldier('รับราชการทหารแล้ว')}
                                 />
                                 <MgRedio
                                     label='ได้รับการผ่อนผัน'
                                     name='receivedWaiver'
-                                    value='receivedWaiver'
-                                    checked={props.soldier === 'receivedWaiver'}
-                                    onChange={props.handleChangeSoldier('receivedWaiver')}
+                                    value='ได้รับการผ่อนผัน'
+                                    checked={props.soldier === 'ได้รับการผ่อนผัน'}
+                                    onChange={props.handleChangeSoldier('ได้รับการผ่อนผัน')}
                                 />
                                 <MgRedio
-                                    label='จบ ร.ด.'
+                                    label='จบโรงเรียนรักษาดินแดน'
                                     name='graduate'
-                                    value='graduate'
-                                    checked={props.soldier === 'graduate'}
-                                    onChange={props.handleChangeSoldier('graduate')}
+                                    value='จบโรงเรียนรักษาดินแดน'
+                                    checked={props.soldier === 'จบโรงเรียนรักษาดินแดน'}
+                                    onChange={props.handleChangeSoldier('จบโรงเรียนรักษาดินแดน')}
                                 />
                                 <MgRedio
                                     label='จับใบดำ'
                                     name='blackLeaf'
-                                    value='blackLeaf'
-                                    checked={props.soldier === 'blackLeaf'}
-                                    onChange={props.handleChangeSoldier('blackLeaf')}
+                                    value='จับใบดำ'
+                                    checked={props.soldier === 'จับใบดำ'}
+                                    onChange={props.handleChangeSoldier('จับใบดำ')}
                                 />
                                 <MgRedio
                                     label='ได้รับการยกเว้น'
                                     name='except'
-                                    value='except'
-                                    checked={props.soldier === 'except'}
-                                    onChange={props.handleChangeSoldier('except')}
+                                    value='ได้รับการยกเว้น'
+                                    checked={props.soldier === 'ได้รับการยกเว้น'}
+                                    onChange={props.handleChangeSoldier('ได้รับการยกเว้น')}
                                 />
                             </Form.Field>
                         </Form>
@@ -778,16 +782,16 @@ export default enhance((props) =>
                                 <MgRedio
                                     label='มี'
                                     name='yes'
-                                    value='yes'
-                                    checked={props.congenitalDisease === 'yes'}
-                                    onChange={props.handleChangeCongenitalDisease('yes')}
+                                    value='มี'
+                                    checked={props.congenitalDisease === 'มี'}
+                                    onChange={props.handleChangeCongenitalDisease('มี')}
                                 />
                                 <MgRedio
                                     label=' ไม่มี'
                                     name='no'
-                                    value='no'
-                                    checked={props.congenitalDisease === 'no'}
-                                    onChange={props.handleChangeCongenitalDisease('no')}
+                                    value='ไม่มี'
+                                    checked={props.congenitalDisease === 'ไม่มี'}
+                                    onChange={props.handleChangeCongenitalDisease('ไม่มี')}
                                 />
                             </Form.Field>
                         </Form>

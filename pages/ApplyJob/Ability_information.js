@@ -279,16 +279,16 @@ export default enhance( (props)=>
                             <MgRedio
                                 label='มี'
                                 name='haveMotorcycles'
-                                value='haveMotorcycles'
-                                checked={props.motorcycles === 'haveMotorcycles'}
-                                onChange={props.handleChangeMotorcycles('haveMotorcycles')}
+                                value='มี'
+                                checked={props.motorcycles === 'มี'}
+                                onChange={props.handleChangeMotorcycles('มี')}
                             />
                             <MgRedio
                                 label='ไม่มี'
                                 name='notHaveMotorcycles'
-                                value='notHaveMotorcycles'
-                                checked={props.motorcycles === 'notHaveMotorcycles'}
-                                onChange={props.handleChangeMotorcycles('notHaveMotorcycles')}
+                                value='ไม่มี'
+                                checked={props.motorcycles === 'ไม่มี'}
+                                onChange={props.handleChangeMotorcycles('ไม่มี')}
                             />
                         </Form.Field>
                     </SizeFontRadio>
@@ -298,16 +298,16 @@ export default enhance( (props)=>
                             <MgRedio
                                 label='มี'
                                 name='haveCar'
-                                value='haveCar'
-                                checked={props.car === 'haveCar'}
-                                onChange={props.handleChangeCar('haveCar')}
+                                value='มี'
+                                checked={props.car === 'มี'}
+                                onChange={props.handleChangeCar('มี')}
                             />
                             <MgRedio
                                 label='ไม่มี'
                                 name='notHaveCar'
                                 value='notHaveCar'
-                                checked={props.car === 'notHaveCar'}
-                                onChange={props.handleChangeCar('notHaveCar')}
+                                checked={props.car === 'ไม่มี'}
+                                onChange={props.handleChangeCar('ไม่มี')}
                             />
                         </Form.Field>
                     </SizeFontRadio>
@@ -317,16 +317,16 @@ export default enhance( (props)=>
                             <MgRedio
                                 label='ได้'
                                 name='haveOuter'
-                                value='haveOuter'
-                                checked={props.outer === 'haveOuter'}
-                                onChange={props.handleChangeOuter ('haveOuter')}
+                                value='ได้'
+                                checked={props.outer === 'ได้'}
+                                onChange={props.handleChangeOuter ('ได้')}
                             />
                             <MgRedio
                                 label='ไม่ได้'
                                 name='notHaveOuter'
-                                value='notHaveOuter'
-                                checked={props.outer === 'notHaveOuter'}
-                                onChange={props.handleChangeOuter('notHaveOuter')}
+                                value='ไม่ได้'
+                                checked={props.outer === 'ไม่ได้'}
+                                onChange={props.handleChangeOuter('ไม่ได้')}
                             />
                         </Form.Field>
                     </SizeFontRadio>
