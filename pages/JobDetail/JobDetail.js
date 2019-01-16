@@ -109,7 +109,7 @@ const enhance = compose(
                         <ColorBTN>
                             สมัครงาน
                         </ColorBTN>
-                        <Colorlabel as='a' icon>
+                        <Colorlabel as='a'>
                             <Image src='https://www.img.in.th/images/68c0f730b867d22a3086b9fdfd7cf787.png' size='small' />
                         </Colorlabel>
                     </MarginBTN>
@@ -125,7 +125,7 @@ export default enhance( (props)=>
             { props.detail.map( (data , i) => {
                 return(
                     <Container key={i}>
-                        {Breadcrumb2Page('ตำแหน่งเปิดรับ', 'รายละเอียดตำแหน่ง Fontend Devoloper')}
+                        {Breadcrumb2Page('ตำแหน่งเปิดรับ', `รายละเอียดตำแหน่ง ${data.position_name}`)}
                         <BodyBox>
                             <Grid>
                                 <Grid.Row>

@@ -70,11 +70,11 @@ const MgIcon = styled(Icon)`
 `;
 
 const BoxImg = styled.div`
-    width: 177px;
-    height: 181px;
+    width: 164px;
+    height: 185px;
     border: 1px solid ${theme.colors.gray};
     background-color: ${theme.colors.elementBackground};
-    margin-left: 27%;
+    margin-left: 28%;
     border-radius: 5px;
     cursor : pointer ;
 `;
@@ -147,7 +147,7 @@ const MgGridHidden = styled.div`
 
 const enhance = compose(
     withState('salary', 'setSalary'),
-    withState('image', 'setImage', undefined),
+    withState('imageBase64', 'setImageBase64', undefined),
     withState('fname_thai', 'setFname_thai'),
     withState('lname_thai', 'setLname_thai'),
     withState('fname_eng', 'setFname_eng'),
@@ -228,6 +228,7 @@ const enhance = compose(
                 this.props.setRefer_address(JSON.parse(localStorage.getItem('Personal_page')).refer_address)
                 this.props.setRefer_phone(JSON.parse(localStorage.getItem('Personal_page')).refer_phone)
                 this.props.setRefer_career(JSON.parse(localStorage.getItem('Personal_page')).refer_career)
+                this.props.setImageBase64(JSON.parse(localStorage.getItem('Personal_page')).imageBase64)
 
                 const local_status = JSON.parse(localStorage.getItem('Personal_page')).status
                 this.props.setStatus(local_status)    
@@ -293,19 +294,24 @@ const enhance = compose(
             buildFileSelector(fn).click();
         },
         onChangeInputFile: props => () => event => {
-            props.setImage(URL.createObjectURL(event.target.files[0]))
+            let profileImg = event.target.files[0]
+            let reader = new FileReader();
+                reader.onloadend = function() {
+                    props.setImageBase64(reader.result)
+                }
+            reader.readAsDataURL(profileImg);
         },
         handleShowImage: props => () => {
-            if (props.image === undefined) {
+            if (props.imageBase64 === undefined) {
                 return (
                     <center>
                         <ImgUser src='https://www.img.in.th/images/42b597219a8880bf0c8769a8eb93e38f.png' size='mini' />
-                        <TextImg>ขนาด 177 x 181<br />คลิกเพื่อเพิ่มรูป</TextImg>
+                        <TextImg>ขนาด 160 x 180<br />คลิกเพื่อเพิ่มรูป</TextImg>
                     </center>
                 )
             }
             else {
-                return (<img src={props.image} style={{ width: '177px', height: '181px' }} />)
+                return (<img src={props.imageBase64} style={{ width: '160px', height: '180px' , marginTop: '1.1px' , marginLeft: '1px'}} id="profileImg"/>)
             }
         },
         saveThisPage: props => () => event => {
@@ -349,6 +355,7 @@ const enhance = compose(
                 'refer_address' : props.refer_address ,
                 'refer_phone' : props.refer_phone ,
                 'refer_career' : props.refer_career ,
+                'imageBase64' : props.imageBase64,
             }))            
             Router.push({ pathname : '/ApplyJob/Address_information' , query : { position : props.url.query.position }})
         },
@@ -536,7 +543,7 @@ const enhance = compose(
 
 export default enhance((props) =>
     <Container>
-        {Breadcrumb3Page('ตำแหน่งเปิดรับ', 'รายละเอียดตำแหน่ง Fontend Devoloper', 'สมัครงาน', '../index', '../JobDetail/JobDetail')}
+        {Breadcrumb3Page('ตำแหน่งเปิดรับ', `รายละเอียดตำแหน่ง ${props.url.query.position}` , 'สมัครงาน' , '../index' , '../JobDetail/JobDetail' )}
         <BoxHead>
             <center><br /><TextBox>สมัครงาน</TextBox></center><br />
         </BoxHead>

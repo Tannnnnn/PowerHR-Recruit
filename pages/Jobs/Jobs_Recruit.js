@@ -55,7 +55,7 @@ const LabelDate = styled.label`
 `
 const LabelRecruit = styled.label`
   font-size: 18px !important ;
-  padding-left : 54% !important ;
+  padding-left : 79% !important ;
   cursor : pointer ;
 `
 const LabelSalary = styled.label`
@@ -85,34 +85,57 @@ const enhance = compose(
     handleShowData: props => () => {
       if (props.recruit !== undefined) {
         return  props.recruit.map( (data , i) => {
-          let event = data.startdate.split('-')
-          const years = parseInt(event[0])
-          const month = parseInt(event[1]) 
-          const days  = parseInt(event[2])                  
-          let localDate = new Date(Date.UTC(years,month,days));
-          let options = { year: 'numeric', month: 'long', day: 'numeric' };          
-          return(
-            <div key={i}>
-              <Link href={{ pathname : '../JobDetail/JobDetail' , query : { id : data.id} }}>
-                <SegmentContent >
-                    <HeaderContent floated='right'>
-                      <LabelDate>
-                        {localDate.toLocaleDateString('th-TH', options)}
-                      </LabelDate><br/><br/>
-                      <LabelRecruit>
-                        {data.value} อัตรา
-                      </LabelRecruit>
-                    </HeaderContent>
-                    <HeaderContent floated='left'>
-                      {i+1}. {data.position_name}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/><br/>
-                      <LabelSalary>
-                        <Icon name='usd' />{data.rate}
-                      </LabelSalary>
-                    </HeaderContent>
-                </SegmentContent>
-              </Link>
-            </div>
-          )
+          //set startdate in thai
+          let start = data.startdate.split('-')
+          const years_start = parseInt(start[0])
+          const month_start = parseInt(start[1])
+          const days_start  = parseInt(start[2])              
+          let localDateStart = new Date(Date.UTC( years_start , month_start , days_start ))
+          let options_start = { year: 'numeric', month: 'long', day: 'numeric' }  
+
+          //check Jobs_Positions Now
+          let today = new Date()
+          let days = today.getDate()
+          let month = today.getMonth()
+          let years = today.getFullYear()
+          
+          //set enddate in thai
+          let end = data.enddate.split('-')
+          const years_end = parseInt(end[0])
+          const month_end = parseInt(end[1])
+          const days_end  = parseInt(end[2])              
+          let localDateEnd = new Date(Date.UTC( years_end , month_end , days_end ))
+          let options_end = { year: 'numeric', month: 'long', day: 'numeric' }  
+
+          console.log(days , days_end , month , month_end , years , years_end , data.enddate);
+
+          if (days <= days_end && month <= month_end && years <= years_end) {
+            return(
+              <div key={i}>
+                <Link href={{ pathname : '../JobDetail/JobDetail' , query : { id : data.id} }}>
+                  <SegmentContent >
+                      <HeaderContent floated='right'>
+                        <LabelDate>
+                          {localDateStart.toLocaleDateString('th-TH', options_start)} - {localDateEnd.toLocaleDateString('th-TH', options_end)}
+                        </LabelDate><br/><br/>
+                        <LabelRecruit>
+                          {data.value} อัตรา
+                        </LabelRecruit>
+                      </HeaderContent>
+                      <HeaderContent floated='left'>
+                        {i+1}. {data.position_name}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/><br/>
+                        <LabelSalary>
+                          <Icon name='usd' />{data.rate}
+                        </LabelSalary>
+                      </HeaderContent>
+                  </SegmentContent>
+                </Link>
+              </div>
+            )
+          } 
+          else {
+            return null
+          }
         })
       }
       else{

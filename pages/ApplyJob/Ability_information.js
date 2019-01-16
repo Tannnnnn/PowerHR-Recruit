@@ -185,7 +185,7 @@ const enhance = compose(
 
 export default enhance( (props)=> 
     <Container>
-        {Breadcrumb3Page('ตำแหน่งเปิดรับ', 'รายละเอียดตำแหน่ง Fontend Devoloper' , 'สมัครงาน' , '../index' , '../JobDetail/JobDetail' )}
+        {Breadcrumb3Page('ตำแหน่งเปิดรับ', `รายละเอียดตำแหน่ง ${props.url.query.position}` , 'สมัครงาน' , '../index' , '../JobDetail/JobDetail' )}
         <BoxHead>
             <center><br/><TextBox>สมัครงาน</TextBox></center><br/>
         </BoxHead>
