@@ -25,7 +25,7 @@ export default () => (
         <SegmentFooter>
             <Container>
                 <ContentFooter>
-                    <LabelContact>ติดต่อสอบถาม : oraphan@cupcodeteam.com</LabelContact><br/><br/>
+                    <LabelContact>Contact : oraphan@cupcodeteam.com</LabelContact><br/><br/>
                     <LabelAddress>
                         <Icon name="map marker alternate"/>
                         1679/2 town in town 11 ladprao road, plabpla, wangthonglang Bangkok 10310

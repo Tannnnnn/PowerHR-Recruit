@@ -330,7 +330,7 @@ const enhance = compose(
                 'older_resign' : props.older_resign,
                 'checkAccept' : props.checkAccept,
             }))      
-            Router.push({ pathname : '/ApplyJob/Ability_information' , query : { position : props.url.query.position }})      
+            Router.push({ pathname : '/ApplyJob/Ability_information' , query : { data : props.url.query.data }})      
         },
         handleCheckAccept: props => () => event => {
             const { checkAccept } = props
@@ -346,7 +346,7 @@ const enhance = compose(
 
 export default enhance( (props)=> 
     <Container>
-        {Breadcrumb3Page('ตำแหน่งเปิดรับ', `รายละเอียดตำแหน่ง ${props.url.query.position}` , 'สมัครงาน' , '../index' , '../JobDetail/JobDetail' )}
+        {Breadcrumb3Page('ตำแหน่งเปิดรับ', `รายละเอียดตำแหน่ง ${props.url.query.data[0]}` , 'สมัครงาน' , '../index' , `${props.url.query.data[0]}` ,`${props.url.query.data[1]}` )}
         <BoxHead>
             <center><br/><TextBox>สมัครงาน</TextBox></center><br/>
         </BoxHead>

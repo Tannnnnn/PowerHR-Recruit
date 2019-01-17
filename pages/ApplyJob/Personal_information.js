@@ -357,7 +357,7 @@ const enhance = compose(
                 'refer_career' : props.refer_career ,
                 'imageBase64' : props.imageBase64,
             }))            
-            Router.push({ pathname : '/ApplyJob/Address_information' , query : { position : props.url.query.position }})
+            Router.push({ pathname : '/ApplyJob/Address_information' , query : { data : props.url.query.data }})
         },
         onChangeSalary: props => () => event => {
             props.setSalary(event.target.value)
@@ -387,9 +387,7 @@ const enhance = compose(
             props.setTel(event.target.value)
         },
         handleBirthday: props => () => event => {
-            props.setBirthday(event.target.value)
-            console.log(event.target.value);
-            
+            props.setBirthday(event.target.value)            
         },
         handleAge: props => () => event => {
             props.setAge(event.target.value)
@@ -543,7 +541,7 @@ const enhance = compose(
 
 export default enhance((props) =>
     <Container>
-        {Breadcrumb3Page('ตำแหน่งเปิดรับ', `รายละเอียดตำแหน่ง ${props.url.query.position}` , 'สมัครงาน' , '../index' , '../JobDetail/JobDetail' )}
+        {Breadcrumb3Page('ตำแหน่งเปิดรับ', `รายละเอียดตำแหน่ง ${props.url.query.data[0]}` , 'สมัครงาน' , '../index' , `${props.url.query.data[0]}` ,`${props.url.query.data[1]}` )}
         <BoxHead>
             <center><br /><TextBox>สมัครงาน</TextBox></center><br />
         </BoxHead>
@@ -564,7 +562,7 @@ export default enhance((props) =>
                     </BoxImg>
                 </Grid.Column>
                 <Grid.Column>
-                    {inputGridePosition('ตำแหน่งงานที่รับสมัคร :', 'กรุณากรอกตำแหน่งงงานที่รับสมัคร', props.url.query.position)}<br /><br />
+                    {inputGridePosition('ตำแหน่งงานที่รับสมัคร :', 'กรุณากรอกตำแหน่งงงานที่รับสมัคร', props.url.query.data[0])}<br /><br />
                     {input2Gride('เงินเดือนที่ต้องการ :', 'กรุณากรอกเงินเดือนที่ต้องการ', props.onChangeSalary(), 'number', props.salary)}
                 </Grid.Column>
             </Grid>

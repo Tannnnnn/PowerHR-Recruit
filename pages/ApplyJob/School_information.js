@@ -200,7 +200,7 @@ const enhance = compose(
                 'otherSchool_grade' : props.otherSchool_grade,
                 'otherSchool_congrate' : props.otherSchool_congrate,
             }))            
-            Router.push({ pathname : '/ApplyJob/Ability_information' , query : { position : props.url.query.position }})
+            Router.push({ pathname : '/ApplyJob/Ability_information' , query : { data : props.url.query.data }})
         },
         saveThisPagePrev: props => () => event => {
             localStorage.setItem('School_page', JSON.stringify({
@@ -225,14 +225,14 @@ const enhance = compose(
                 'otherSchool_grade' : props.otherSchool_grade,
                 'otherSchool_congrate' : props.otherSchool_congrate,
             }))      
-            Router.push({ pathname : '/ApplyJob/Address_information' , query : { position : props.url.query.position }})      
+            Router.push({ pathname : '/ApplyJob/Address_information' , query : { data : props.url.query.data }})      
         },
     })
 )
 
 export default enhance( (props)=> 
     <Container>
-        {Breadcrumb3Page('ตำแหน่งเปิดรับ', `รายละเอียดตำแหน่ง ${props.url.query.position}` , 'สมัครงาน' , '../index' , '../JobDetail/JobDetail' )}
+        {Breadcrumb3Page('ตำแหน่งเปิดรับ', `รายละเอียดตำแหน่ง ${props.url.query.data[0]}` , 'สมัครงาน' , '../index' , `${props.url.query.data[0]}` ,`${props.url.query.data[1]}` )}
         <BoxHead>
             <center><br/><TextBox>สมัครงาน</TextBox></center><br/>
         </BoxHead>

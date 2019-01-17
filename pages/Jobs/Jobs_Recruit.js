@@ -66,14 +66,17 @@ const LabelSalary = styled.label`
 const Paginations = styled(Pagination)`
   color : #707070 !important ;
   font-family : 'Kanit', sans-serif !important;
+  font-size: 1.3rem !important;
   .active {
-    background : #ee3900 !important ;
-    color : #ffffff !important ;
+    border-color : #ee3900 !important ;
+    color : #ee3900 !important ;
   }
 `
 
 const enhance = compose(
   withState('recruit' , 'setRecruit'),
+  withState('dataInPage' , 'setDataInPage' , 4),
+  withState('activePage' , 'setActivePage' , 1),
   lifecycle({
     async componentDidMount(){
       const url = 'http://localhost:4000/joinPosition'
@@ -92,7 +95,7 @@ const enhance = compose(
           const days_start  = parseInt(start[2])              
           let localDateStart = new Date(Date.UTC( years_start , month_start , days_start ))
           let options_start = { year: 'numeric', month: 'long', day: 'numeric' }  
-
+          
           //check Jobs_Positions Now
           let today = new Date()
           let days = today.getDate()
@@ -106,8 +109,6 @@ const enhance = compose(
           const days_end  = parseInt(end[2])              
           let localDateEnd = new Date(Date.UTC( years_end , month_end , days_end ))
           let options_end = { year: 'numeric', month: 'long', day: 'numeric' }  
-
-          console.log(days , days_end , month , month_end , years , years_end , data.enddate);
 
           if (days <= days_end && month <= month_end && years <= years_end) {
             return(
@@ -123,7 +124,7 @@ const enhance = compose(
                         </LabelRecruit>
                       </HeaderContent>
                       <HeaderContent floated='left'>
-                        {i+1}. {data.position_name}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/><br/>
+                        {i+1}. {data.position_name}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/><br/>
                         <LabelSalary>
                           <Icon name='usd' />{data.rate}
                         </LabelSalary>
@@ -141,6 +142,29 @@ const enhance = compose(
       else{
         return null
       }
+    },
+    handlePagination: props => (fnSetPage) => {      
+      if (props.recruit !== undefined && props.recruit.length > props.dataInPage) {
+        let total = Math.ceil(props.recruit.length / props.dataInPage)        
+        return (
+          <Paginations
+            defaultActivePage={props.activePage}
+            firstItem={null}
+            lastItem={null}
+            pointing
+            secondary           
+            totalPages={total}
+            onPageChange={(e,data)=>fnSetPage(data)}
+          />
+        )
+      }
+      else{
+        return null
+      }
+    },
+    handleChangePagination: props => (data) => {
+      console.log(data.activePage);
+      
     }
   })
 )
@@ -155,15 +179,7 @@ export default enhance((props) =>
     </ContainerHeader>
     <Container>
       <center>
-        <Paginations
-          defaultActivePage={1}
-          ellipsisItem={{ content: <Icon name='ellipsis horizontal' />, icon: true }}
-          firstItem={{ content: <Icon name='angle double left' />, icon: true }}
-          lastItem={{ content: <Icon name='angle double right' />, icon: true }}
-          prevItem={{ content: <Icon name='angle left' />, icon: true }}
-          nextItem={{ content: <Icon name='angle right' />, icon: true }}
-          totalPages={3}
-        />
+        {props.handlePagination(props.handleChangePagination)}
       </center>
     </Container><br/><br/>
   </div>

@@ -14,7 +14,7 @@ export const Breadcrumb2Page = (home , pre , path) => (
     <div>
         <Divider hidden />
             <Breadcrumb size='large'>
-                <Link href={'javascript:history.back()'}>
+                <Link href='../index'>
                     <ColorTextHome link>{home}</ColorTextHome>
                 </Link>
                 <Breadcrumb.Divider icon='right chevron' />
@@ -24,7 +24,7 @@ export const Breadcrumb2Page = (home , pre , path) => (
     </div>
 )
 
-export const Breadcrumb3Page = (home , befor , pre , path1 , path2) => (
+export const Breadcrumb3Page = (home , befor , pre , path1 , position , id) => (
     <div>
         <Divider hidden />
             <Breadcrumb size='large'>
@@ -32,7 +32,7 @@ export const Breadcrumb3Page = (home , befor , pre , path1 , path2) => (
                     <ColorTextHome link>{home}</ColorTextHome>
                 </Link>
                 <Breadcrumb.Divider icon='right chevron' />
-                <Link href={path2}>
+                <Link href={{ pathname : '../JobDetail/JobDetail' , query : { data : [ position , id ] } }}>
                     <ColorTextHome>{befor}</ColorTextHome>
                 </Link>
                 <Breadcrumb.Divider icon='right chevron' />

@@ -163,7 +163,7 @@ const enhance = compose(
                 'engprint' : props.engprint,
                 'computerSkill' : props.computerSkill,
             }))            
-            Router.push({ pathname : '/ApplyJob/Task_information' , query : { position : props.url.query.position }})
+            Router.push({ pathname : '/ApplyJob/Task_information' , query : { data : props.url.query.data }})
         },
         saveThisPagePrev: props => () => event => {
             localStorage.setItem('Ability_page', JSON.stringify({
@@ -178,14 +178,14 @@ const enhance = compose(
                 'engprint' : props.engprint,
                 'computerSkill' : props.computerSkill,
             }))            
-            Router.push({ pathname : '/ApplyJob/School_information' , query : { position : props.url.query.position }})
+            Router.push({ pathname : '/ApplyJob/School_information' , query : { data : props.url.query.data }})
         },
     })
 )
 
 export default enhance( (props)=> 
     <Container>
-        {Breadcrumb3Page('ตำแหน่งเปิดรับ', `รายละเอียดตำแหน่ง ${props.url.query.position}` , 'สมัครงาน' , '../index' , '../JobDetail/JobDetail' )}
+        {Breadcrumb3Page('ตำแหน่งเปิดรับ', `รายละเอียดตำแหน่ง ${props.url.query.data[0]}` , 'สมัครงาน' , '../index' , `${props.url.query.data[0]}` ,`${props.url.query.data[1]}` )}
         <BoxHead>
             <center><br/><TextBox>สมัครงาน</TextBox></center><br/>
         </BoxHead>

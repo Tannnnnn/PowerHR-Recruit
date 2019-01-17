@@ -14,6 +14,7 @@ const BodyBox = styled.div`
     width: 100%;
     height: 562px;
     border-radius: 5px;
+    margin-top: 2%;
 `;
 
 const TextTopics1 = styled.p`
@@ -22,7 +23,12 @@ const TextTopics1 = styled.p`
     margin-top: 1% !important;
     margin-bottom: 0px;
 `;
-
+const TextTopics4 = styled.p`
+    font-size: 20px !important;
+    margin-left: 6% !important;
+    margin-top: 2% !important;
+    margin-bottom: 0px;
+`;
 const TextTopics2 = styled.p`
     font-size: 20px !important;
     margin-left: 5% !important;
@@ -48,7 +54,9 @@ const DangerHTML = styled.div`
 `;
 
 const MarginBTN = styled(Button)`
-    margin-left: 28% !important;
+    // margin-left: 47% !important;
+    margin-left: 0% !important;
+
 `;
 
 const ColorBTN = styled(Button)`
@@ -77,34 +85,60 @@ const enhance = compose(
     withLayout,
     lifecycle({
         async componentDidMount(){
-            const url = `http://localhost:4000/job_position/${this.props.url.query.id}`
-            const res = await axios.get(url)
-            this.props.setDetail(res.data)            
-            res.data.map( data => {
-                //set startdate in thai
-                const st_event = data.startdate.split('-')
-                const st_years = parseInt(st_event[0])
-                const st_month = parseInt(st_event[1]) 
-                const st_days  = parseInt(st_event[2])                  
-                const st_localDate = new Date(Date.UTC(st_years,st_month,st_days));
-                const st_options = { year: 'numeric', month: 'long', day: 'numeric' };
-                this.props.setStartdate(st_localDate.toLocaleDateString('th-TH', st_options))
-                
-                //set enddate in thai
-                const end_event = data.enddate.split('-')
-                const end_years = parseInt(end_event[0])
-                const end_month = parseInt(end_event[1]) 
-                const end_days  = parseInt(end_event[2])                  
-                const end_localDate = new Date(Date.UTC(end_years,end_month,end_days));
-                const end_options = { year: 'numeric', month: 'long', day: 'numeric' };
-                this.props.setEnddate(end_localDate.toLocaleDateString('th-TH', end_options))
-            })
+            if (this.props.url.query.id !== undefined) {
+                const url = `http://localhost:4000/job_position/${this.props.url.query.id}`
+                const res = await axios.get(url)
+                this.props.setDetail(res.data)            
+                res.data.map( data => {
+                    //set startdate in thai
+                    const st_event = data.startdate.split('-')
+                    const st_years = parseInt(st_event[0])
+                    const st_month = parseInt(st_event[1]) 
+                    const st_days  = parseInt(st_event[2])                  
+                    const st_localDate = new Date(Date.UTC(st_years,st_month,st_days));
+                    const st_options = { year: 'numeric', month: 'long', day: 'numeric' };
+                    this.props.setStartdate(st_localDate.toLocaleDateString('th-TH', st_options))
+                    
+                    //set enddate in thai
+                    const end_event = data.enddate.split('-')
+                    const end_years = parseInt(end_event[0])
+                    const end_month = parseInt(end_event[1]) 
+                    const end_days  = parseInt(end_event[2])                  
+                    const end_localDate = new Date(Date.UTC(end_years,end_month,end_days));
+                    const end_options = { year: 'numeric', month: 'long', day: 'numeric' };
+                    this.props.setEnddate(end_localDate.toLocaleDateString('th-TH', end_options))
+                })
+            }
+            else{
+                const url = `http://localhost:4000/job_position/${this.props.url.query.data[1]}`
+                const res = await axios.get(url)
+                this.props.setDetail(res.data)            
+                res.data.map( data => {
+                    //set startdate in thai
+                    const st_event = data.startdate.split('-')
+                    const st_years = parseInt(st_event[0])
+                    const st_month = parseInt(st_event[1]) 
+                    const st_days  = parseInt(st_event[2])                  
+                    const st_localDate = new Date(Date.UTC(st_years,st_month,st_days));
+                    const st_options = { year: 'numeric', month: 'long', day: 'numeric' };
+                    this.props.setStartdate(st_localDate.toLocaleDateString('th-TH', st_options))
+                    
+                    //set enddate in thai
+                    const end_event = data.enddate.split('-')
+                    const end_years = parseInt(end_event[0])
+                    const end_month = parseInt(end_event[1]) 
+                    const end_days  = parseInt(end_event[2])                  
+                    const end_localDate = new Date(Date.UTC(end_years,end_month,end_days));
+                    const end_options = { year: 'numeric', month: 'long', day: 'numeric' };
+                    this.props.setEnddate(end_localDate.toLocaleDateString('th-TH', end_options))
+                })
+            }
         }
     }),
     withHandlers({
         handleButtonApplyJob: props => (name) => {
             return(
-                <Link href={{ pathname : '../ApplyJob/Personal_information' , query : { position : name }}}>
+                <Link href={{ pathname : '../ApplyJob/Personal_information' , query : { data : [name , props.url.query.id] } }}>
                     <MarginBTN as='div' labelPosition='right'>
                         <ColorBTN>
                             สมัครงาน
@@ -131,9 +165,9 @@ export default enhance( (props)=>
                                 <Grid.Row>
                                     <Grid.Column width={11}>
                                         <TextTopics1>ตำแหน่ง : <ColorTextSmall1> {data.position_name}</ColorTextSmall1></TextTopics1>
-                                        <TextTopics1>
+                                        <TextTopics4>
                                             รายละเอียดตำแหน่งงาน :
-                                        </TextTopics1>
+                                        </TextTopics4>
                                         <DangerHTML dangerouslySetInnerHTML={{ __html: data.description }} />
                                     </Grid.Column>
                                     <Grid.Column width={5}>

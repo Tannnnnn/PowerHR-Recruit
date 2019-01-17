@@ -42,9 +42,9 @@ export const PDF = (localStorage , props , setTimeLocal) => {
     //Create PDF
     var docDefinition = {
         info: {
-            title: `Cupcode Recruitment : ${props.url.query.position}`,
-            author: `${props.url.query.position}`,
-            subject: `Recruitment ${props.url.query.position}`,
+            title: `Cupcode Recruitment : ${props.url.query.data[0]}`,
+            author: `${props.url.query.data[0]}`,
+            subject: `Recruitment ${props.url.query.data[0]}`,
             keywords: 'Cupcode Recruitment',
         },
         content: [
@@ -89,7 +89,7 @@ export const PDF = (localStorage , props , setTimeLocal) => {
                 alignment: 'center'
             },
             {
-                text : `ตำแหน่งงานที่สมัคร  :  ${props.url.query.position}      เงินเดือนที่ต้องการ  :  ${JSON.parse(localStorage.getItem('Personal_page')).salary}  บาท`,
+                text : `ตำแหน่งงานที่สมัคร  :  ${props.url.query.data[0]}      เงินเดือนที่ต้องการ  :  ${JSON.parse(localStorage.getItem('Personal_page')).salary}  บาท`,
                 margin: [ -20 , 25 , 0 , 0],
                 fontSize: 12,
             },
@@ -387,9 +387,9 @@ export const PDF_New = (localStorage , props , setTimeLocal) => {
     //Create PDF
     var docDefinition = {
         info: {
-            title: `Cupcode Recruitment : ${props.url.query.position}`,
-            author: `${props.url.query.position}`,
-            subject: `Recruitment ${props.url.query.position}`,
+            title: `Cupcode Recruitment : ${props.url.query.data[0]}`,
+            author: `${props.url.query.data[0]}`,
+            subject: `Recruitment ${props.url.query.data[0]}`,
             keywords: 'Cupcode Recruitment',
         },
         content: [
@@ -434,7 +434,7 @@ export const PDF_New = (localStorage , props , setTimeLocal) => {
                 alignment: 'center'
             },
             {
-                text : `ตำแหน่งงานที่สมัคร..........${props.url.query.position}.......... เงินเดือนที่ต้องการ..........${JSON.parse(localStorage.getItem('Personal_page')).salary}..........บาท`,
+                text : `ตำแหน่งงานที่สมัคร..........${props.url.query.data[0]}.......... เงินเดือนที่ต้องการ..........${JSON.parse(localStorage.getItem('Personal_page')).salary}..........บาท`,
                 margin: [ -20 , 15 , 0 , 0],
                 fontSize: 12,
             },
