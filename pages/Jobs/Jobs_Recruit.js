@@ -128,7 +128,7 @@ const enhance = compose(
                               </LabelRecruit>
                             </HeaderContent>
                             <HeaderContent floated='left'>
-                              {i+1}. {data.position_name}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/><br/>
+                              &nbsp;&nbsp;{data.position_name}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/><br/>
                               <LabelSalary>
                                 <Icon name='usd' />{data.rate}
                               </LabelSalary>
