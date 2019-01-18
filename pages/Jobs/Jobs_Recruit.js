@@ -71,72 +71,72 @@ const Paginations = styled(Pagination)`
     border-color : #ee3900 !important ;
     color : #ee3900 !important ;
   }
+  a:focus {
+    outline : 0 !important ;
+  }
 `
 
 const enhance = compose(
   withState('recruit' , 'setRecruit'),
-  withState('dataInPage' , 'setDataInPage' , 4),
+  withState('dataInPage' , 'setDataInPage' , 5),
   withState('activePage' , 'setActivePage' , 1),
   lifecycle({
     async componentDidMount(){
+      let result = []
+      //check Jobs_Positions Now
+      let today = new Date()
+      let days = today.getDate()
+      let month = today.getMonth()
+      let years = today.getFullYear()
+
       const url = 'http://localhost:4000/joinPosition'
       const res = await axios.get(url)
-      this.props.setRecruit(res.data)
+
+      res.data.map((data) => {    
+        let end = data.enddate.split('-')
+        const years_end = parseInt(end[0])
+        const month_end = parseInt(end[1])
+        const days_end  = parseInt(end[2])              
+
+        if (days <= days_end && month <= month_end && years <= years_end) {
+          result.push(data)
+        }
+      })
+
+      this.props.setRecruit(result)
     }
   }),
   withHandlers({
-    handleShowData: props => () => {
-      if (props.recruit !== undefined) {
-        return  props.recruit.map( (data , i) => {
-          //set startdate in thai
-          let start = data.startdate.split('-')
-          const years_start = parseInt(start[0])
-          const month_start = parseInt(start[1])
-          const days_start  = parseInt(start[2])              
-          let localDateStart = new Date(Date.UTC( years_start , month_start , days_start ))
-          let options_start = { year: 'numeric', month: 'long', day: 'numeric' }  
-          
-          //check Jobs_Positions Now
-          let today = new Date()
-          let days = today.getDate()
-          let month = today.getMonth()
-          let years = today.getFullYear()
-          
-          //set enddate in thai
-          let end = data.enddate.split('-')
-          const years_end = parseInt(end[0])
-          const month_end = parseInt(end[1])
-          const days_end  = parseInt(end[2])              
-          let localDateEnd = new Date(Date.UTC( years_end , month_end , days_end ))
-          let options_end = { year: 'numeric', month: 'long', day: 'numeric' }  
-
-          if (days <= days_end && month <= month_end && years <= years_end) {
-            return(
-              <div key={i}>
-                <Link href={{ pathname : '../JobDetail/JobDetail' , query : { id : data.id} }}>
-                  <SegmentContent >
-                      <HeaderContent floated='right'>
-                        <LabelDate>
-                          {localDateStart.toLocaleDateString('th-TH', options_start)} - {localDateEnd.toLocaleDateString('th-TH', options_end)}
-                        </LabelDate><br/><br/>
-                        <LabelRecruit>
-                          {data.value} อัตรา
-                        </LabelRecruit>
-                      </HeaderContent>
-                      <HeaderContent floated='left'>
-                        {i+1}. {data.position_name}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/><br/>
-                        <LabelSalary>
-                          <Icon name='usd' />{data.rate}
-                        </LabelSalary>
-                      </HeaderContent>
-                  </SegmentContent>
-                </Link>
-              </div>
-            )
-          } 
-          else {
-            return null
-          }
+    handleShowData: props => (dateInThai) => {
+      const { dataInPage , activePage , recruit } = props
+      
+      if ( recruit !== undefined) {
+        const indexOfLast = activePage * dataInPage;
+        const indexOfFirst = indexOfLast - dataInPage;
+        const currentData = recruit.slice(indexOfFirst, indexOfLast);
+        return  currentData.map( (data , i) => {           
+                  return(
+                    <div key={i}>
+                      <Link href={{ pathname : '../JobDetail/JobDetail' , query : { id : data.id} }}>
+                        <SegmentContent >
+                            <HeaderContent floated='right'>
+                              <LabelDate>
+                                {dateInThai(data.startdate)} - {dateInThai(data.enddate)}
+                              </LabelDate><br/><br/>
+                              <LabelRecruit>
+                                {data.value} อัตรา
+                              </LabelRecruit>
+                            </HeaderContent>
+                            <HeaderContent floated='left'>
+                              {i+1}. {data.position_name}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/><br/>
+                              <LabelSalary>
+                                <Icon name='usd' />{data.rate}
+                              </LabelSalary>
+                            </HeaderContent>
+                        </SegmentContent>
+                      </Link>
+                    </div>
+                  )
         })
       }
       else{
@@ -163,8 +163,16 @@ const enhance = compose(
       }
     },
     handleChangePagination: props => (data) => {
-      console.log(data.activePage);
-      
+      props.setActivePage(data.activePage)
+    },
+    handleSetDateInThai: props => (value)  => {      
+      let result = value.split('-')
+      const years = parseInt(result[0])
+      const months = parseInt(result[1])
+      const days = parseInt(result[2])              
+      let localDate = new Date(Date.UTC( years , months-1 , days ))
+      let options = { year: 'numeric', month: 'long', day: 'numeric' }
+      return localDate.toLocaleDateString('th-TH', options)
     }
   })
 )
@@ -174,7 +182,7 @@ export default enhance((props) =>
     <ContainerHeader>
         <SegmentHeader>ตำแหน่งงานที่เปิดรับสมัคร :</SegmentHeader>
         <ContainerContent>
-          {props.handleShowData()}
+          {props.handleShowData(props.handleSetDateInThai)}
         </ContainerContent>
     </ContainerHeader>
     <Container>
