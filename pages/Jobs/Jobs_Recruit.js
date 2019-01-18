@@ -36,7 +36,7 @@ const ContainerHeader = styled(Container)`
 `
 const ContainerContent = styled(Container)`
   width: 1142px !important ;
-  margin-bottom : 39px ;
+  margin-bottom : 2% ;
   background : #ffffff !important ;
 `
 const HeaderContent = styled(Header)`
@@ -55,7 +55,7 @@ const LabelDate = styled.label`
 `
 const LabelRecruit = styled.label`
   font-size: 18px !important ;
-  padding-left : 79% !important ;
+  padding-left : 80% !important ;
   cursor : pointer ;
 `
 const LabelSalary = styled.label`
@@ -74,6 +74,10 @@ const Paginations = styled(Pagination)`
   a:focus {
     outline : 0 !important ;
   }
+`
+const HeaderNotHaveData = styled.h3`
+  color : #707070 ;
+  font-family : 'Kanit', sans-serif !important;
 `
 
 const enhance = compose(
@@ -108,8 +112,7 @@ const enhance = compose(
   }),
   withHandlers({
     handleShowData: props => (dateInThai) => {
-      const { dataInPage , activePage , recruit } = props
-      
+      const { dataInPage , activePage , recruit } = props   
       if ( recruit !== undefined) {
         const indexOfLast = activePage * dataInPage;
         const indexOfFirst = indexOfLast - dataInPage;
@@ -140,7 +143,15 @@ const enhance = compose(
         })
       }
       else{
-        return null
+        return(
+          <div>
+            <br/>
+            <center>
+              <HeaderNotHaveData>ไม่มีตำแหน่งงานที่เปิดรับสมัครในขณะนี้</HeaderNotHaveData>
+            </center>
+            <br/>
+          </div>
+        )
       }
     },
     handlePagination: props => (fnSetPage) => {      
