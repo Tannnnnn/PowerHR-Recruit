@@ -108,7 +108,8 @@ const BtnBack = styled(Button)`
     color : #fff !important;
     font-weight: 500 !important;
     height: 46px;
-    width: 30%;
+    width: 32%;
+    padding-top: 10px !important;
 `;
 
 const BtnSuccess = styled(Button)`
@@ -303,6 +304,10 @@ const enhance = compose(
             }))    
 
             PDF_New(localStorage,props,setTimeLocal)
+            setTimeout(() => {
+                Router.push('/index')
+            }, 2000);      
+
         },
         saveThisPagePrev: props => () => event => {
             localStorage.setItem('Task_page', JSON.stringify({
@@ -471,32 +476,33 @@ export default enhance( (props)=>
                     <MgBTNOrange>
                             <div>
                                 <BtnBack basic color='orange' onClick={props.saveThisPagePrev()}>
-                                    ย้อนกลับ
+                                    <Icon name='left arrow' /> ย้อนกลับ
                                 </BtnBack>
+
                                 &nbsp;
-                                {/* <Modal trigger={ */}
-                                        <Button as='div' labelPosition='right' onClick={props.saveThisPageNext(props.handleChangTimeToThai)}>
+                                <Modal trigger={ 
+                                         <Button as='div' labelPosition='right'>
                                             <BtnSuccess>
                                                 ยืนยันการสมัคร
                                             </BtnSuccess>
                                             <Colorlabel as='a'>
                                                 <Image src='https://www.img.in.th/images/4ecc343bc0f151339a458ed57dfe5618.png' size='small' />
                                             </Colorlabel>
-                                        </Button>
-                                    {/* } size='tiny' closeIcon>
+                                        </Button> 
+                                    } size='tiny' closeIcon>
                                     <Modal.Content image>
                                         <Modal.Description>
                                             <center>
                                                 <br/>
                                                 <Image size='medium' src='https://www.img.in.th/images/89c1a7fb5aeca8818567de71964a74f0.png' size='tiny' />
                                                 <TextModelTaskSuccess>สมัครงานเรียบร้อย</TextModelTaskSuccess>
-                                                    <ButtonClick>ดาวน์โหลดเอกสารใบสมัคร</ButtonClick>
+                                                    <ButtonClick  onClick={props.saveThisPageNext(props.handleChangTimeToThai)}>ดาวน์โหลดเอกสารใบสมัคร</ButtonClick>
                                                 <br/><br/>
                                             </center>
                                             <p>*หมายเหตุ : ผู้ที่ผ่านการพิจารณาเบื้องต้นทางฝ่ายบุคคลจะติดต่อไปหาผู้สมัครโดยตรง</p>
                                         </Modal.Description>
                                     </Modal.Content>
-                                </Modal> */}
+                                </Modal>
                             </div>
                     </MgBTNOrange>
                 <br/><br/>
