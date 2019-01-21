@@ -97,13 +97,21 @@ const enhance = compose(
       const res = await axios.get(url)
 
       res.data.map((data) => {    
+        
         let end = data.enddate.split('-')
         const years_end = parseInt(end[0])
         const month_end = parseInt(end[1])
-        const days_end  = parseInt(end[2])              
+        const days_end  = parseInt(end[2])         
+        
+        let start = data.startdate.split('-')
+        const years_start = parseInt(start[0])
+        const month_start = parseInt(start[1])
+        const days_start  = parseInt(start[2])  
 
-        if (days <= days_end && month <= month_end && years <= years_end) {
-          result.push(data)
+        if (days <= days_end && month <= month_end && years <= years_end) {          
+          if (days_start <= days && month_start >= month && years_start >= years) {
+            result.push(data)
+          }
         }
       })
 

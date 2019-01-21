@@ -17,7 +17,6 @@ export default class MyDocument extends Document {
     return (
       <html>
         <Head>
-          <title>Recruit-Job</title>
           <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/semantic-ui@2.4.0/dist/semantic.min.css"></link>          
           {styleTags}
         </Head>
