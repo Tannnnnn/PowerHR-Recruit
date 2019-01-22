@@ -18,7 +18,7 @@ export default function withApp(WrappedComponent) {
                 <Provider >
                     <main>
                         <Head>
-                            <title>Recruit-Job : {this.props.pageTitle}</title>
+                            <title>Recruit Job : {this.props.pageTitle}</title>
                             <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/semantic-ui@2.4.0/dist/semantic.min.css"/>
                             <link href="/static/vendor/node_modules/froala-editor/css/froala_style.min.css" rel="stylesheet"/>
                             <link href="/static/vendor/node_modules/froala-editor/css/froala_editor.pkgd.min.css" rel="stylesheet"/>

@@ -1,6 +1,6 @@
 import React from 'react'
 import { withLayout } from '../../hoc'
-import { compose , withState , lifecycle , withHandlers } from 'recompose'
+import { compose , withState , lifecycle , withHandlers , withProps } from 'recompose'
 import {CarouselCompane} from '../../components/Carousel'
 import styled from 'styled-components'
 import { Container , Divider , Grid , Button , Image , Label} from 'semantic-ui-react'
@@ -82,6 +82,9 @@ const enhance = compose(
     withState('detail','setDetail',[]),
     withState('startdate','setStartdate'),
     withState('enddate','setEnddate'),
+    withProps({
+        pageTitle: 'Jobs Detail'
+    }),
     withLayout,
     lifecycle({
         async componentDidMount(){
@@ -93,7 +96,7 @@ const enhance = compose(
                     //set startdate in thai
                     const st_event = data.startdate.split('-')
                     const st_years = parseInt(st_event[0])
-                    const st_month = parseInt(st_event[1]) 
+                    const st_month = parseInt(st_event[1]) - 1
                     const st_days  = parseInt(st_event[2])                  
                     const st_localDate = new Date(Date.UTC(st_years,st_month,st_days));
                     const st_options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -102,7 +105,7 @@ const enhance = compose(
                     //set enddate in thai
                     const end_event = data.enddate.split('-')
                     const end_years = parseInt(end_event[0])
-                    const end_month = parseInt(end_event[1]) 
+                    const end_month = parseInt(end_event[1]) - 1
                     const end_days  = parseInt(end_event[2])                  
                     const end_localDate = new Date(Date.UTC(end_years,end_month,end_days));
                     const end_options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -117,7 +120,7 @@ const enhance = compose(
                     //set startdate in thai
                     const st_event = data.startdate.split('-')
                     const st_years = parseInt(st_event[0])
-                    const st_month = parseInt(st_event[1]) 
+                    const st_month = parseInt(st_event[1]) - 1
                     const st_days  = parseInt(st_event[2])                  
                     const st_localDate = new Date(Date.UTC(st_years,st_month,st_days));
                     const st_options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -126,7 +129,7 @@ const enhance = compose(
                     //set enddate in thai
                     const end_event = data.enddate.split('-')
                     const end_years = parseInt(end_event[0])
-                    const end_month = parseInt(end_event[1]) 
+                    const end_month = parseInt(end_event[1]) - 1
                     const end_days  = parseInt(end_event[2])                  
                     const end_localDate = new Date(Date.UTC(end_years,end_month,end_days));
                     const end_options = { year: 'numeric', month: 'long', day: 'numeric' };

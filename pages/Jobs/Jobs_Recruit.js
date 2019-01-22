@@ -87,35 +87,20 @@ const enhance = compose(
   lifecycle({
     async componentDidMount(){
       let result = []
-      //check Jobs_Positions Now
-      let today = new Date()
-      let days = today.getDate()
-      let month = today.getMonth()
-      let years = today.getFullYear()
-
       const url = 'http://localhost:4000/joinPosition'
       const res = await axios.get(url)
 
-      res.data.map((data) => {    
-        
-        let end = data.enddate.split('-')
-        const years_end = parseInt(end[0])
-        const month_end = parseInt(end[1])
-        const days_end  = parseInt(end[2])         
-        
-        let start = data.startdate.split('-')
-        const years_start = parseInt(start[0])
-        const month_start = parseInt(start[1])
-        const days_start  = parseInt(start[2])  
-
-        if (days <= days_end && month <= month_end && years <= years_end) {          
-          if (days_start <= days && month_start >= month && years_start >= years) {
-            result.push(data)
-          }
+      res.data.map((data) => {   
+        const today = new Date() 
+        const endDate = new Date(data.enddate)
+        const startDate = new Date(data.startdate)
+       
+        if (today.setHours(0,0,0,0) >= startDate.setHours(0,0,0,0) && today.setHours(0,0,0,0) <= endDate) {
+          result.push(data)
         }
       })
 
-      this.props.setRecruit(result)
+      this.props.setRecruit(await result)
     }
   }),
   withHandlers({

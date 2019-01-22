@@ -79,7 +79,7 @@ const MgRow = styled(Grid.Row)`
 const enhance = compose(
     withState('position','setPosition',[{position: 'Fontend Developer',  date: '28 พฤศจิกายน 2561', status:'รอการพิจารณา' }]),
     withProps({
-        pageTitle: 'List position interview'
+        pageTitle: 'Position Interview'
     }),
     withLayout,
     withHandlers({
