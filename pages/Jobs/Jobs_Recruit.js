@@ -27,6 +27,10 @@ const SegmentContent = styled(Segment)`
   cursor : pointer ;
   :hover{
     background: #6a6a6a ;
+    -webkit-transition: background-color .3s ease-in-out;
+    -moz-transition: background-color .3s ease-in-out;
+    -o-transition: background-color .3s ease-in-out;
+    transition: background-color .3s ease-in-out;
   }
 `
 const ContainerHeader = styled(Container)`
@@ -39,29 +43,53 @@ const ContainerContent = styled(Container)`
   margin-bottom : 2% ;
   background : #ffffff !important ;
 `
-const HeaderContent = styled(Header)`
+const HeaderContentLeft = styled(Header)`
+  font-size: 23px !important ;
+  font-weight : normal !important ;
+  color: #707070 !important ;
+  font-family : 'Kanit', sans-serif !important;
+  width: 30%;
+  ${SegmentContent}:hover & {
+    color: #fff !important ;
+    font-weight: 400 !important; 
+  }
+`
+const HeaderContentRight = styled(Header)`
   font-size: 23px !important ;
   font-weight : normal !important ;
   color: #707070 !important ;
   font-family : 'Kanit', sans-serif !important;
   ${SegmentContent}:hover & {
     color: #fff !important ;
-    font-weight: 600 !important; 
+    font-weight: 400 !important; 
   }
 `
 const LabelDate = styled.label`
-  font-size: 18px !important ;
+  font-size: 16px !important ;
   cursor : pointer ;
 `
 const LabelRecruit = styled.label`
-  font-size: 18px !important ;
-  padding-left : 80% !important ;
+  font-size: 22px !important ;
+  padding-left : 74% !important ;
   cursor : pointer ;
+  ${SegmentContent}:hover & {
+    font-weight: 600 !important;
+  }
 `
 const LabelSalary = styled.label`
-  font-size: 18px !important ;
+  font-size: 16px !important ;
   padding-left : 3% !important ;
   cursor : pointer ;
+`
+const LabelPosition = styled.label`
+  font-size: 22px !important ;
+  padding-left : 5% !important ;
+  cursor : pointer ;
+  color : #ff5800 ;
+  ${SegmentContent}:hover & {
+    color: #fff !important ;
+    font-weight: 600 !important;
+  }
 `
 const Paginations = styled(Pagination)`
   color : #707070 !important ;
@@ -99,7 +127,6 @@ const enhance = compose(
           result.push(data)
         }
       })
-
       this.props.setRecruit(await result)
     }
   }),
@@ -115,20 +142,20 @@ const enhance = compose(
                     <div key={i}>
                       <Link href={{ pathname : '../JobDetail/JobDetail' , query : { id : data.id} }}>
                         <SegmentContent >
-                            <HeaderContent floated='right'>
+                            <HeaderContentRight floated='right'>
                               <LabelDate>
                                 {dateInThai(data.startdate)} - {dateInThai(data.enddate)}
                               </LabelDate><br/><br/>
                               <LabelRecruit>
                                 {data.value} อัตรา
                               </LabelRecruit>
-                            </HeaderContent>
-                            <HeaderContent floated='left'>
-                              &nbsp;&nbsp;{data.position_name}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/><br/>
+                            </HeaderContentRight>
+                            <HeaderContentLeft floated='left'>
+                              <LabelPosition>{data.position_name}</LabelPosition><br/><br/>
                               <LabelSalary>
                                 <Icon name='usd' />{data.rate}
                               </LabelSalary>
-                            </HeaderContent>
+                            </HeaderContentLeft>
                         </SegmentContent>
                       </Link>
                     </div>

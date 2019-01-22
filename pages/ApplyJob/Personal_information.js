@@ -145,6 +145,35 @@ const MgGridHidden = styled.div`
     width: 100% ;
 `;
 
+const DivImage = styled.div`
+    position :relative;
+`
+const DivHiddenImage = styled.div`
+    position :relative;
+    display : none ;
+    :hover {
+        display : block ;
+    }
+`
+const ImgLocalStorage = styled.img`
+    position : absolute;
+    opacity: 1.0;
+    -webkit-transition: .3s ease-in-out;
+    -moz-transition: .3s ease-in-out;
+    -o-transition: .3s ease-in-out;
+    transition: .3s ease-in-out;
+    :hover + ${DivHiddenImage} {
+        display : block ;
+    }
+    ${DivImage}:hover &{
+        opacity: 0.1;
+    }
+`
+const ImgUserHidden = styled(Image)`
+    padding-top: 26% ;
+    display : block ;
+`;
+
 const enhance = compose(
     withState('salary', 'setSalary'),
     withState('imageBase64', 'setImageBase64', undefined),
@@ -311,7 +340,9 @@ const enhance = compose(
                 )
             }
             else {
-                return (<img src={props.imageBase64} style={{ width: '160px', height: '180px' , marginTop: '1.1px' , marginLeft: '1px'}} id="profileImg"/>)
+                return (
+                    <ImgLocalStorage src={props.imageBase64} style={{ width: '160px', height: '180px' , marginTop: '1.1px' , marginLeft: '1px'}} id="profileImg"/>
+                )
             }
         },
         saveThisPage: props => () => event => {
@@ -558,7 +589,15 @@ export default enhance((props) =>
             <Grid columns={2} padded='horizontally'>
                 <Grid.Column>
                     <BoxImg onClick={props.handleFileSelect(props.onChangeInputFile())}>
-                        {props.handleShowImage()}
+                        <DivImage>
+                            {props.handleShowImage()}
+                            <DivHiddenImage id="div5">
+                                <center>
+                                    <ImgUserHidden src='https://www.img.in.th/images/42b597219a8880bf0c8769a8eb93e38f.png' size='mini' />
+                                    <TextImg>ขนาด 160 x 180<br />เลือกรูปภาพอื่น</TextImg>
+                                </center>
+                            </DivHiddenImage>
+                        </DivImage>
                     </BoxImg>
                 </Grid.Column>
                 <Grid.Column>
