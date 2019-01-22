@@ -25,12 +25,13 @@ const SegmentContent = styled(Segment)`
   padding-right : 44px !important ;
   height : 136px ;
   cursor : pointer ;
+  background : #fff ;
+  -webkit-transition: background-color .3s ease-in-out;
+  -moz-transition: background-color .3s ease-in-out;
+  -o-transition: background-color .3s ease-in-out;
+  transition: background-color .3s ease-in-out;
   :hover{
     background: #6a6a6a ;
-    -webkit-transition: background-color .3s ease-in-out;
-    -moz-transition: background-color .3s ease-in-out;
-    -o-transition: background-color .3s ease-in-out;
-    transition: background-color .3s ease-in-out;
   }
 `
 const ContainerHeader = styled(Container)`
