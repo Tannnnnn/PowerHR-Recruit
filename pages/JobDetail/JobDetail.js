@@ -139,9 +139,9 @@ const enhance = compose(
         }
     }),
     withHandlers({
-        handleButtonApplyJob: props => (name) => {            
+        handleButtonApplyJob: props => (name) => {                        
             return(
-                <Link href={{ pathname : '../ApplyJob/Personal_information' , query : { data : [name , props.url.query.id] } }}>
+                <Link href={{ pathname : '../ApplyJob/Personal_information' , query : { id : props.url.query.id } }}>
                     <MarginBTN as='div' labelPosition='right'>
                         <ColorBTN>
                             สมัครงาน

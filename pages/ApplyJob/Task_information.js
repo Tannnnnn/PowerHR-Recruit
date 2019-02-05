@@ -7,7 +7,7 @@ import { Breadcrumb3Page } from '../../components/Breadcrumb'
 import theme from '../../theme/default'
 import { input2GrideGrideMG , input2Gride , InputTextArea , InputTextAreaMini } from '../../components/Input'
 import { StepApplyJobTask } from '../../components/Step'
-import { PDF_New , PDF } from '../../components/PdfMake'
+import { PDF_GENERATOR } from '../../components/PdfMake'
 import Link from 'next/link'
 import Router from 'next/router'
 import pdfMake from "pdfmake/build/pdfmake";
@@ -303,7 +303,7 @@ const enhance = compose(
                 'checkAccept' : props.checkAccept,
             }))    
 
-            PDF_New(localStorage,props,setTimeLocal)
+            PDF_GENERATOR(localStorage,props,setTimeLocal)
             setTimeout(() => {
                 Router.push('/index')
             }, 2000);      
@@ -335,7 +335,7 @@ const enhance = compose(
                 'older_resign' : props.older_resign,
                 'checkAccept' : props.checkAccept,
             }))      
-            Router.push({ pathname : '/ApplyJob/Ability_information' , query : { data : props.url.query.data }})      
+            Router.push({ pathname : '/ApplyJob/Ability_information' , query : { id : props.url.query.id }})      
         },
         handleCheckAccept: props => () => event => {
             const { checkAccept } = props
@@ -351,7 +351,7 @@ const enhance = compose(
 
 export default enhance( (props)=> 
     <Container>
-        {Breadcrumb3Page('ตำแหน่งเปิดรับ', `รายละเอียดตำแหน่ง ${props.url.query.data[0]}` , 'สมัครงาน' , '../index' , `${props.url.query.data[0]}` ,`${props.url.query.data[1]}` )}
+        {Breadcrumb3Page('ตำแหน่งเปิดรับ', `รายละเอียดตำแหน่ง ${JSON.parse(localStorage.getItem('Personal_page')).position}` , 'สมัครงาน' , '../index' ,`${props.url.query.id}` )}
         <BoxHead>
             <center><br/><TextBox>สมัครงาน</TextBox></center><br/>
         </BoxHead>

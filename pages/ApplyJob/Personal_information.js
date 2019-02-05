@@ -18,6 +18,7 @@ import {
 import { btn_orange } from '../../components/Button'
 import { stepApplyJobInfomation } from '../../components/Step'
 import Router from 'next/router'
+import axios from 'axios'
 
 const buildFileSelector = (fn) => {
     const fileSelector = document.createElement('input');
@@ -230,13 +231,16 @@ const enhance = compose(
     withState('refer_phone', 'setRefer_phone'),
     withState('refer_career', 'setRefer_career'),
     withState('stack', 'setStack' , false),
-
+    withState('position_name' , 'setPosition_name' , ''),
     withProps({
         pageTitle: 'Personal information'
     }),
     withLayout,
     lifecycle({
         async componentDidMount() {
+            const url = `http://localhost:4000/job_position/${this.props.url.query.id}`
+            const res =  await axios.get(url)            
+            this.props.setPosition_name(res.data[0].position_name)
             if (localStorage.Personal_page) {
                 this.props.setSalary(JSON.parse(localStorage.getItem('Personal_page')).salary)            
                 this.props.setSex(JSON.parse(localStorage.getItem('Personal_page')).sex)
@@ -360,6 +364,7 @@ const enhance = compose(
         },
         saveThisPage: props => () => event => {
             localStorage.setItem('Personal_page', JSON.stringify({
+                'position' : props.position_name , 
                 'salary' : props.salary , 
                 'fname_thai' : props.fname_thai ,
                 'lname_thai' : props.lname_thai ,
@@ -401,7 +406,7 @@ const enhance = compose(
                 'refer_career' : props.refer_career ,
                 'imageBase64' : props.imageBase64,
             }))            
-            Router.push({ pathname : '/ApplyJob/Address_information' , query : { data : props.url.query.data }})
+            Router.push({ pathname : '/ApplyJob/Address_information' , query : { id : props.url.query.id }})
         },
         onChangeSalary: props => () => event => {                 
             let stack = props.salary
@@ -677,7 +682,7 @@ const enhance = compose(
 
 export default enhance((props) =>
     <Container>
-        {Breadcrumb3Page('ตำแหน่งเปิดรับ', `รายละเอียดตำแหน่ง ${props.url.query.data[0]}` , 'สมัครงาน' , '../index' , `${props.url.query.data[0]}` ,`${props.url.query.data[1]}` )}
+        {Breadcrumb3Page('ตำแหน่งเปิดรับ', `รายละเอียดตำแหน่ง ${props.position_name}` , 'สมัครงาน' , '../index' ,`${props.url.query.id}` )}
         <BoxHead>
             <center><br /><TextBox>สมัครงาน</TextBox></center><br />
         </BoxHead>
@@ -706,7 +711,7 @@ export default enhance((props) =>
                     </BoxImg>
                 </Grid.Column>
                 <Grid.Column>
-                    {inputGridePosition('ตำแหน่งงานที่รับสมัคร :', 'กรุณากรอกตำแหน่งงงานที่รับสมัคร', props.url.query.data[0])}<br /><br />
+                    {inputGridePosition('ตำแหน่งงานที่รับสมัคร :', 'กรุณากรอกตำแหน่งงงานที่รับสมัคร', props.position_name )}<br /><br />
                     {input2GrideOnKeyUp('เงินเดือนที่ต้องการ :', 'กรุณากรอกเงินเดือนที่ต้องการ', props.onChangeSalary(), 'text', props.salary)}
                 </Grid.Column>
             </Grid>
