@@ -5,7 +5,16 @@ import styled from 'styled-components'
 import { Container, Step, Icon, Divider, Grid, Image, Form, Radio } from 'semantic-ui-react'
 import { Breadcrumb3Page } from '../../components/Breadcrumb'
 import theme from '../../theme/default'
-import { input2GrideGrideMG, input2Gride, input4GrideMG, input4Gride, inputGridePosition } from '../../components/Input'
+import { 
+    inputAge , 
+    input2GrideOnKeyUp , 
+    inputOnkeyup , 
+    input2GrideGrideMG, 
+    input2Gride, 
+    input4GrideMG, 
+    input4Gride, 
+    inputGridePosition 
+} from '../../components/Input'
 import { btn_orange } from '../../components/Button'
 import { stepApplyJobInfomation } from '../../components/Step'
 import Router from 'next/router'
@@ -165,7 +174,10 @@ const ImgLocalStorage = styled.img`
     :hover + ${DivHiddenImage} {
         display : block ;
     }
-    ${DivImage}:hover &{
+    :focus + ${DivHiddenImage} {
+        display : block ;
+    }
+    ${DivImage}:hover & {
         opacity: 0.1;
     }
 `
@@ -217,6 +229,7 @@ const enhance = compose(
     withState('refer_address', 'setRefer_address'),
     withState('refer_phone', 'setRefer_phone'),
     withState('refer_career', 'setRefer_career'),
+    withState('stack', 'setStack' , false),
 
     withProps({
         pageTitle: 'Personal information'
@@ -390,8 +403,24 @@ const enhance = compose(
             }))            
             Router.push({ pathname : '/ApplyJob/Address_information' , query : { data : props.url.query.data }})
         },
-        onChangeSalary: props => () => event => {
-            props.setSalary(event.target.value)
+        onChangeSalary: props => () => event => {                 
+            let stack = props.salary
+            if (parseInt(event.target.value) < 1) {
+                event.target.value = ''
+            }        
+            else{
+                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+                    if (event.target.value.length > 6) {
+                        event.target.value = stack
+                    }
+                    else{
+                        props.setSalary(event.target.value)
+                    }
+                }
+                else{
+                    event.target.value = stack
+                }
+            }
         },
         handleFnameThai: props => () => event => {
             props.setFname_thai(event.target.value)
@@ -412,13 +441,89 @@ const enhance = compose(
             props.setFacebook(event.target.value)
         },
         handleIdcard: props => () => event => {
-            props.setIdcard(event.target.value)
+            let keycode = event.keyCode
+            let stack = props.idcard
+            if (keycode > 95 && keycode < 106 || keycode === 8) {
+                if (event.target.value.length > 17) {
+                    event.target.value = stack
+                }
+                else{
+                    if (
+                        event.target.value.length === 1 && keycode !== 8 || 
+                        event.target.value.length === 6 && keycode !== 8 || 
+                        event.target.value.length === 12 && keycode !== 8 || 
+                        event.target.value.length === 15 && keycode !== 8 
+                    ){
+                        event.target.value += '-'
+                    }
+                    // if (
+                    //     event.target.value.length === 1 && keycode === 8 || 
+                    //     event.target.value.length === 6 && keycode === 8 || 
+                    //     event.target.value.length === 12 && keycode === 8 || 
+                    //     event.target.value.length === 15 && keycode === 8 
+                    // ){
+                    //     props.setStack(true)
+                    // }
+                    // if (props.stack === true) {
+                        
+                    // }                     
+                    props.setIdcard(event.target.value)                    
+                }
+            }
+            else{
+                event.target.value = stack
+            }
         },
         handleTel: props => () => event => {
-            props.setTel(event.target.value)
+            let stack = props.tel    
+            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+                if (event.target.value.length > 10) {
+                    event.target.value = stack
+                }
+                else{
+                    props.setTel(event.target.value)
+                }
+            }
+            else{
+                event.target.value = stack
+            }
         },
         handleBirthday: props => () => event => {
-            props.setBirthday(event.target.value)            
+            props.setBirthday(event.target.value) 
+            if (event.target.value === '') {
+                props.setAge(event.target.value)
+            }
+            else{
+                let set_age = event.target.value.split('-')
+                let dateString = set_age[1]+"/"+set_age[2]+"/"+set_age[0]
+                var now = new Date();
+                var today = new Date(now.getFullYear(),now.getMonth(),now.getDate());
+                var yearNow = now.getFullYear();
+                var monthNow = now.getMonth();
+                var dateNow = now.getDate();
+                var dob = new Date( dateString.substring(6,10), dateString.substring(0,2)-1, dateString.substring(3,5));
+                var yearDob = dob.getFullYear();
+                var monthDob = dob.getMonth();
+                var dateDob = dob.getDate();                        
+                var yearAge = yearNow - yearDob;
+                if (monthNow >= monthDob)
+                    var monthAge = monthNow - monthDob;
+                else {
+                    yearAge--;
+                    var monthAge = 12 + monthNow -monthDob;
+                }
+                if (dateNow >= dateDob)
+                    var dateAge = dateNow - dateDob;
+                else {
+                    monthAge--;
+                    var dateAge = 31 + dateNow - dateDob;
+                    if (monthAge < 0) {
+                        monthAge = 11;
+                        yearAge--;
+                    }
+                } 
+                props.setAge(yearAge)
+            }
         },
         handleAge: props => () => event => {
             props.setAge(event.target.value)
@@ -602,7 +707,7 @@ export default enhance((props) =>
                 </Grid.Column>
                 <Grid.Column>
                     {inputGridePosition('ตำแหน่งงานที่รับสมัคร :', 'กรุณากรอกตำแหน่งงงานที่รับสมัคร', props.url.query.data[0])}<br /><br />
-                    {input2Gride('เงินเดือนที่ต้องการ :', 'กรุณากรอกเงินเดือนที่ต้องการ', props.onChangeSalary(), 'number', props.salary)}
+                    {input2GrideOnKeyUp('เงินเดือนที่ต้องการ :', 'กรุณากรอกเงินเดือนที่ต้องการ', props.onChangeSalary(), 'text', props.salary)}
                 </Grid.Column>
             </Grid>
             <Grid columns={2} padded='horizontally'>
@@ -615,15 +720,15 @@ export default enhance((props) =>
             </Grid>
             <Grid columns={2} padded='horizontally'>
                 <Grid.Column>
-                    <MgGridLeft>{input2GrideGrideMG('ชื่อ (ภาษาอังกฤษ) :', 'กรุณากรอกชื่อ (ภาษาอังกฤษ)', props.handleFnameEng(), 'text', props.fname_eng)}</MgGridLeft>
+                    <MgGridLeft>{input2GrideGrideMG('ชื่อ (ภาษาอังกฤษ) :', 'Please enter your firstname in English.', props.handleFnameEng(), 'text', props.fname_eng)}</MgGridLeft>
                 </Grid.Column>
                 <Grid.Column>
-                    {input2Gride('นามสกุล (ภาษาอังกฤษ) :', 'กรุณากรอกนามสกุล (ภาษาอังกฤษ)', props.handleLnameEng(), 'text', props.lname_eng)}
+                    {input2Gride('นามสกุล (ภาษาอังกฤษ) :', 'Please enter your lastname in English.', props.handleLnameEng(), 'text', props.lname_eng)}
                 </Grid.Column>
             </Grid>
             <Grid columns={2} padded='horizontally'>
                 <Grid.Column>
-                    <MgGridLeft>{input2GrideGrideMG('อีเมล :', 'กรุณากรอกอีเมล', props.handleEmail(), 'email', props.email)}</MgGridLeft>
+                    <MgGridLeft>{input2GrideGrideMG('อีเมล :', 'ตัวอย่าง Example@test.com', props.handleEmail(), 'email', props.email)}</MgGridLeft>
                 </Grid.Column>
                 <Grid.Column>
                     {input2Gride('เฟสบุ๊ค :', 'กรุณากรอกเฟสบุ๊ค', props.handleFacebook(), 'text', props.facebook)}
@@ -631,10 +736,10 @@ export default enhance((props) =>
             </Grid>
             <Grid columns={2} padded='horizontally'>
                 <Grid.Column>
-                    <MgGridLeft>{input2GrideGrideMG('เลขบัตรประจำตัวประชาชน :', 'กรุณากรอกเลขบัตรประจำตัวประชาชน', props.handleIdcard(), 'number', props.idcard)}</MgGridLeft>
+                    <MgGridLeft>{inputOnkeyup('เลขบัตรประจำตัวประชาชน :', 'ตัวอย่าง 1-2345-67890-12-3', props.handleIdcard(), 'text', props.idcard)}</MgGridLeft>
                 </Grid.Column>
                 <Grid.Column>
-                    {input2Gride('เบอร์โทรติดต่อ :', 'กรุณากรอกเบอร์โทรติดต่อ', props.handleTel(), 'number', props.tel)}
+                    {input2GrideOnKeyUp('เบอร์โทรติดต่อ :', 'ตัวอย่าง 0881234567', props.handleTel(), 'text', props.tel)}
                 </Grid.Column>
             </Grid>
             <Grid columns={2} padded='horizontally'>
@@ -644,7 +749,7 @@ export default enhance((props) =>
                 <Grid.Column>
                     <Grid columns={2}>
                         <Grid.Column>
-                            {input2Gride('อายุ (ปี) :', 'กรุณากรอกอายุ', props.handleAge(), 'number', props.age)}
+                            {inputAge('อายุ (ปี) :', 'กรุณากรอกอายุ', props.handleAge(), 'number', props.age)}
                         </Grid.Column>
                         <Grid.Column>
                             <RadioSex>
@@ -748,11 +853,11 @@ export default enhance((props) =>
                                     onChange={props.handleChangeStatus('สมรส')}
                                 />
                                 <MgRedio
-                                    label='หย่า'
+                                    label='หย่าร้าง'
                                     name='status'
-                                    value='หย่า'
-                                    checked={props.status === 'หย่า'}
-                                    onChange={props.handleChangeStatus('หย่า')}
+                                    value='หย่าร้าง'
+                                    checked={props.status === 'หย่าร้าง'}
+                                    onChange={props.handleChangeStatus('หย่าร้าง')}
                                 />
                                 <MgRedio
                                     label='หม้าย'

@@ -261,7 +261,7 @@ export default enhance( (props)=>
             </Grid>
             <Grid columns={2} padded='horizontally'>
                 <Grid.Column>
-                    <MgGridLeft>{input2GrideGrideMG('การพิมพ์ดีดภาษาไทย (คำ/นาที) :','กรุณากรอกจำนวนคำพิมพ์ดีดภาษาไทย' , props.handleThaiLanguagePrint() , 'number' , props.thaiprint)}</MgGridLeft>
+                    <MgGridLeft>{input2GrideGrideMG('จำนวนคำพิมพ์ดีดภาษาไทย (คำ/นาที) :','กรุณากรอกจำนวนคำพิมพ์ดีดภาษาไทย' , props.handleThaiLanguagePrint() , 'number' , props.thaiprint)}</MgGridLeft>
                 </Grid.Column>
                 <Grid.Column>
                     {input2Gride('จำนวนคำพิมพ์ดีดภาษาอังกฤษ (คำ/นาที) :','กรุณากรอกจำนวนคำพิมพ์ดีดภาษาอังกฤษ' , props.handleEnglishLanguagePrint() , 'number' , props.engprint)}

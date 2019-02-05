@@ -35,6 +35,39 @@ const FontTextArea = styled(TextArea)`
     font-family : 'Kanit', sans-serif !important;
 `;
 
+export const inputAge = (data , placeholder , fn , type , value) => (
+    <div>
+        <Form>
+            <WidthFormRight>
+                <SizeText1>{data}</SizeText1>
+                <SizeTextinput placeholder={placeholder} onChange={fn} type={type} defaultValue={value} disabled/>
+            </WidthFormRight>
+        </Form>
+    </div>
+)
+
+export const input2GrideOnKeyUp = (data , placeholder , fn , type , value) => (
+    <div>
+        <Form>
+            <WidthFormRight>
+                <SizeText1>{data}</SizeText1>
+                <SizeTextinput placeholder={placeholder} onKeyUp={fn} type={type} defaultValue={value}/>
+            </WidthFormRight>
+        </Form>
+    </div>
+)
+
+export const inputOnkeyup = (data , placeholder , fn , type , value) => (
+    <div>
+        <Form>
+            <WidthForm>
+                <SizeText1>{data}</SizeText1>
+                <SizeTextinput placeholder={placeholder} onKeyUp={fn} defaultValue={value} type={type}/>
+            </WidthForm>
+        </Form>
+    </div>
+)
+
 export const input2GrideGrideMG = (data , placeholder , fn , type , value) => (
     <div>
         <Form>

@@ -391,7 +391,7 @@ export default enhance( (props)=>
                         <MgGridLeft>{input2GrideGrideMG('เงินเดือนสุดท้ายที่ได้รับ (บาท) :','กรุณากรอกเงินเดือนสุดท้ายที่ได้รับ' , props.handleCurrentFinalSalary() , 'number' , props.current_final_salary)}</MgGridLeft>
                     </Grid.Column>
                     <Grid.Column>
-                        {input2Gride('รายได้อื่นๆ ที่นอกเหนือจากเงินเดือนพื้นฐาน :','กรุณากรอกรายได้อื่นๆ ที่นอกเหนือจากเงินเดือน' , props.handleCurrentOtherIncome() , 'text' , props.current_other_income)}
+                        {input2Gride('รายได้อื่นๆ ที่นอกเหนือจากเงินเดือนพื้นฐาน (บาท) :','กรุณากรอกรายได้อื่นๆ ที่นอกเหนือจากเงินเดือน' , props.handleCurrentOtherIncome() , 'number' , props.current_other_income)}
                     </Grid.Column>
                 </Grid>
                 <Grid columns={2} padded='horizontally'>
@@ -473,6 +473,11 @@ export default enhance( (props)=>
                     />
                 </BoxGray>
                 <br/><br/>
+                    <div>
+                        <Button basic color='red' onClick={props.saveThisPagePrev()}>
+                            <Icon name='left arrow' /> ย้อนกลับ
+                        </Button>
+                    </div>
                     <MgBTNOrange>
                             <div>
                                 <BtnBack basic color='orange' onClick={props.saveThisPagePrev()}>

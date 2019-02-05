@@ -87,6 +87,10 @@ const LabelPosition = styled.label`
   padding-left : 5% !important ;
   cursor : pointer ;
   color : #ff5800 ;
+  -webkit-transition:color .3s ease-in-out;
+  -moz-transition: color .3s ease-in-out;
+  -o-transition: color .3s ease-in-out;
+  transition: color .3s ease-in-out;
   ${SegmentContent}:hover & {
     color: #fff !important ;
     font-weight: 600 !important;
