@@ -5,7 +5,14 @@ import styled from 'styled-components'
 import { Container , Icon , Divider , Grid , Checkbox } from 'semantic-ui-react'
 import {Breadcrumb3Page} from '../../components/Breadcrumb'
 import theme from '../../theme/default'
-import {input2GrideGrideMG , input2Gride , input4GrideMG , input4Gride} from '../../components/Input'
+import {
+    inputZipcode,input2GrideGrideMG , 
+    input2Gride , 
+    input4GrideMG , 
+    input4Gride ,
+    input2GrideOnKeyUp ,
+    inputOnkeyup
+} from '../../components/Input'
 import {btn_NextBack} from '../../components/Button'
 import {stepApplyJobAddress} from '../../components/Step'
 import Router from 'next/router'
@@ -96,6 +103,7 @@ const enhance = compose(
     withState('present_zipcode' , 'setPresent_zipcode'),
     withState('present_tel' , 'setPresent_tel'),
     withState('present_phone' , 'setPresent_phone'),
+    withState('position_name' , 'setPosition_name' , ''),
     withProps({
         pageTitle: 'Address information'
     }),
@@ -126,6 +134,9 @@ const enhance = compose(
                 this.props.setPresent_tel(JSON.parse(localStorage.getItem('Address_page')).present_tel)      
                 this.props.setPresent_phone(JSON.parse(localStorage.getItem('Address_page')).present_phone)       
             }
+            if (localStorage) {
+                this.props.setPosition_name(JSON.parse(localStorage.getItem('Personal_page')).position)
+            }
         }
     }),
     withHandlers({
@@ -151,15 +162,62 @@ const enhance = compose(
             props.setPrimary_province(event.target.value)
         },
         handlePrimaryZipcode: props => () => event => {
-            props.setPrimary_zipcode(event.target.value)
+            let stack = props.primary_zipcode
+            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+                if (event.target.value.length > 5) {
+                    event.target.value = stack
+                }
+                else{
+                    props.setPrimary_zipcode(event.target.value)
+                }
+            }
+            else{
+                if (event.keyCode === 9) {
+                    event.target.value = ''
+                }
+                else{
+                    event.target.value = stack
+                }
+            }
         },
         handlePrimaryTelephone: props => () => event => {
-            props.setPrimary_tel(event.target.value)
+            let stack = props.primary_tel    
+            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+                if (event.target.value.length > 9) {
+                    event.target.value = stack
+                }
+                else{
+                    props.setPrimary_tel(event.target.value)
+                }
+            }
+            else{
+                if (event.keyCode === 9) {
+                    event.target.value = ''
+                }
+                else{
+                    event.target.value = stack
+                }
+            }
         },
         handlePrimaryPhone: props => () => event => {
-            props.setPrimary_phone(event.target.value)
+            let stack = props.primary_phone    
+            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+                if (event.target.value.length > 10) {
+                    event.target.value = stack
+                }
+                else{
+                    props.setPrimary_phone(event.target.value)
+                }
+            }
+            else{
+                if (event.keyCode === 9) {
+                    event.target.value = ''
+                }
+                else{
+                    event.target.value = stack
+                }
+            }
         },
-
         handlePrimaryCheckAddress: props => () => event => {
             let { checkAddress } = props
             if (checkAddress === false) {
@@ -189,7 +247,6 @@ const enhance = compose(
                 props.setPresent_phone(null)
             }
         },
-
         handlePresentHouseNumber: props => () => event => {
             props.setPresent_hno(event.target.value)
         },
@@ -212,13 +269,61 @@ const enhance = compose(
             props.setPresent_province(event.target.value)
         },
         handlePresentZipcode: props => () => event => {
-            props.setPresent_zipcode(event.target.value)
+            let stack = props.present_zipcode
+            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+                if (event.target.value.length > 5) {
+                    event.target.value = stack
+                }
+                else{
+                    props.setPresent_zipcode(event.target.value)
+                }
+            }
+            else{
+                if (event.keyCode === 9) {
+                    event.target.value = ''
+                }
+                else{
+                    event.target.value = stack
+                }
+            }
         },
         handlePresentTelephone: props => () => event => {
-            props.setPresent_tel(event.target.value)
+            let stack = props.present_tel
+            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+                if (event.target.value.length > 9) {
+                    event.target.value = stack
+                }
+                else{
+                    props.setPresent_tel(event.target.value)
+                }
+            }
+            else{
+                if (event.keyCode === 9) {
+                    event.target.value = ''
+                }
+                else{
+                    event.target.value = stack
+                }
+            }
         },
         handlePresentPhone: props => () => event => {
-            props.setPresent_phone(event.target.value)
+            let stack = props.present_phone
+            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+                if (event.target.value.length > 9) {
+                    event.target.value = stack
+                }
+                else{
+                    props.setPresent_phone(event.target.value)
+                }
+            }
+            else{
+                if (event.keyCode === 9) {
+                    event.target.value = ''
+                }
+                else{
+                    event.target.value = stack
+                }
+            }
         },
 
         saveThisPageNext: props => () => event => {
@@ -244,8 +349,20 @@ const enhance = compose(
                 'present_zipcode' : props.present_zipcode,
                 'present_tel' : props.present_tel,
                 'present_phone' : props.present_phone
-            }))            
-            Router.push({ pathname : '/ApplyJob/School_information' , query : { id : props.url.query.id }})
+            }))
+            const checkInputData = Object.getOwnPropertyNames(JSON.parse(localStorage.getItem('Address_page')));
+         
+            if (
+                checkInputData.length < 20 ||
+                props.primary_zipcode.length !== 5 && props.present_zipcode.length !== 5 ||
+                props.primary_tel.length !== 9 && props.present_tel.length !== 9 ||
+                props.primary_phone.length !== 10 && props.primary_phone !== 10
+            ) {
+                window.alert('No')
+            }
+            else{
+                Router.push({ pathname : '/ApplyJob/School_information' , query : { id : props.url.query.id }})
+            }
         },
         saveThisPagePrev: props => () => event => {
             localStorage.setItem('Address_page', JSON.stringify({
@@ -278,7 +395,7 @@ const enhance = compose(
 
 export default enhance( (props)=> 
     <Container>
-        {Breadcrumb3Page('ตำแหน่งเปิดรับ', `รายละเอียดตำแหน่ง ${JSON.parse(localStorage.getItem('Personal_page')).position}` , 'สมัครงาน' , '../index' ,`${props.url.query.id}` )}
+        {Breadcrumb3Page('ตำแหน่งเปิดรับ', `รายละเอียดตำแหน่ง ${props.position_name}` , 'สมัครงาน' , '../index' ,`${props.url.query.id}` )}
         <BoxHead>
             <center><br/><TextBox>สมัครงาน</TextBox></center><br/>
         </BoxHead>
@@ -333,17 +450,17 @@ export default enhance( (props)=>
                             <WidthWeight>{input2Gride('จังหวัด :','กรุณากรอกจังหวัด' , props.handlePrimaryProvince() , 'text' , props.primary_province)}</WidthWeight>
                         </Grid.Column>
                         <Grid.Column>
-                            <Mg4Gridnationality>{input2Gride('รหัสไปรษณี :','กรุณากรอกรหัสไปรษณี' , props.handlePrimaryZipcode() , 'number' , props.primary_zipcode)}</Mg4Gridnationality>
+                            <Mg4Gridnationality>{inputZipcode('รหัสไปรษณี :','กรุณากรอกรหัสไปรษณี' , props.handlePrimaryZipcode() , 'text' , props.primary_zipcode)}</Mg4Gridnationality>
                         </Grid.Column>
                     </Grid>
                 </Grid.Column>
             </Grid>
             <Grid columns={2} padded='horizontally'>
                 <Grid.Column>
-                    <MgGridLeft>{input2GrideGrideMG('เบอร์โทรศัพท์บ้าน :','กรุณากรอกเบอร์โทรศัพท์บ้าน' , props.handlePrimaryTelephone() , 'number' , props.primary_tel)}</MgGridLeft>
+                    <MgGridLeft>{inputOnkeyup('เบอร์โทรศัพท์บ้าน :','กรุณากรอกเบอร์โทรศัพท์บ้าน' , props.handlePrimaryTelephone() , 'text' , props.primary_tel)}</MgGridLeft>
                 </Grid.Column>
                 <Grid.Column>
-                    {input2Gride('เบอร์มือถือ :','กรุณากรอกเบอร์มือถือ' , props.handlePrimaryPhone() , 'number' , props.primary_phone)}
+                    {input2GrideOnKeyUp('เบอร์มือถือ :','กรุณากรอกเบอร์มือถือ' , props.handlePrimaryPhone() , 'text' , props.primary_phone)}
                 </Grid.Column>
             </Grid>
             <br/><br/>

@@ -35,6 +35,39 @@ const FontTextArea = styled(TextArea)`
     font-family : 'Kanit', sans-serif !important;
 `;
 
+export const inputZipcode = (data , placeholder , fn , type , value) => (
+    <div>
+        <Form>
+            <WidthFormRight>
+                <SizeText1>{data}</SizeText1>
+                <SizeTextinput placeholder={placeholder} onKeyUp={fn} type={type} defaultValue={value}/>
+            </WidthFormRight>
+        </Form>
+    </div>
+)
+
+export const inputHeigth = (data , placeholder , fn , type , value) => (
+    <div>
+        <Form>
+            <WidthFormRight4Grid>
+                <SizeText1>{data}</SizeText1>
+                <SizeTextinput placeholder={placeholder} onKeyUp={fn} defaultValue={value} type={type}/>
+            </WidthFormRight4Grid>
+        </Form>
+    </div>
+)
+
+export const inputWeigth = (data , placeholder , fn , type , value) => (
+    <div>
+        <Form>
+            <WidthFormRight4GridMG>
+                <SizeText1>{data}</SizeText1>
+                <SizeTextinput placeholder={placeholder} onKeyUp={fn} defaultValue={value} type={type}/>
+            </WidthFormRight4GridMG>
+        </Form>
+    </div>
+)
+
 export const inputAge = (data , placeholder , fn , type , value) => (
     <div>
         <Form>
