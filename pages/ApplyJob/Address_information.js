@@ -142,24 +142,45 @@ const enhance = compose(
     withHandlers({
         handlePrimaryHouseNumber: props => () => event => {
             props.setPrimary_hno(event.target.value)
+            if (props.checkAddress === true) {
+                props.setPresent_hno(event.target.value)
+            }
         },
         handlePrimaryVillageNumber: props => () => event => {
             props.setPrimary_vilno(event.target.value)
+            if (props.checkAddress === true) {
+                props.setPresent_vilno(event.target.value)
+            }
         },
         handlePrimaryAlley: props => () => event => {
             props.setPrimary_alley(event.target.value)
+            if (props.checkAddress === true) {
+                props.setPresent_alley(event.target.value)
+            }
         },
         handlePrimaryRoad: props => () => event => {
             props.setPrimary_road(event.target.value)
+            if (props.checkAddress === true) {
+                props.setPresent_road(event.target.value)
+            }
         },
         handlePrimaryArea: props => () => event => {
             props.setPrimary_area(event.target.value)
+            if (props.checkAddress === true) {
+                props.setPresent_area(event.target.value)
+            }
         },
         handlePrimaryDistrict: props => () => event => {
             props.setPrimary_district(event.target.value)
+            if (props.checkAddress === true) {
+                props.setPresent_district(event.target.value)
+            }
         },
         handlePrimaryProvince: props => () => event => {
             props.setPrimary_province(event.target.value)
+            if (props.checkAddress === true) {
+                props.setPresent_province(event.target.value)
+            }
         },
         handlePrimaryZipcode: props => () => event => {
             let stack = props.primary_zipcode
@@ -169,6 +190,9 @@ const enhance = compose(
                 }
                 else{
                     props.setPrimary_zipcode(event.target.value)
+                    if (props.checkAddress === true) {
+                        props.setPresent_zipcode(event.target.value)
+                    }
                 }
             }
             else{
@@ -188,6 +212,9 @@ const enhance = compose(
                 }
                 else{
                     props.setPrimary_tel(event.target.value)
+                    if (props.checkAddress === true) {
+                        props.setPresent_tel(event.target.value)
+                    }
                 }
             }
             else{
@@ -207,6 +234,9 @@ const enhance = compose(
                 }
                 else{
                     props.setPrimary_phone(event.target.value)
+                    if (props.checkAddress === true) {
+                        props.setPresent_phone(event.target.value)
+                    }
                 }
             }
             else{
@@ -249,33 +279,57 @@ const enhance = compose(
         },
         handlePresentHouseNumber: props => () => event => {
             props.setPresent_hno(event.target.value)
+            if (props.checkAddress === true) {
+                props.setPrimary_hno(event.target.value)
+            }
         },
         handlePresentVillageNumber: props => () => event => {
             props.setPresent_vilno(event.target.value)
+            if (props.checkAddress === true) {
+                props.setPrimary_vilno(event.target.value)
+            }
         },
         handlePresentAlley: props => () => event => {
             props.setPresent_alley(event.target.value)
+            if (props.checkAddress === true) {
+                props.setPrimary_alley(event.target.value)
+            }
         },
         handlePresentRoad: props => () => event => {
             props.setPresent_road(event.target.value)
+            if (props.checkAddress === true) {
+                props.setPrimary_road(event.target.value)
+            }
         },
         handlePresentArea: props => () => event => {
             props.setPresent_area(event.target.value)
+            if (props.checkAddress === true) {
+                props.setPrimary_area(event.target.value)
+            }
         },
         handlePresentDistrict: props => () => event => {
             props.setPresent_district(event.target.value)
+            if (props.checkAddress === true) {
+                props.setPrimary_district(event.target.value)
+            }
         },
         handlePresentProvince: props => () => event => {
             props.setPresent_province(event.target.value)
+            if (props.checkAddress === true) {
+                props.setPrimary_province(event.target.value)
+            }
         },
         handlePresentZipcode: props => () => event => {
             let stack = props.present_zipcode
-            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) {                 
                 if (event.target.value.length > 5) {
                     event.target.value = stack
                 }
                 else{
                     props.setPresent_zipcode(event.target.value)
+                    if (props.checkAddress === true) {
+                        props.setPrimary_zipcode(event.target.value)
+                    }
                 }
             }
             else{
@@ -295,6 +349,9 @@ const enhance = compose(
                 }
                 else{
                     props.setPresent_tel(event.target.value)
+                    if (props.checkAddress === true) {
+                        props.setPrimary_tel(event.target.value)
+                    }
                 }
             }
             else{
@@ -314,6 +371,9 @@ const enhance = compose(
                 }
                 else{
                     props.setPresent_phone(event.target.value)
+                    if (props.checkAddress === true) {
+                        props.setPrimary_phone(event.target.value)
+                    }
                 }
             }
             else{
@@ -350,15 +410,14 @@ const enhance = compose(
                 'present_tel' : props.present_tel,
                 'present_phone' : props.present_phone
             }))
-            const checkInputData = Object.getOwnPropertyNames(JSON.parse(localStorage.getItem('Address_page')));
-         
+            const checkInputData = Object.getOwnPropertyNames(JSON.parse(localStorage.getItem('Address_page')));            
             if (
                 checkInputData.length < 20 ||
                 props.primary_zipcode.length !== 5 && props.present_zipcode.length !== 5 ||
                 props.primary_tel.length !== 9 && props.present_tel.length !== 9 ||
                 props.primary_phone.length !== 10 && props.primary_phone !== 10
             ) {
-                window.alert('No')
+                window.alert('คุณกรอกข้อมูลไม่ถูกต้อง หรือ ไม่ครบถ้วน \nกรุณากรอกข้อมูลใหม่อีกครั้ง !!!')
             }
             else{
                 Router.push({ pathname : '/ApplyJob/School_information' , query : { id : props.url.query.id }})
@@ -514,10 +573,10 @@ export default enhance( (props)=>
             </Grid>
             <Grid columns={2} padded='horizontally'>
                 <Grid.Column>
-                    <MgGridLeft>{input2GrideGrideMG('เบอร์โทรศัพท์บ้าน :','กรุณากรอกเบอร์โทรศัพท์บ้าน' , props.handlePresentTelephone() , 'number' , props.present_tel)}</MgGridLeft>
+                    <MgGridLeft>{inputOnkeyup('เบอร์โทรศัพท์บ้าน :','กรุณากรอกเบอร์โทรศัพท์บ้าน' , props.handlePresentTelephone() , 'text' , props.present_tel)}</MgGridLeft>
                 </Grid.Column>
                 <Grid.Column>
-                    {input2Gride('เบอร์มือถือ :','กรุณากรอกเบอร์มือถือ' , props.handlePresentPhone() , 'number' , props.present_phone)}
+                    {input2GrideOnKeyUp('เบอร์มือถือ :','กรุณากรอกเบอร์มือถือ' , props.handlePresentPhone() , 'text' , props.present_phone)}
                 </Grid.Column>
             </Grid>
             <br/><br/>

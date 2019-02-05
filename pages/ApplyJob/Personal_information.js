@@ -412,12 +412,9 @@ const enhance = compose(
                 props.congenitalDisease === 'มี' && 
                 props.congenitalDisease_name === '' ||
                 props.check_status === true &&
-                props.status_married_fname === undefined ||
-                props.status_married_lname === undefined ||
-                props.status_married_child === undefined ||
-                props.status_married_company === undefined
+                props.status_married_fname === undefined
             ){
-                window.alert('Not')
+                window.alert('คุณกรอกข้อมูลไม่ถูกต้อง หรือ ไม่ครบถ้วน \nกรุณากรอกข้อมูลใหม่อีกครั้ง !!!')
             }
             else{
                 Router.push({ pathname : '/ApplyJob/Address_information' , query : { id : props.url.query.id }})

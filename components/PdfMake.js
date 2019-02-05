@@ -17,7 +17,7 @@ pdfMake.fonts = {
     }
 }
 
-export const PDF_GENERATOR = (localStorage , props , setTimeLocal) => {
+export const PDF_GENERATOR = (localStorage , props , setTimeLocal) => {    
     //set Data Status For PDF
     const local_status = JSON.parse(localStorage.getItem('Personal_page')).status
     let married_fname = '-'

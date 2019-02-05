@@ -5,13 +5,14 @@ import styled from 'styled-components'
 import { Container , Icon , Divider , Grid , Checkbox , Button , Header , Label , Modal , Image } from 'semantic-ui-react'
 import { Breadcrumb3Page } from '../../components/Breadcrumb'
 import theme from '../../theme/default'
-import { input2GrideGrideMG , input2Gride , InputTextArea , InputTextAreaMini } from '../../components/Input'
+import { input2GrideOnKeyUp , inputOnkeyup , input2GrideGrideMG , input2Gride , InputTextArea , InputTextAreaMini } from '../../components/Input'
 import { StepApplyJobTask } from '../../components/Step'
 import { PDF_GENERATOR } from '../../components/PdfMake'
 import Link from 'next/link'
 import Router from 'next/router'
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
+
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 pdfMake.fonts = {
     Kanit: {
@@ -160,6 +161,7 @@ const enhance = compose(
     withState('older_endwork' , 'setOlder_endwork'),
     withState('older_resign' , 'setOlder_resign'),
     withState('checkAccept' , 'setCheckAccept' , false),
+    withState('position_name' , 'setPosition_name' , ''),
 
     withProps({
         pageTitle: 'Task information'
@@ -193,6 +195,9 @@ const enhance = compose(
                 this.props.setOlder_resign(JSON.parse(localStorage.getItem('Task_page')).older_resign)
                 this.props.setCheckAccept(JSON.parse(localStorage.getItem('Task_page')).checkAccept)
             } 
+            if (localStorage) {
+                this.props.setPosition_name(JSON.parse(localStorage.getItem('Personal_page')).position)
+            }
         }
     }),
     withHandlers({
@@ -212,13 +217,76 @@ const enhance = compose(
             props.setCurrent_endwork(event.target.value)
         },
         handleCurrentFinalSalary: props => () => event => {
-            props.setCurrent_final_salary(event.target.value)
+            let stack = props.current_final_salary
+            if (parseInt(event.target.value) < 1) {
+                event.target.value = ''
+            }        
+            else{
+                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+                    if (event.target.value.length > 6) {
+                        event.target.value = stack
+                    }
+                    else{
+                        props.setCurrent_final_salary(event.target.value)
+                    }
+                }
+                else{
+                    if (event.keyCode === 9) {
+                        event.target.value = ''
+                    }
+                    else{
+                        event.target.value = stack
+                    }
+                }
+            }
         },
         handleCurrentOtherIncome: props => () => event => {
-            props.setCurrent_other_income(event.target.value)
+            let stack = props.current_other_income
+            if (parseInt(event.target.value) < 1) {
+                event.target.value = ''
+            }        
+            else{
+                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+                    if (event.target.value.length > 6) {
+                        event.target.value = stack
+                    }
+                    else{
+                        props.setCurrent_other_income(event.target.value)
+                    }
+                }
+                else{
+                    if (event.keyCode === 9) {
+                        event.target.value = ''
+                    }
+                    else{
+                        event.target.value = stack
+                    }
+                }
+            }
         },
         handleCurrentNetIncome: props => () => event => {
-            props.setCurrent_net_income(event.target.value)
+            let stack = props.current_net_income
+            if (parseInt(event.target.value) < 1) {
+                event.target.value = ''
+            }        
+            else{
+                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+                    if (event.target.value.length > 7) {
+                        event.target.value = stack
+                    }
+                    else{
+                        props.setCurrent_net_income(event.target.value)
+                    }
+                }
+                else{
+                    if (event.keyCode === 9) {
+                        event.target.value = ''
+                    }
+                    else{
+                        event.target.value = stack
+                    }
+                }
+            }
         },
         handleCurrentWelfare: props => () => event => {
             props.setCurrent_welfare(event.target.value)
@@ -233,7 +301,28 @@ const enhance = compose(
             props.setOld_position(event.target.value)
         },
         handleOldFinalSalary: props => () => event => {
-            props.setOld_final_salary(event.target.value)
+            let stack = props.old_final_salary
+            if (parseInt(event.target.value) < 1) {
+                event.target.value = ''
+            }        
+            else{
+                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+                    if (event.target.value.length > 6) {
+                        event.target.value = stack
+                    }
+                    else{
+                        props.setOld_final_salary(event.target.value)
+                    }
+                }
+                else{
+                    if (event.keyCode === 9) {
+                        event.target.value = ''
+                    }
+                    else{
+                        event.target.value = stack
+                    }
+                }
+            }
         },
         handleOldStartwork: props => () => event => {
             props.setOld_startwork(event.target.value)
@@ -251,7 +340,28 @@ const enhance = compose(
             props.setOlder_position(event.target.value)
         },
         handleOlderFinalSalary: props => () => event => {
-            props.setOlder_final_salary(event.target.value)
+            let stack = props.older_final_salary
+            if (parseInt(event.target.value) < 1) {
+                event.target.value = ''
+            }        
+            else{
+                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+                    if (event.target.value.length > 6) {
+                        event.target.value = stack
+                    }
+                    else{
+                        props.setOlder_final_salary(event.target.value)
+                    }
+                }
+                else{
+                    if (event.keyCode === 9) {
+                        event.target.value = ''
+                    }
+                    else{
+                        event.target.value = stack
+                    }
+                }
+            }
         },
         handleOlderStartwork: props => () => event => {
             props.setOlder_startwork(event.target.value)
@@ -288,26 +398,50 @@ const enhance = compose(
                 'current_net_income' : props.current_net_income,
                 'current_welfare' : props.current_welfare,
                 'current_resign' : props.current_resign,
-                'old_work' : props.old_work,
-                'old_position' : props.old_position,
-                'old_final_salary' : props.old_final_salary,
+                'old_work' : props.old_work  !== undefined ? props.old_work : '-',
+                'old_position' : props.old_position !== undefined ? props.old_position : '-',
+                'old_final_salary' : props.old_final_salary !== undefined ? props.old_final_salary : '-',
                 'old_startwork' : props.old_startwork,
                 'old_endwork' : props.old_endwork,
-                'old_resign' : props.old_resign,
-                'older_work' : props.older_work,
-                'older_position' : props.older_position,
-                'older_final_salary' : props.older_final_salary,
+                'old_resign' : props.old_resign !== undefined ? props.old_resign : '-',
+                'older_work' : props.older_work !== undefined ? props.older_work : '-',
+                'older_position' : props.older_position !== undefined ? props.older_position : '-',
+                'older_final_salary' : props.older_final_salary !== undefined ? props.older_final_salary : '-',
                 'older_startwork' : props.older_startwork,
                 'older_endwork' : props.older_endwork,
-                'older_resign' : props.older_resign,
-                'checkAccept' : props.checkAccept,
-            }))    
-
-            PDF_GENERATOR(localStorage,props,setTimeLocal)
-            setTimeout(() => {
-                Router.push('/index')
-            }, 2000);      
-
+                'older_resign' : props.older_resign !== undefined ? props.older_resign : '-',
+                'checkAccept' : props.checkAccept !== undefined ? props.checkAccept : '-',
+            }))
+            if (props.current_startwork !== undefined && props.current_endwork !== undefined) {
+                const c_endDate = new Date(props.current_startwork)
+                const c_startDate = new Date(props.current_endwork)
+                if (c_startDate.setHours(0,0,0,0) < c_endDate.setHours(0,0,0,0)) {
+                    window.alert('คุณกรอกข้อมูลวันที่ไม่ถูกต้อง  \nกรุณากรอกข้อมูลใหม่อีกครั้ง !!!')
+                }
+            }
+            if (props.old_startwork !== undefined && props.old_endwork !== undefined) {
+                const old_startDate = new Date(props.old_startwork)
+                const old_endDate = new Date(props.old_endwork)
+                if (old_startDate.setHours(0,0,0,0) < old_endDate.setHours(0,0,0,0)) {
+                    window.alert('คุณกรอกข้อมูลวันที่ไม่ถูกต้อง  \nกรุณากรอกข้อมูลใหม่อีกครั้ง !!!')
+                }
+            }
+            if (props.older_startwork !== undefined && props.older_endwork !== undefined) {
+                const older_startDate = new Date(props.older_startwork)
+                const older_endDate = new Date(props.older_endwork)
+                if (older_startDate.setHours(0,0,0,0) < older_endDate.setHours(0,0,0,0)) {
+                    window.alert('คุณกรอกข้อมูลวันที่ไม่ถูกต้อง  \nกรุณากรอกข้อมูลใหม่อีกครั้ง !!!')
+                }
+            }
+            if (props.checkAccept === false) {
+                window.alert('คุณกรอกข้อมูลไม่ครบถ้วน \nกรุณากดยอมรับข้อตกลงในการสมัครงาน !!!')
+            }
+            else{
+                PDF_GENERATOR(localStorage,props,setTimeLocal)
+                setTimeout(() => {
+                    Router.push('/index')
+                }, 2000);  
+            }    
         },
         saveThisPagePrev: props => () => event => {
             localStorage.setItem('Task_page', JSON.stringify({
@@ -351,7 +485,7 @@ const enhance = compose(
 
 export default enhance( (props)=> 
     <Container>
-        {Breadcrumb3Page('ตำแหน่งเปิดรับ', `รายละเอียดตำแหน่ง ${JSON.parse(localStorage.getItem('Personal_page')).position}` , 'สมัครงาน' , '../index' ,`${props.url.query.id}` )}
+        {Breadcrumb3Page('ตำแหน่งเปิดรับ', `รายละเอียดตำแหน่ง ${props.position_name}` , 'สมัครงาน' , '../index' ,`${props.url.query.id}` )}
         <BoxHead>
             <center><br/><TextBox>สมัครงาน</TextBox></center><br/>
         </BoxHead>
@@ -388,15 +522,15 @@ export default enhance( (props)=>
                 </Grid>
                 <Grid columns={2} padded='horizontally'>
                     <Grid.Column>
-                        <MgGridLeft>{input2GrideGrideMG('เงินเดือนสุดท้ายที่ได้รับ (บาท) :','กรุณากรอกเงินเดือนสุดท้ายที่ได้รับ' , props.handleCurrentFinalSalary() , 'number' , props.current_final_salary)}</MgGridLeft>
+                        <MgGridLeft>{inputOnkeyup('เงินเดือนสุดท้ายที่ได้รับ (บาท) :','กรุณากรอกเงินเดือนสุดท้ายที่ได้รับ' , props.handleCurrentFinalSalary() , 'text' , props.current_final_salary)}</MgGridLeft>
                     </Grid.Column>
                     <Grid.Column>
-                        {input2Gride('รายได้อื่นๆ ที่นอกเหนือจากเงินเดือนพื้นฐาน (บาท) :','กรุณากรอกรายได้อื่นๆ ที่นอกเหนือจากเงินเดือน' , props.handleCurrentOtherIncome() , 'number' , props.current_other_income)}
+                        {input2GrideOnKeyUp('รายได้อื่นๆ ที่นอกเหนือจากเงินเดือนพื้นฐาน (บาท) :','กรุณากรอกรายได้อื่นๆ ที่นอกเหนือจากเงินเดือน' , props.handleCurrentOtherIncome() , 'text' , props.current_other_income)}
                     </Grid.Column>
                 </Grid>
                 <Grid columns={2} padded='horizontally'>
                     <Grid.Column>
-                        <MgGridLeft>{input2GrideGrideMG('รวมรายได้สุทธิต่อเดือน (บาท) :','กรุณากรอกรายได้สุทธิต่อเดือน' , props.handleCurrentNetIncome() , 'number' , props.current_net_income)}</MgGridLeft>
+                        <MgGridLeft>{inputOnkeyup('รวมรายได้สุทธิต่อเดือน (บาท) :','กรุณากรอกรายได้สุทธิต่อเดือน' , props.handleCurrentNetIncome() , 'text' , props.current_net_income)}</MgGridLeft>
                     </Grid.Column>
                     <Grid.Column>
                         {input2Gride('สวัสดิการอื่นๆ ของบริษัท :','กรุณากรอกสวัสดิการอื่นๆ ของบริษัท' , props.handleCurrentWelfare() , 'text' , props.current_welfare)}
@@ -420,7 +554,7 @@ export default enhance( (props)=>
                 </Grid>
                 <Grid columns={2} padded='horizontally'>
                     <Grid.Column>
-                        <MgGridLeft>{input2GrideGrideMG('เงินเดือนสุดท้าย :','กรุณากรอกเงินเดือนสุดท้าย' , props.handleOldFinalSalary() , 'number' , props.old_final_salary)}</MgGridLeft>
+                        <MgGridLeft>{inputOnkeyup('เงินเดือนสุดท้าย :','กรุณากรอกเงินเดือนสุดท้าย' , props.handleOldFinalSalary() , 'text' , props.old_final_salary)}</MgGridLeft>
                     </Grid.Column>
                 </Grid>
                 <Grid columns={2} padded='horizontally'>
@@ -449,7 +583,7 @@ export default enhance( (props)=>
                 </Grid>
                 <Grid columns={2} padded='horizontally'>
                     <Grid.Column>
-                        <MgGridLeft>{input2GrideGrideMG('เงินเดือนสุดท้าย :','กรุณากรอกเงินเดือนสุดท้าย' , props.handleOlderFinalSalary() , 'number' , props.older_final_salary)}</MgGridLeft>
+                        <MgGridLeft>{inputOnkeyup('เงินเดือนสุดท้าย :','กรุณากรอกเงินเดือนสุดท้าย' , props.handleOlderFinalSalary() , 'text' , props.older_final_salary)}</MgGridLeft>
                     </Grid.Column>
                 </Grid>
                 <Grid columns={2} padded='horizontally'>
@@ -473,42 +607,36 @@ export default enhance( (props)=>
                     />
                 </BoxGray>
                 <br/><br/>
-                    <div>
-                        <Button basic color='red' onClick={props.saveThisPagePrev()}>
-                            <Icon name='left arrow' /> ย้อนกลับ
-                        </Button>
-                    </div>
                     <MgBTNOrange>
-                            <div>
-                                <BtnBack basic color='orange' onClick={props.saveThisPagePrev()}>
-                                    <Icon name='left arrow' /> ย้อนกลับ
-                                </BtnBack>
+                        <div>
+                            <BtnBack basic color='orange' onClick={props.saveThisPagePrev()}>
+                                <Icon name='left arrow' /> ย้อนกลับ
+                            </BtnBack>
 
-                                &nbsp;
-                                <Modal trigger={ 
-                                         <Button as='div' labelPosition='right'>
-                                            <BtnSuccess>
-                                                ยืนยันการสมัคร
-                                            </BtnSuccess>
-                                            <Colorlabel as='a'>
-                                                <Image src='https://www.img.in.th/images/4ecc343bc0f151339a458ed57dfe5618.png' size='small' />
-                                            </Colorlabel>
-                                        </Button> 
-                                    } size='tiny' closeIcon>
-                                    <Modal.Content image>
-                                        <Modal.Description>
-                                            <center>
-                                                <br/>
-                                                <Image size='medium' src='https://www.img.in.th/images/89c1a7fb5aeca8818567de71964a74f0.png' size='tiny' />
-                                                <TextModelTaskSuccess>สมัครงานเรียบร้อย</TextModelTaskSuccess>
-                                                    <ButtonClick  onClick={props.saveThisPageNext(props.handleChangTimeToThai)}>ดาวน์โหลดเอกสารใบสมัคร</ButtonClick>
-                                                <br/><br/>
-                                            </center>
-                                            <p>*หมายเหตุ : ผู้ที่ผ่านการพิจารณาเบื้องต้นทางฝ่ายบุคคลจะติดต่อไปหาผู้สมัครโดยตรง</p>
-                                        </Modal.Description>
-                                    </Modal.Content>
-                                </Modal>
-                            </div>
+                            &nbsp;
+                            {/* <Modal size='tiny' closeIcon>
+                                <Modal.Content image>
+                                    <Modal.Description>
+                                        <center>
+                                            <br/>
+                                            <Image size='medium' src='https://www.img.in.th/images/89c1a7fb5aeca8818567de71964a74f0.png' size='tiny' />
+                                            <TextModelTaskSuccess>สมัครงานเรียบร้อย</TextModelTaskSuccess>
+                                                <ButtonClick  onClick={props.saveThisPageNext(props.handleChangTimeToThai)}>ดาวน์โหลดเอกสารใบสมัคร</ButtonClick>
+                                            <br/><br/>
+                                        </center>
+                                        <p>*หมายเหตุ : ผู้ที่ผ่านการพิจารณาเบื้องต้นทางฝ่ายบุคคลจะติดต่อไปหาผู้สมัครโดยตรง</p>
+                                    </Modal.Description>
+                                </Modal.Content>
+                            </Modal> */}
+                            <Button as='div' labelPosition='right'>
+                                <BtnSuccess onClick={props.saveThisPageNext(props.handleChangTimeToThai)}>
+                                    ยืนยันการสมัคร
+                                </BtnSuccess>
+                                <Colorlabel as='a'>
+                                    <Image src='https://www.img.in.th/images/4ecc343bc0f151339a458ed57dfe5618.png' size='small' />
+                                </Colorlabel>
+                            </Button> 
+                        </div>
                     </MgBTNOrange>
                 <br/><br/>
             </Box>
