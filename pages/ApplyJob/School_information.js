@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { Container , Icon , Divider , Grid  } from 'semantic-ui-react'
 import {Breadcrumb3Page} from '../../components/Breadcrumb'
 import theme from '../../theme/default'
-import { input2Gride , input4GrideMG , input4Gride} from '../../components/Input'
+import { inputWeigth,inputHeigth,input2Gride , input4GrideMG , input4Gride} from '../../components/Input'
 import {btn_NextBack} from '../../components/Button'
 import {StepApplyJobSchool} from '../../components/Step'
 import Router from 'next/router'
@@ -81,6 +81,8 @@ const enhance = compose(
     withState('otherSchool_major','setOtherSchool_major'),
     withState('otherSchool_grade','setOtherSchool_grade'),
     withState('otherSchool_congrate','setOtherSchool_congrate'),
+    withState('position_name' , 'setPosition_name' , ''),
+
     withProps({
         pageTitle: 'School information'
     }),
@@ -113,6 +115,9 @@ const enhance = compose(
                 this.props.setOtherSchool_grade(JSON.parse(localStorage.getItem('School_page')).otherSchool_grade)            
                 this.props.setOtherSchool_congrate(JSON.parse(localStorage.getItem('School_page')).otherSchool_congrate)
             }
+            if (localStorage) {
+                this.props.setPosition_name(JSON.parse(localStorage.getItem('Personal_page')).position)
+            }
         }
     }),
     withHandlers({
@@ -126,10 +131,47 @@ const enhance = compose(
             props.setHighSchool_major(event.target.value)
         },
         handleHighSchoolGrade: props => () => event => {
-            props.setHighSchool_grade(event.target.value)
+            let stack = props.highSchool_grade
+            if (event.target.value < '5') {
+                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode === 110) {                 
+                    if (event.target.value.length > 4 || event.target.value.length === 2 && event.target.value[1] !== '.') {
+                        event.target.value = stack
+                    }
+                    else{
+                        props.setHighSchool_grade(event.target.value)
+                    }
+                }
+                else{
+                    if (event.keyCode === 9) {
+                        event.target.value = ''
+                    }
+                    else{
+                        event.target.value = stack
+                    }
+                }
+            }
+            else{
+                event.target.value = ''
+            }
         },
         handleHighSchoolCongrate: props => () => event => {
-            props.setHighSchool_congrate(event.target.value)
+            let stack = props.highSchool_congrate
+            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+                if (event.target.value.length > 4) {
+                    event.target.value = stack
+                }
+                else{
+                    props.setHighSchool_congrate(event.target.value)
+                }
+            }
+            else{
+                if (event.keyCode === 9) {
+                    event.target.value = ''
+                }
+                else{
+                    event.target.value = stack
+                }
+            }
         },
         handleDiplomaSchoolName: props => () => event => {
             props.setDiplomaSchool_name(event.target.value)
@@ -141,10 +183,47 @@ const enhance = compose(
             props.setDiplomaSchool_major(event.target.value)
         },
         handleDiplomaSchoolGrade: props => () => event => {
-            props.setDiplomaSchool_grade(event.target.value)
+            let stack = props.diplomaSchool_grade
+            if (event.target.value < '5') {
+                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode === 110) {                 
+                    if (event.target.value.length > 4 || event.target.value.length === 2 && event.target.value[1] !== '.') {
+                        event.target.value = stack
+                    }
+                    else{
+                        props.setDiplomaSchool_grade(event.target.value)
+                    }
+                }
+                else{
+                    if (event.keyCode === 9) {
+                        event.target.value = ''
+                    }
+                    else{
+                        event.target.value = stack
+                    }
+                }
+            }
+            else{
+                event.target.value = ''
+            }
         },
         handleDiplomaSchoolCongrate: props => () => event => {
-            props.setDiplomaSchool_congrate(event.target.value)
+            let stack = props.diplomaSchool_congrate
+            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+                if (event.target.value.length > 4) {
+                    event.target.value = stack
+                }
+                else{
+                    props.setDiplomaSchool_congrate(event.target.value)
+                }
+            }
+            else{
+                if (event.keyCode === 9) {
+                    event.target.value = ''
+                }
+                else{
+                    event.target.value = stack
+                }
+            }
         },
         handleBechelorSchoolName: props => () => event => {
             props.setBechelorSchool_name(event.target.value)
@@ -156,10 +235,47 @@ const enhance = compose(
             props.setBechelorSchool_major(event.target.value)
         },
         handleBechelorSchoolGrade: props => () => event => {
-            props.setBechelorSchool_grade(event.target.value)
+            let stack = props.bechelorSchool_grade
+            if (event.target.value > '1' && event.target.value < '5') {
+                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode === 110) {                 
+                    if (event.target.value.length > 4 || event.target.value.length === 2 && event.target.value[1] !== '.') {
+                        event.target.value = stack
+                    }
+                    else{
+                        props.setBechelorSchool_grade(event.target.value)
+                    }
+                }
+                else{
+                    if (event.keyCode === 9) {
+                        event.target.value = ''
+                    }
+                    else{
+                        event.target.value = stack
+                    }
+                }
+            }
+            else{
+                event.target.value = ''
+            }
         },
         handleBechelorSchoolCoungrate: props => () => event => {
-            props.setBechelorSchool_congrate(event.target.value)
+            let stack = props.bechelorSchool_congrate
+            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+                if (event.target.value.length > 4) {
+                    event.target.value = stack
+                }
+                else{
+                    props.setBechelorSchool_congrate(event.target.value)
+                }
+            }
+            else{
+                if (event.keyCode === 9) {
+                    event.target.value = ''
+                }
+                else{
+                    event.target.value = stack
+                }
+            }
         },
         handleOtherSchoolName: props => () => event => {
             props.setOtherSchool_name(event.target.value)
@@ -171,36 +287,79 @@ const enhance = compose(
             props.setOtherSchool_major(event.target.value)
         },
         handleOtherSchoolGrade: props => () => event => {
-            props.setOtherSchool_grade(event.target.value)
+            let stack = props.otherSchool_grade
+            if (event.target.value < '5') {
+                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode === 110) {                 
+                    if (event.target.value.length > 4 || event.target.value.length === 2 && event.target.value[1] !== '.') {
+                        event.target.value = stack
+                    }
+                    else{
+                        props.setOtherSchool_grade(event.target.value)
+                    }
+                }
+                else{
+                    if (event.keyCode === 9) {
+                        event.target.value = ''
+                    }
+                    else{
+                        event.target.value = stack
+                    }
+                }
+            }
+            else{
+                event.target.value = ''
+            }
         },
         handleOtherSchoolCongrate: props => () => event => {
-            props.setOtherSchool_congrate(event.target.value)
+            let stack = props.otherSchool_congrate
+            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+                if (event.target.value.length > 4) {
+                    event.target.value = stack
+                }
+                else{
+                    props.setOtherSchool_congrate(event.target.value)
+                }
+            }
+            else{
+                if (event.keyCode === 9) {
+                    event.target.value = ''
+                }
+                else{
+                    event.target.value = stack
+                }
+            }
         },
 
         saveThisPageNext: props => () => event => {
             localStorage.setItem('School_page', JSON.stringify({
-                'highSchool_name' : props.highSchool_name ,
-                'highSchool_country' : props.highSchool_country,
-                'highSchool_major' : props.highSchool_major,
-                'highSchool_grade' : props.highSchool_grade,
-                'highSchool_congrate' : props.highSchool_congrate,
-                'diplomaSchool_name' : props.diplomaSchool_name,
-                'diplomaSchool_country' : props.diplomaSchool_country,
-                'diplomaSchool_major' : props.diplomaSchool_major,
-                'diplomaSchool_grade' : props.diplomaSchool_grade,
-                'diplomaSchool_congrate' : props.diplomaSchool_congrate,
-                'bechelorSchool_name' : props.bechelorSchool_name,
-                'bechelorSchool_country' : props.bechelorSchool_country,
-                'bechelorSchool_major' : props.bechelorSchool_major,
-                'bechelorSchool_grade' : props.bechelorSchool_grade,
-                'bechelorSchool_congrate' : props.bechelorSchool_congrate,
-                'otherSchool_name' : props.otherSchool_name,
-                'otherSchool_country' : props.otherSchool_country,
-                'otherSchool_major' : props.otherSchool_major,
-                'otherSchool_grade' : props.otherSchool_grade,
-                'otherSchool_congrate' : props.otherSchool_congrate,
+                'highSchool_name' : props.highSchool_name !== undefined ? props.highSchool_name : '-',
+                'highSchool_country' : props.highSchool_country !== undefined ? props.highSchool_country : '-',
+                'highSchool_major' : props.highSchool_major !== undefined ? props.highSchool_major : '-',
+                'highSchool_grade' : props.highSchool_grade !== undefined ? props.highSchool_grade : '-',
+                'highSchool_congrate' : props.highSchool_congrate !== undefined ? props.highSchool_congrate : '-',
+                'diplomaSchool_name' : props.diplomaSchool_name !== undefined ? props.diplomaSchool_name : '-',
+                'diplomaSchool_country' : props.diplomaSchool_country !== undefined ? props.diplomaSchool_country : '-',
+                'diplomaSchool_major' : props.diplomaSchool_major !== undefined ? props.diplomaSchool_major : '-',
+                'diplomaSchool_grade' : props.diplomaSchool_grade !== undefined ? props.diplomaSchool_grade : '-',
+                'diplomaSchool_congrate' : props.diplomaSchool_congrate !== undefined ? props.diplomaSchool_congrate : '-',
+                'bechelorSchool_name' : props.bechelorSchool_name !== undefined ? props.bechelorSchool_name : '-',
+                'bechelorSchool_country' : props.bechelorSchool_country !== undefined ? props.bechelorSchool_country : '-',
+                'bechelorSchool_major' : props.bechelorSchool_major !== undefined ? props.bechelorSchool_major : '-',
+                'bechelorSchool_grade' : props.bechelorSchool_grade !== undefined ? props.bechelorSchool_grade : '-',
+                'bechelorSchool_congrate' : props.bechelorSchool_congrate !== undefined ? props.bechelorSchool_congrate : '-',
+                'otherSchool_name' : props.otherSchool_name !== undefined ? props.otherSchool_name : '-',
+                'otherSchool_country' : props.otherSchool_country !== undefined ? props.otherSchool_country : '-',
+                'otherSchool_major' : props.otherSchool_major !== undefined ? props.otherSchool_major : '-',
+                'otherSchool_grade' : props.otherSchool_grade !== undefined ? props.otherSchool_grade : '-',
+                'otherSchool_congrate' : props.otherSchool_congrate !== undefined ? props.otherSchool_congrate : '-', 
             }))            
-            Router.push({ pathname : '/ApplyJob/Ability_information' , query : { data : props.url.query.data }})
+            const checkInputData = Object.getOwnPropertyNames(JSON.parse(localStorage.getItem('School_page')));            
+            if (checkInputData.length < 10){
+                window.alert('คุณกรอกข้อมูลไม่ถูกต้อง หรือ ไม่ครบถ้วน \nกรุณากรอกข้อมูลใหม่อีกครั้ง !!!')
+            }      
+            else{
+                Router.push({ pathname : '/ApplyJob/Ability_information' , query : { id : props.url.query.id }})
+            }
         },
         saveThisPagePrev: props => () => event => {
             localStorage.setItem('School_page', JSON.stringify({
@@ -225,14 +384,14 @@ const enhance = compose(
                 'otherSchool_grade' : props.otherSchool_grade,
                 'otherSchool_congrate' : props.otherSchool_congrate,
             }))      
-            Router.push({ pathname : '/ApplyJob/Address_information' , query : { data : props.url.query.data }})      
+            Router.push({ pathname : '/ApplyJob/Address_information' , query : { id : props.url.query.id }})
         },
     })
 )
 
 export default enhance( (props)=> 
     <Container>
-        {Breadcrumb3Page('ตำแหน่งเปิดรับ', `รายละเอียดตำแหน่ง ${props.url.query.data[0]}` , 'สมัครงาน' , '../index' , `${props.url.query.data[0]}` ,`${props.url.query.data[1]}` )}
+        {Breadcrumb3Page('ตำแหน่งเปิดรับ', `รายละเอียดตำแหน่ง ${props.position_name}` , 'สมัครงาน' , '../index' ,`${props.url.query.id}` )}
         <BoxHead>
             <center><br/><TextBox>สมัครงาน</TextBox></center><br/>
         </BoxHead>
@@ -269,10 +428,10 @@ export default enhance( (props)=>
                 <Grid.Column>
                     <Grid columns={2}>
                         <Grid.Column>
-                            <WidthWeight>{input4GrideMG('เกรดเฉลี่ย :','กรุณากรอกเกรดเฉลี่ย' , props.handleHighSchoolGrade() , 'text' , props.highSchool_grade)}</WidthWeight>
+                            <WidthWeight>{inputWeigth('เกรดเฉลี่ย :','กรุณากรอกเกรดเฉลี่ย' , props.handleHighSchoolGrade() , 'text' , props.highSchool_grade)}</WidthWeight>
                         </Grid.Column>
                         <Grid.Column>
-                            <MgGridHeight>{input4Gride('ปีที่สำเร็จการศึกษา :','กรุณากรอกปีที่สำเร็จการศึกษา' , props.handleHighSchoolCongrate() , 'text' , props.highSchool_congrate)}</MgGridHeight>
+                            <MgGridHeight>{inputHeigth('ปีที่สำเร็จการศึกษา :','กรุณากรอกปีที่สำเร็จการศึกษา' , props.handleHighSchoolCongrate() , 'text' , props.highSchool_congrate)}</MgGridHeight>
                         </Grid.Column>
                     </Grid>
                 </Grid.Column>
@@ -301,10 +460,10 @@ export default enhance( (props)=>
                 <Grid.Column>
                     <Grid columns={2}>
                         <Grid.Column>
-                            <WidthWeight>{input4GrideMG('เกรดเฉลี่ย :','กรุณากรอกเกรดเฉลี่ย' , props.handleDiplomaSchoolGrade() , 'text' , props.diplomaSchool_grade)}</WidthWeight>
+                            <WidthWeight>{inputWeigth('เกรดเฉลี่ย :','กรุณากรอกเกรดเฉลี่ย' , props.handleDiplomaSchoolGrade() , 'text' , props.diplomaSchool_grade)}</WidthWeight>
                         </Grid.Column>
                         <Grid.Column>
-                            <MgGridHeight>{input4Gride('ปีที่สำเร็จการศึกษา :','กรุณากรอกปีที่สำเร็จการศึกษา' , props.handleDiplomaSchoolCongrate() , 'text' , props.diplomaSchool_congrate)}</MgGridHeight>
+                            <MgGridHeight>{inputHeigth('ปีที่สำเร็จการศึกษา :','กรุณากรอกปีที่สำเร็จการศึกษา' , props.handleDiplomaSchoolCongrate() , 'text' , props.diplomaSchool_congrate)}</MgGridHeight>
                         </Grid.Column>
                     </Grid>
                 </Grid.Column>
@@ -333,10 +492,10 @@ export default enhance( (props)=>
                 <Grid.Column>
                     <Grid columns={2}>
                         <Grid.Column>
-                            <WidthWeight>{input4GrideMG('เกรดเฉลี่ย :','กรุณากรอกเกรดเฉลี่ย' , props.handleBechelorSchoolGrade() , 'text' , props.bechelorSchool_grade)}</WidthWeight>
+                            <WidthWeight>{inputWeigth('เกรดเฉลี่ย :','กรุณากรอกเกรดเฉลี่ย' , props.handleBechelorSchoolGrade() , 'text' , props.bechelorSchool_grade)}</WidthWeight>
                         </Grid.Column>
                         <Grid.Column>
-                            <MgGridHeight>{input4Gride('ปีที่สำเร็จการศึกษา :','กรุณากรอกปีที่สำเร็จการศึกษา' , props.handleBechelorSchoolCoungrate() , 'text' , props.bechelorSchool_congrate)}</MgGridHeight>
+                            <MgGridHeight>{inputHeigth('ปีที่สำเร็จการศึกษา :','กรุณากรอกปีที่สำเร็จการศึกษา' , props.handleBechelorSchoolCoungrate() , 'text' , props.bechelorSchool_congrate)}</MgGridHeight>
                         </Grid.Column>
                     </Grid>
                 </Grid.Column>
@@ -365,10 +524,10 @@ export default enhance( (props)=>
                 <Grid.Column>
                     <Grid columns={2}>
                         <Grid.Column>
-                            <WidthWeight>{input4GrideMG('เกรดเฉลี่ย :','กรุณากรอกเกรดเฉลี่ย' , props.handleOtherSchoolGrade() , 'text' , props.otherSchool_grade)}</WidthWeight>
+                            <WidthWeight>{inputWeigth('เกรดเฉลี่ย :','กรุณากรอกเกรดเฉลี่ย' , props.handleOtherSchoolGrade() , 'text' , props.otherSchool_grade)}</WidthWeight>
                         </Grid.Column>
                         <Grid.Column>
-                            <MgGridHeight>{input4Gride('ปีที่สำเร็จการศึกษา :','กรุณากรอกปีที่สำเร็จการศึกษา' , props.handleOtherSchoolCongrate() , 'text' , props.otherSchool_congrate)}</MgGridHeight>
+                            <MgGridHeight>{inputHeigth('ปีที่สำเร็จการศึกษา :','กรุณากรอกปีที่สำเร็จการศึกษา' , props.handleOtherSchoolCongrate() , 'text' , props.otherSchool_congrate)}</MgGridHeight>
                         </Grid.Column>
                     </Grid>
                 </Grid.Column>

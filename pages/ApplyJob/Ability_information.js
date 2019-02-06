@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { Container , Radio  , Icon , Divider , Grid , Form } from 'semantic-ui-react'
 import {Breadcrumb3Page} from '../../components/Breadcrumb'
 import theme from '../../theme/default'
-import {input2GrideGrideMG , input2Gride , InputTextArea} from '../../components/Input'
+import {input2GrideOnKeyUp,inputOnkeyup , InputTextArea} from '../../components/Input'
 import {btn_NextBack} from '../../components/Button'
 import {StepApplyJobAbility} from '../../components/Step'
 import Router from 'next/router'
@@ -97,6 +97,7 @@ const enhance = compose(
     withState('engprint','setEngprint'),
     withState('computerSkill','setComputerSkill'),
     withState('positionEng','setPositionEng'),
+    withState('position_name' , 'setPosition_name' , ''),
     withProps({
         pageTitle: 'Ability information'
     }),
@@ -115,6 +116,9 @@ const enhance = compose(
                 this.props.setThaiprint(JSON.parse(localStorage.getItem('Ability_page')).thaiprint)            
                 this.props.setEngprint(JSON.parse(localStorage.getItem('Ability_page')).engprint)            
                 this.props.setComputerSkill(JSON.parse(localStorage.getItem('Ability_page')).computerSkill) 
+            }
+            if (localStorage) {
+                this.props.setPosition_name(JSON.parse(localStorage.getItem('Personal_page')).position)
             }
         }
     }),
@@ -141,10 +145,52 @@ const enhance = compose(
             props.setEnglish_writh(value)
         },
         handleThaiLanguagePrint: props => () => event => {
-            props.setThaiprint(event.target.value)
+            let stack = props.thaiprint
+            if (parseInt(event.target.value) < 1) {
+                event.target.value = ''
+            }        
+            else{
+                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+                    if (event.target.value.length > 3) {
+                        event.target.value = stack
+                    }
+                    else{
+                        props.setThaiprint(event.target.value)
+                    }
+                }
+                else{
+                    if (event.keyCode === 9) {
+                        event.target.value = ''
+                    }
+                    else{
+                        event.target.value = stack
+                    }
+                }
+            }
         },
         handleEnglishLanguagePrint: props => () => event => {
-            props.setEngprint(event.target.value)
+            let stack = props.engprint
+            if (parseInt(event.target.value) < 1) {
+                event.target.value = ''
+            }        
+            else{
+                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+                    if (event.target.value.length > 3) {
+                        event.target.value = stack
+                    }
+                    else{
+                        props.setEngprint(event.target.value)
+                    }
+                }
+                else{
+                    if (event.keyCode === 9) {
+                        event.target.value = ''
+                    }
+                    else{
+                        event.target.value = stack
+                    }
+                }
+            }
         },
         handleComputerSkill: props => () => event => {
             props.setComputerSkill(event.target.value)
@@ -163,7 +209,13 @@ const enhance = compose(
                 'engprint' : props.engprint,
                 'computerSkill' : props.computerSkill,
             }))            
-            Router.push({ pathname : '/ApplyJob/Task_information' , query : { data : props.url.query.data }})
+            const checkInputData = Object.getOwnPropertyNames(JSON.parse(localStorage.getItem('Ability_page')));
+            if (checkInputData.length < 10) {
+                window.alert('คุณกรอกข้อมูลไม่ถูกต้อง หรือ ไม่ครบถ้วน \nกรุณากรอกข้อมูลใหม่อีกครั้ง !!!')
+            }
+            else{
+                Router.push({ pathname : '/ApplyJob/Task_information' , query : { id : props.url.query.id }})
+            }
         },
         saveThisPagePrev: props => () => event => {
             localStorage.setItem('Ability_page', JSON.stringify({
@@ -178,14 +230,14 @@ const enhance = compose(
                 'engprint' : props.engprint,
                 'computerSkill' : props.computerSkill,
             }))            
-            Router.push({ pathname : '/ApplyJob/School_information' , query : { data : props.url.query.data }})
+            Router.push({ pathname : '/ApplyJob/School_information' , query : { id : props.url.query.id }})
         },
     })
 )
 
 export default enhance( (props)=> 
     <Container>
-        {Breadcrumb3Page('ตำแหน่งเปิดรับ', `รายละเอียดตำแหน่ง ${props.url.query.data[0]}` , 'สมัครงาน' , '../index' , `${props.url.query.data[0]}` ,`${props.url.query.data[1]}` )}
+        {Breadcrumb3Page('ตำแหน่งเปิดรับ', `รายละเอียดตำแหน่ง ${props.position_name}` , 'สมัครงาน' , '../index' ,`${props.url.query.id}` )}
         <BoxHead>
             <center><br/><TextBox>สมัครงาน</TextBox></center><br/>
         </BoxHead>
@@ -261,10 +313,10 @@ export default enhance( (props)=>
             </Grid>
             <Grid columns={2} padded='horizontally'>
                 <Grid.Column>
-                    <MgGridLeft>{input2GrideGrideMG('การพิมพ์ดีดภาษาไทย (คำ/นาที) :','กรุณากรอกจำนวนคำพิมพ์ดีดภาษาไทย' , props.handleThaiLanguagePrint() , 'number' , props.thaiprint)}</MgGridLeft>
+                    <MgGridLeft>{inputOnkeyup('จำนวนคำพิมพ์ดีดภาษาไทย (คำ/นาที) :','กรุณากรอกจำนวนคำพิมพ์ดีดภาษาไทย' , props.handleThaiLanguagePrint() , 'number' , props.thaiprint)}</MgGridLeft>
                 </Grid.Column>
                 <Grid.Column>
-                    {input2Gride('จำนวนคำพิมพ์ดีดภาษาอังกฤษ (คำ/นาที) :','กรุณากรอกจำนวนคำพิมพ์ดีดภาษาอังกฤษ' , props.handleEnglishLanguagePrint() , 'number' , props.engprint)}
+                    {input2GrideOnKeyUp('จำนวนคำพิมพ์ดีดภาษาอังกฤษ (คำ/นาที) :','กรุณากรอกจำนวนคำพิมพ์ดีดภาษาอังกฤษ' , props.handleEnglishLanguagePrint() , 'text' , props.engprint)}
                 </Grid.Column>
             </Grid>
             <MgTextArea>

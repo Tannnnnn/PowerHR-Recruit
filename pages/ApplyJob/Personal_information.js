@@ -5,10 +5,20 @@ import styled from 'styled-components'
 import { Container, Step, Icon, Divider, Grid, Image, Form, Radio } from 'semantic-ui-react'
 import { Breadcrumb3Page } from '../../components/Breadcrumb'
 import theme from '../../theme/default'
-import { input2GrideGrideMG, input2Gride, input4GrideMG, input4Gride, inputGridePosition } from '../../components/Input'
+import { 
+    inputAge , 
+    input2GrideOnKeyUp , 
+    inputOnkeyup , 
+    input2GrideGrideMG, 
+    input2Gride, 
+    inputGridePosition,
+    inputWeigth,
+    inputHeigth
+} from '../../components/Input'
 import { btn_orange } from '../../components/Button'
 import { stepApplyJobInfomation } from '../../components/Step'
 import Router from 'next/router'
+import axios from 'axios'
 
 const buildFileSelector = (fn) => {
     const fileSelector = document.createElement('input');
@@ -165,7 +175,10 @@ const ImgLocalStorage = styled.img`
     :hover + ${DivHiddenImage} {
         display : block ;
     }
-    ${DivImage}:hover &{
+    :focus + ${DivHiddenImage} {
+        display : block ;
+    }
+    ${DivImage}:hover & {
         opacity: 0.1;
     }
 `
@@ -197,7 +210,7 @@ const enhance = compose(
     withState('dad_career', 'setDad_career'),
     withState('mom_name', 'setMom_name'),
     withState('mom_career', 'setMom_career'),
-    withState('brethren', 'setBrethren'),
+    withState('brethren', 'setBrethren' ),
     withState('sequence', 'setSequence'),
     withState('status', 'setStatus'),
     withState('check_status', 'setCheck_status', false),
@@ -217,13 +230,17 @@ const enhance = compose(
     withState('refer_address', 'setRefer_address'),
     withState('refer_phone', 'setRefer_phone'),
     withState('refer_career', 'setRefer_career'),
-
+    withState('stack', 'setStack' , false),
+    withState('position_name' , 'setPosition_name' , ''),
     withProps({
         pageTitle: 'Personal information'
     }),
     withLayout,
     lifecycle({
         async componentDidMount() {
+            const url = `http://localhost:4000/job_position/${this.props.url.query.id}`
+            const res =  await axios.get(url)            
+            this.props.setPosition_name(res.data[0].position_name)
             if (localStorage.Personal_page) {
                 this.props.setSalary(JSON.parse(localStorage.getItem('Personal_page')).salary)            
                 this.props.setSex(JSON.parse(localStorage.getItem('Personal_page')).sex)
@@ -347,6 +364,7 @@ const enhance = compose(
         },
         saveThisPage: props => () => event => {
             localStorage.setItem('Personal_page', JSON.stringify({
+                'position' : props.position_name , 
                 'salary' : props.salary , 
                 'fname_thai' : props.fname_thai ,
                 'lname_thai' : props.lname_thai ,
@@ -388,10 +406,43 @@ const enhance = compose(
                 'refer_career' : props.refer_career ,
                 'imageBase64' : props.imageBase64,
             }))            
-            Router.push({ pathname : '/ApplyJob/Address_information' , query : { data : props.url.query.data }})
+            const checkInputData = Object.getOwnPropertyNames(JSON.parse(localStorage.getItem('Personal_page')));
+            if (
+                checkInputData.length < 36 || 
+                props.congenitalDisease === 'มี' && 
+                props.congenitalDisease_name === '' ||
+                props.check_status === true &&
+                props.status_married_fname === undefined
+            ){
+                window.alert('คุณกรอกข้อมูลไม่ถูกต้อง หรือ ไม่ครบถ้วน \nกรุณากรอกข้อมูลใหม่อีกครั้ง !!!')
+            }
+            else{
+                Router.push({ pathname : '/ApplyJob/Address_information' , query : { id : props.url.query.id }})
+            }
         },
-        onChangeSalary: props => () => event => {
-            props.setSalary(event.target.value)
+        onChangeSalary: props => () => event => {                 
+            let stack = props.salary
+            if (parseInt(event.target.value) < 1) {
+                event.target.value = ''
+            }        
+            else{
+                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+                    if (event.target.value.length > 6) {
+                        event.target.value = stack
+                    }
+                    else{
+                        props.setSalary(event.target.value)
+                    }
+                }
+                else{
+                    if (event.keyCode === 9) {
+                        event.target.value = ''
+                    }
+                    else{
+                        event.target.value = stack
+                    }
+                }
+            }
         },
         handleFnameThai: props => () => event => {
             props.setFname_thai(event.target.value)
@@ -412,13 +463,99 @@ const enhance = compose(
             props.setFacebook(event.target.value)
         },
         handleIdcard: props => () => event => {
-            props.setIdcard(event.target.value)
+            let keycode = event.keyCode
+            let stack = props.idcard
+            if (keycode > 95 && keycode < 106 || keycode === 8) {
+                if (event.target.value.length > 17) {
+                    event.target.value = stack
+                }
+                else{
+                    if (
+                        event.target.value.length === 1 && keycode !== 8 || 
+                        event.target.value.length === 6 && keycode !== 8 || 
+                        event.target.value.length === 12 && keycode !== 8 || 
+                        event.target.value.length === 15 && keycode !== 8 
+                    ){
+                        event.target.value += '-'
+                    }
+                    // if (
+                    //     event.target.value.length === 1 && keycode === 8 || 
+                    //     event.target.value.length === 6 && keycode === 8 || 
+                    //     event.target.value.length === 12 && keycode === 8 || 
+                    //     event.target.value.length === 15 && keycode === 8 
+                    // ){
+                    //     props.setStack(true)
+                    // }
+                    // if (props.stack === true) {
+                        
+                    // }                     
+                    props.setIdcard(event.target.value)                    
+                }
+            }
+            else{
+                if (event.keyCode === 9) {
+                    event.target.value = ''
+                }
+                else{
+                    event.target.value = stack
+                }
+            }
         },
         handleTel: props => () => event => {
-            props.setTel(event.target.value)
+            let stack = props.tel    
+            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+                if (event.target.value.length > 10) {
+                    event.target.value = stack
+                }
+                else{
+                    props.setTel(event.target.value)
+                }
+            }
+            else{
+                if (event.keyCode === 9) {
+                    event.target.value = ''
+                }
+                else{
+                    event.target.value = stack
+                }
+            }
         },
         handleBirthday: props => () => event => {
-            props.setBirthday(event.target.value)            
+            props.setBirthday(event.target.value) 
+            if (event.target.value === '') {
+                props.setAge(event.target.value)
+            }
+            else{
+                let set_age = event.target.value.split('-')
+                let dateString = set_age[1]+"/"+set_age[2]+"/"+set_age[0]
+                var now = new Date();
+                var today = new Date(now.getFullYear(),now.getMonth(),now.getDate());
+                var yearNow = now.getFullYear();
+                var monthNow = now.getMonth();
+                var dateNow = now.getDate();
+                var dob = new Date( dateString.substring(6,10), dateString.substring(0,2)-1, dateString.substring(3,5));
+                var yearDob = dob.getFullYear();
+                var monthDob = dob.getMonth();
+                var dateDob = dob.getDate();                        
+                var yearAge = yearNow - yearDob;
+                if (monthNow >= monthDob)
+                    var monthAge = monthNow - monthDob;
+                else {
+                    yearAge--;
+                    var monthAge = 12 + monthNow -monthDob;
+                }
+                if (dateNow >= dateDob)
+                    var dateAge = dateNow - dateDob;
+                else {
+                    monthAge--;
+                    var dateAge = 31 + dateNow - dateDob;
+                    if (monthAge < 0) {
+                        monthAge = 11;
+                        yearAge--;
+                    }
+                } 
+                props.setAge(yearAge)
+            }
         },
         handleAge: props => () => event => {
             props.setAge(event.target.value)
@@ -427,10 +564,52 @@ const enhance = compose(
             props.setSex(sex)
         },
         handleWeight: props => () => event => {
-            props.setWeight(event.target.value)
+            let stack = props.weight    
+            if (parseInt(event.target.value) < 1 || parseInt(event.target.value) > 150) {
+                event.target.value = stack
+            }
+            else{
+                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+                    if (event.target.value.length > 3) {
+                        event.target.value = stack
+                    }
+                    else{
+                        props.setWeight(event.target.value)
+                    }
+                }
+                else{
+                    if (event.keyCode === 9) {
+                        event.target.value = ''
+                    }
+                    else{
+                        event.target.value = stack
+                    }
+                }
+            }
         },
         handleHeight: props => () => event => {
-            props.setHeight(event.target.value)
+            let stack = props.height    
+            if (parseInt(event.target.value) < 1 || parseInt(event.target.value) > 220) {
+                event.target.value = stack
+            }
+            else{
+                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+                    if (event.target.value.length > 3) {
+                        event.target.value = stack
+                    }
+                    else{
+                        props.setHeight(event.target.value)
+                    }
+                }
+                else{
+                    if (event.keyCode === 9) {
+                        event.target.value = ''
+                    }
+                    else{
+                        event.target.value = stack
+                    }
+                }
+            }
         },
         handleEthnicity: props => () => event => {
             props.setEthnicity(event.target.value)
@@ -454,10 +633,53 @@ const enhance = compose(
             props.setMom_career(event.target.value)
         },
         handleBrethren: props => () => event => {
-            props.setBrethren(event.target.value)
+            let stack = props.brethren                
+            if (parseInt(event.target.value) > 15){
+                event.target.value = stack
+            }
+            else{
+                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+                    if (event.target.value.length > 2) {
+                        event.target.value = stack
+                    }
+                    else{
+                        props.setBrethren(event.target.value)
+                    }
+                }
+                else{
+                    if (event.keyCode === 9) {
+                        event.target.value = ''
+                        props.setBrethren(event.target.value)
+                    }
+                    else{
+                        event.target.value = stack
+                    }
+                }
+            }
         },
         handleSequence: props => () => event => {
-            props.setSequence(event.target.value)
+            let stack = props.sequence       
+            if (parseInt(event.target.value) > 16){
+                event.target.value = stack
+            }
+            else{
+                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+                    if (event.target.value.length > 2) {
+                        event.target.value = stack
+                    }
+                    else{
+                        props.setSequence(event.target.value)
+                    }
+                }
+                else{
+                    if (event.keyCode === 9) {
+                        event.target.value = ''
+                    }
+                    else{
+                        event.target.value = stack
+                    }
+                }
+            }
         },
         handleChangeStatus: props => (data) => event => {
             props.setStatus(data)
@@ -475,7 +697,28 @@ const enhance = compose(
             props.setStatus_married_lname(event.target.value)
         },
         handleMarriedChild: props => () => event => {            
-            props.setStatus_married_child(event.target.value)
+            let stack = props.status_married_child                
+            if (parseInt(event.target.value) > 10){
+                event.target.value = stack
+            }
+            else{
+                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+                    if (event.target.value.length > 2) {
+                        event.target.value = stack
+                    }
+                    else{
+                        props.setStatus_married_child(event.target.value)
+                    }
+                }
+                else{
+                    if (event.keyCode === 9) {
+                        event.target.value = ''
+                    }
+                    else{
+                        event.target.value = stack
+                    }
+                }
+            }
         },
         handleMarriedCompany: props => () => event => {            
             props.setStatus_married_company(event.target.value)
@@ -503,7 +746,23 @@ const enhance = compose(
             props.setUrgent_relation(event.target.value)
         },
         handleUrgenPhone: props => () => event => {
-            props.setUrgent_phone(event.target.value)
+            let stack = props.urgent_phone    
+            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+                if (event.target.value.length > 10) {
+                    event.target.value = stack
+                }
+                else{
+                    props.setUrgent_phone(event.target.value)
+                }
+            }
+            else{
+                if (event.keyCode === 9) {
+                    event.target.value = ''
+                }
+                else{
+                    event.target.value = stack
+                }
+            }
         },
         handleUrgenApply: props => () => event => {
             props.setUrgent_apply(event.target.value)
@@ -515,7 +774,23 @@ const enhance = compose(
             props.setRefer_address(event.target.value)
         },
         handleReferPhone: props => () => event => {
-            props.setRefer_phone(event.target.value)
+            let stack = props.refer_phone    
+            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+                if (event.target.value.length > 10) {
+                    event.target.value = stack
+                }
+                else{
+                    props.setRefer_phone(event.target.value)
+                }
+            }
+            else{
+                if (event.keyCode === 9) {
+                    event.target.value = ''
+                }
+                else{
+                    event.target.value = stack
+                }
+            }
         },
         handleReferCareer: props => () => event => {
             props.setRefer_career(event.target.value)
@@ -535,7 +810,7 @@ const enhance = compose(
                             </Grid>
                             <Grid columns={2} >
                                 <Grid.Column>
-                                    {input2GrideGrideMG('จำนวนบุตร (คน) :', 'กรุณากรอกจำนวนบุตร' , child , 'number' , props.status_married_child)}
+                                    {inputOnkeyup('จำนวนบุตร (คน) :', 'หากไม่มีบุตรกรุณากรอก 0' , child , 'text' , props.status_married_child)}
                                 </Grid.Column>
                                 <Grid.Column>
                                     {input2GrideGrideMG('สถานที่ทำงานคู่สมรส :', 'กรุณากรอกสถานที่ทำงานคู่สมรส' , company , 'text' , props.status_married_company)}
@@ -572,7 +847,7 @@ const enhance = compose(
 
 export default enhance((props) =>
     <Container>
-        {Breadcrumb3Page('ตำแหน่งเปิดรับ', `รายละเอียดตำแหน่ง ${props.url.query.data[0]}` , 'สมัครงาน' , '../index' , `${props.url.query.data[0]}` ,`${props.url.query.data[1]}` )}
+        {Breadcrumb3Page('ตำแหน่งเปิดรับ', `รายละเอียดตำแหน่ง ${props.position_name}` , 'สมัครงาน' , '../index' ,`${props.url.query.id}` )}
         <BoxHead>
             <center><br /><TextBox>สมัครงาน</TextBox></center><br />
         </BoxHead>
@@ -601,8 +876,8 @@ export default enhance((props) =>
                     </BoxImg>
                 </Grid.Column>
                 <Grid.Column>
-                    {inputGridePosition('ตำแหน่งงานที่รับสมัคร :', 'กรุณากรอกตำแหน่งงงานที่รับสมัคร', props.url.query.data[0])}<br /><br />
-                    {input2Gride('เงินเดือนที่ต้องการ :', 'กรุณากรอกเงินเดือนที่ต้องการ', props.onChangeSalary(), 'number', props.salary)}
+                    {inputGridePosition('ตำแหน่งงานที่รับสมัคร :', 'กรุณากรอกตำแหน่งงงานที่รับสมัคร', props.position_name )}<br /><br />
+                    {input2GrideOnKeyUp('เงินเดือนที่ต้องการ :', 'กรุณากรอกเงินเดือนที่ต้องการ', props.onChangeSalary(), 'text', props.salary)}
                 </Grid.Column>
             </Grid>
             <Grid columns={2} padded='horizontally'>
@@ -615,15 +890,15 @@ export default enhance((props) =>
             </Grid>
             <Grid columns={2} padded='horizontally'>
                 <Grid.Column>
-                    <MgGridLeft>{input2GrideGrideMG('ชื่อ (ภาษาอังกฤษ) :', 'กรุณากรอกชื่อ (ภาษาอังกฤษ)', props.handleFnameEng(), 'text', props.fname_eng)}</MgGridLeft>
+                    <MgGridLeft>{input2GrideGrideMG('ชื่อ (ภาษาอังกฤษ) :', 'Please enter your firstname in English.', props.handleFnameEng(), 'text', props.fname_eng)}</MgGridLeft>
                 </Grid.Column>
                 <Grid.Column>
-                    {input2Gride('นามสกุล (ภาษาอังกฤษ) :', 'กรุณากรอกนามสกุล (ภาษาอังกฤษ)', props.handleLnameEng(), 'text', props.lname_eng)}
+                    {input2Gride('นามสกุล (ภาษาอังกฤษ) :', 'Please enter your lastname in English.', props.handleLnameEng(), 'text', props.lname_eng)}
                 </Grid.Column>
             </Grid>
             <Grid columns={2} padded='horizontally'>
                 <Grid.Column>
-                    <MgGridLeft>{input2GrideGrideMG('อีเมล :', 'กรุณากรอกอีเมล', props.handleEmail(), 'email', props.email)}</MgGridLeft>
+                    <MgGridLeft>{input2GrideGrideMG('อีเมล :', 'ตัวอย่าง Example@test.com', props.handleEmail(), 'email', props.email)}</MgGridLeft>
                 </Grid.Column>
                 <Grid.Column>
                     {input2Gride('เฟสบุ๊ค :', 'กรุณากรอกเฟสบุ๊ค', props.handleFacebook(), 'text', props.facebook)}
@@ -631,10 +906,10 @@ export default enhance((props) =>
             </Grid>
             <Grid columns={2} padded='horizontally'>
                 <Grid.Column>
-                    <MgGridLeft>{input2GrideGrideMG('เลขบัตรประจำตัวประชาชน :', 'กรุณากรอกเลขบัตรประจำตัวประชาชน', props.handleIdcard(), 'number', props.idcard)}</MgGridLeft>
+                    <MgGridLeft>{inputOnkeyup('เลขบัตรประจำตัวประชาชน :', 'ตัวอย่าง 1-2345-67890-12-3', props.handleIdcard(), 'text', props.idcard)}</MgGridLeft>
                 </Grid.Column>
                 <Grid.Column>
-                    {input2Gride('เบอร์โทรติดต่อ :', 'กรุณากรอกเบอร์โทรติดต่อ', props.handleTel(), 'number', props.tel)}
+                    {input2GrideOnKeyUp('เบอร์โทรติดต่อ :', 'ตัวอย่าง 0881234567', props.handleTel(), 'text', props.tel)}
                 </Grid.Column>
             </Grid>
             <Grid columns={2} padded='horizontally'>
@@ -644,7 +919,7 @@ export default enhance((props) =>
                 <Grid.Column>
                     <Grid columns={2}>
                         <Grid.Column>
-                            {input2Gride('อายุ (ปี) :', 'กรุณากรอกอายุ', props.handleAge(), 'number', props.age)}
+                            {inputAge('อายุ (ปี) :', 'กรุณากรอกอายุ', props.handleAge(), 'number', props.age)}
                         </Grid.Column>
                         <Grid.Column>
                             <RadioSex>
@@ -678,10 +953,10 @@ export default enhance((props) =>
                 <Grid.Column>
                     <Grid columns={2}>
                         <Grid.Column>
-                            <WidthWeight>{input4GrideMG('น้ำหนัก (กก.) :', 'กรุณากรอกน้ำหนัก', props.handleWeight(), 'number', props.weight)}</WidthWeight>
+                            <WidthWeight>{inputWeigth('น้ำหนัก (กก.) :', 'กรุณากรอกน้ำหนัก', props.handleWeight(), 'text', props.weight)}</WidthWeight>
                         </Grid.Column>
                         <Grid.Column>
-                            <MgGridHeight>{input4Gride('ส่วนสูง (ซม.) :', 'กรุณากรอกส่วนสูง', props.handleHeight(), 'number', props.height)}</MgGridHeight>
+                            <MgGridHeight>{inputHeigth('ส่วนสูง (ซม.) :', 'กรุณากรอกส่วนสูง', props.handleHeight(), 'text', props.height)}</MgGridHeight>
                         </Grid.Column>
                     </Grid>
                 </Grid.Column>
@@ -719,10 +994,10 @@ export default enhance((props) =>
             </Grid>
             <Grid columns={2} padded='horizontally'>
                 <Grid.Column>
-                    <MgGridLeft>{input2GrideGrideMG('จำนวนพี่น้อง (คน) :', 'กรุณากรอกจำนวนพี่น้อง', props.handleBrethren(), 'number', props.brethren)}</MgGridLeft>
+                    <MgGridLeft>{inputOnkeyup('จำนวนพี่น้อง (คน) :', 'กรุณากรอกจำนวนพี่น้อง', props.handleBrethren(), 'text', props.brethren)}</MgGridLeft>
                 </Grid.Column>
                 <Grid.Column>
-                    {input2Gride('คุณเป็นบุตรคนที่ :', 'กรุณากรอกข้อมูล', props.handleSequence(), 'number', props.sequence)}
+                    {input2GrideOnKeyUp('คุณเป็นบุตรคนที่ :', 'กรุณากรอกข้อมูล', props.handleSequence(), 'text', props.sequence)}
                 </Grid.Column>
             </Grid>
             <Grid columns={1} padded='horizontally'>
@@ -748,11 +1023,11 @@ export default enhance((props) =>
                                     onChange={props.handleChangeStatus('สมรส')}
                                 />
                                 <MgRedio
-                                    label='หย่า'
+                                    label='หย่าร้าง'
                                     name='status'
-                                    value='หย่า'
-                                    checked={props.status === 'หย่า'}
-                                    onChange={props.handleChangeStatus('หย่า')}
+                                    value='หย่าร้าง'
+                                    checked={props.status === 'หย่าร้าง'}
+                                    onChange={props.handleChangeStatus('หย่าร้าง')}
                                 />
                                 <MgRedio
                                     label='หม้าย'
@@ -853,7 +1128,7 @@ export default enhance((props) =>
             </Grid>
             <Grid columns={2} padded='horizontally'>
                 <Grid.Column>
-                    <MgGridLeft>{input2GrideGrideMG('เบอร์โทรศัพท์ :', 'กรุณากรอกเบอร์โทร' , props.handleUrgenPhone() , 'number' , props.urgent_phone )}</MgGridLeft>
+                    <MgGridLeft>{inputOnkeyup('เบอร์โทรศัพท์ :', 'กรุณากรอกเบอร์โทร' , props.handleUrgenPhone() , 'text' , props.urgent_phone )}</MgGridLeft>
                 </Grid.Column>
                 <Grid.Column>
                     {input2Gride('ทราบการรับสมัครจาก :', 'กรุณากรอกข้อมูล' , props.handleUrgenApply() , 'text' , props.urgent_apply)}
@@ -875,7 +1150,7 @@ export default enhance((props) =>
             </Grid>
             <Grid columns={2} padded='horizontally'>
                 <Grid.Column>
-                    <MgGridLeft>{input2GrideGrideMG('เบอร์โทรศัพท์ :', 'กรุณากรอกเบอร์โทรศัพท์' , props.handleReferPhone() , 'number' , props.refer_phone)}</MgGridLeft>
+                    <MgGridLeft>{inputOnkeyup('เบอร์โทรศัพท์ :', 'กรุณากรอกเบอร์โทรศัพท์' , props.handleReferPhone() , 'text' , props.refer_phone)}</MgGridLeft>
                 </Grid.Column>
                 <Grid.Column>
                     {input2Gride('อาชีพ :', 'กรุณากรอกอาชีพ' , props.handleReferCareer() , 'text' , props.refer_career)}
