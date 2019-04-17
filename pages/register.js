@@ -9,6 +9,7 @@ import {
     input2Gride
 } from '../components/Input'
 import {CarouselCompane} from '../components/Carousel'
+import auth from '../firebase'
 
 const BoxHead = styled.div`
     margin-top: 40px !important;
@@ -66,18 +67,39 @@ const ButtonCancel = styled(Button)`
 
 const enhance = compose(
     withState('firstName','setFirstName'),
+    withState('email','setEmail'),
+    withState('password','setPassword'),
+    withState('passwordCheck','setPasswordCheck'),
     withProps({
         pageTitle: 'Register'
     }),
     withLayout,
     withHandlers({
-        handleFirstName : props => () => event => {
-            
+        onChange: props => () => event => {
+            const { name , value } = event.target
+            name === 'email' ? props.setEmail(value) : name === 'password' ? props.setPassword(value) : props.setPasswordCheck(value)
+        },
+        onSubmit: props => () => event => {        
+            event.preventDefault()
+            const { email , password , passwordCheck } = props   
+            if (password === passwordCheck) {
+                auth
+                .createUserWithEmailAndPassword(email, password)
+                .then(response => {
+                    console.log(response.user , 'response.user');
+                })
+                .catch(error => {
+                    console.log(error.message, 'error.message');               
+                })
+            }
+            else{
+                window.alert('wrong password')
+            }
         }
     })
 )
  
-export default enhance(() => 
+export default enhance((props) => 
     <div>
         {CarouselCompane ('CUPCODE CO., LTD.')}
         <Container>
@@ -90,7 +112,7 @@ export default enhance(() =>
                     <Grid columns={2} padded='horizontally'>
                         <Grid.Column>
                             <MgGridLeft>
-                                {input2GrideGrideMG('ชื่อ (ภาษาไทย) :', 'กรุณากรอกชื่อ (ภาษาไทย)' , props.handleFirstName() , 'text' , props.firstName)}
+                                {input2GrideGrideMG('ชื่อ (ภาษาไทย) :', 'กรุณากรอกชื่อ (ภาษาไทย)' , 'text' )}
                             </MgGridLeft>
                         </Grid.Column>
                         <Grid.Column>
@@ -100,7 +122,7 @@ export default enhance(() =>
                     <Grid columns={2} padded='horizontally'>
                         <Grid.Column>
                             <MgGridLeft>
-                                {input2GrideGrideMG('อีเมล :', 'กรุณากรอกอีเมล')}
+                                {input2GrideGrideMG('อีเมล :', 'กรุณากรอกอีเมล' , props.onChange() , 'text' , '' , 'email')}
                             </MgGridLeft>
                         </Grid.Column>
                         <Grid.Column>
@@ -110,14 +132,14 @@ export default enhance(() =>
                     <Grid columns={2} padded='horizontally'>
                         <Grid.Column>
                             <MgGridLeft>
-                                {input2GrideGrideMG('รหัสผ่าน :', 'กรุณากรอกรหัสผ่าน')}
+                                {input2GrideGrideMG('รหัสผ่าน :', 'กรุณากรอกรหัสผ่าน' , props.onChange() , 'text' , '' , 'password')}
                             </MgGridLeft>
                         </Grid.Column>
                         <Grid.Column>
-                            {input2Gride('ยืนยันรหัสผ่าน :', 'ยืนยันรหัสผ่าน')}
+                            {input2Gride('ยืนยันรหัสผ่าน :', 'ยืนยันรหัสผ่าน' , props.onChange() , 'text' , '' , 'passwordCheck')}
                         </Grid.Column>
                     </Grid>
-                <ButtonRegister type='submit'>ยืนยันการสมัครสมาชิก</ButtonRegister>
+                <ButtonRegister type='submit' onClick={props.onSubmit()}>ยืนยันการสมัครสมาชิก</ButtonRegister>
                 <ButtonCancel>ยกเลิกการสมัคร</ButtonCancel>
                 <br/><br/>
             </Box>

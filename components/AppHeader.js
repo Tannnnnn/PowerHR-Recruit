@@ -2,6 +2,8 @@ import { Segment , Header , Container , Menu , Image , Icon , Dropdown , Input ,
 import styled from 'styled-components'
 import theme from '../theme/default'
 import Link from 'next/link'
+import { compose , withProps, withHandlers, withState } from 'recompose'
+import auth from '../firebase'
 
 const SegmentHeader = styled(Segment) `
     overflow : none !important;
@@ -90,16 +92,16 @@ const ButtonLogin = styled(Button)`
     margin-left: 60% !important;
 `;
 
-const HR = styled.hr`
-    width: 100.4%;
-    height: 5px;
-    margin-left: -0.3% !important;
-    color: #ee3900 !important;
-    margin-top: 7% !important;
-    background-color: #ee3900 !important;
-    border: aliceblue;
-    border-radius: 87px;
-`;
+// const HR = styled.hr`
+//     width: 100.4%;
+//     height: 5px;
+//     margin-left: -0.3% !important;
+//     color: #ee3900 !important;
+//     margin-top: 7% !important;
+//     background-color: #ee3900 !important;
+//     border: aliceblue;
+//     border-radius: 87px;
+// `;
 
 const MgRegister = styled.text`
     margin-left: -60% !important;
@@ -107,14 +109,41 @@ const MgRegister = styled.text`
     font-size: 16px !important;
     color: ${theme.colors.fontBlack} !important;
     cursor : pointer ;
+    &:hover {
+        color: ${theme.colors.orange} !important;
+    }
 `;
 
 
-const options = [
-    { key: 'logOut', text: ' ออกจากระบบ', value: 'logOut' }
-]
 
-export default () => (
+const enhance = compose(
+    withState('email','setEmail'),
+    withState('password','setPassword'),
+    withState('currentUser','setCurrentUser'),
+    withState('errorMessage','setErrorMessage'),
+    withHandlers({
+        onChange: props => () => event => {
+            const { name , value } = event.target
+            name === 'email' ? props.setEmail(value) : props.setPassword(value)            
+        },
+        onSubmit: props => () => event => {            
+            event.preventDefault()
+            const { email , password } = props          
+            auth
+            .signInWithEmailAndPassword(email, password)
+            .then(response => {
+                props.setCurrentUser(response.user)
+                console.log(response.user , 'response.user' , response.message);
+            })
+            .catch(error => {
+                props.setErrorMessage(error.message) 
+                console.log(error.message, 'error.message');               
+            })
+        }
+    })
+)
+
+export default enhance((props) => 
     <div>
         <SegmentHeader clearing >
             <Container>
@@ -130,20 +159,19 @@ export default () => (
                                         </center>
                                         <MgFrom>
                                             <label>อีเมล :</label>
-                                            <TextInputLogin type="email" placeholder='กรุณากรอกอีเมล' onFocus/>
+                                            <TextInputLogin type="email" name="email" placeholder='กรุณากรอกอีเมล' onClick={e => e.stopPropagation()} onChange={props.onChange()}/>
                                         </MgFrom>
                                         <MgFromPassword>
                                             <label>รหัสผ่าน :</label>
-                                            <TextInputLogin type="password" placeholder='กรุณากรอกรหัสผ่าน' />
+                                            <TextInputLogin type="password" name="password" placeholder='กรุณากรอกรหัสผ่าน' onClick={e => e.stopPropagation()} onChange={props.onChange()}/>
                                         </MgFromPassword><br/><br/><br/>
-                                        <ButtonLogin type='submit'>เข้าสู่ระบบ</ButtonLogin>
+                                        <ButtonLogin type='submit' onClick={props.onSubmit()}>เข้าสู่ระบบ</ButtonLogin>
                                         <Link href='/register'>
                                             <MgRegister>
                                                 สมัครสมาชิก
                                             </MgRegister>
                                         </Link>
                                     </Form>
-                                    <HR/>
                                 </MarginDrowMenu>
                             </Dropdown>
                         </MenuItem>
