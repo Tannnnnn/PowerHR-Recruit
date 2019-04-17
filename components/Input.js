@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Form , TextArea } from 'semantic-ui-react'
 
 const SizeText1 = styled.label`
+    font-family : 'Kanit', sans-serif !important;
     font-size: 16px !important;
     font-weight: 600 !important;
 `;
