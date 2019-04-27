@@ -2,7 +2,9 @@ import { Segment , Header , Container , Menu , Image , Icon , Dropdown , Input ,
 import styled from 'styled-components'
 import theme from '../theme/default'
 import Link from 'next/link'
-import { compose , withProps, withHandlers, withState } from 'recompose'
+import { compose , withProps, withHandlers, withState , lifecycle } from 'recompose'
+import { inject, observer } from 'mobx-react'
+import _ from 'lodash'
 import auth from '../firebase'
 
 const SegmentHeader = styled(Segment) `
@@ -117,66 +119,117 @@ const MgRegister = styled.text`
 
 
 const enhance = compose(
+    inject('authStore'),
     withState('email','setEmail'),
     withState('password','setPassword'),
-    withState('currentUser','setCurrentUser'),
-    withState('errorMessage','setErrorMessage'),
     withHandlers({
         onChange: props => () => event => {
             const { name , value } = event.target
             name === 'email' ? props.setEmail(value) : props.setPassword(value)            
         },
-        onSubmit: props => () => event => {            
+        onSubmitLogin: props => () => event => { 
             event.preventDefault()
-            const { email , password } = props          
-            auth
-            .signInWithEmailAndPassword(email, password)
+            const { email , password } = props   
+            auth.signInWithEmailAndPassword(email, password)
             .then(response => {
-                props.setCurrentUser(response.user)
-                console.log(response.user , 'response.user' , response.message);
+                props.authStore.login(response)
+                window.location.href = '/'
             })
             .catch(error => {
-                props.setErrorMessage(error.message) 
-                console.log(error.message, 'error.message');               
+                const errorCode = error.code;
+                if (errorCode === 'auth/wrong-password') {
+                    alert('รหัสผ่านไม่ถูกต้อง');
+                } else {
+                    alert('อีเมลไม่ถูกต้อง หรือ ไม่มีอยู่ในระบบ');
+                }             
             })
         }
-    })
+    }),
+    lifecycle({
+        componentDidMount(){
+            
+        }
+    }),
+    observer 
 )
 
 export default enhance((props) => 
     <div>
         <SegmentHeader clearing >
             <Container>
-                <TextHeader as='h4' floated='right'>
-                    <Link href='#'>
-                        <MenuItem>
-                            <Dropdown text='เข้าสู่ระบบ' >
-                                <MarginDrowMenu>
-                                    <Form>
-                                        <center>
-                                            <TextLogin>เข้าสู่ระบบ</TextLogin>
-                                            <MgHR/>
-                                        </center>
-                                        <MgFrom>
-                                            <label>อีเมล :</label>
-                                            <TextInputLogin type="email" name="email" placeholder='กรุณากรอกอีเมล' onClick={e => e.stopPropagation()} onChange={props.onChange()}/>
-                                        </MgFrom>
-                                        <MgFromPassword>
-                                            <label>รหัสผ่าน :</label>
-                                            <TextInputLogin type="password" name="password" placeholder='กรุณากรอกรหัสผ่าน' onClick={e => e.stopPropagation()} onChange={props.onChange()}/>
-                                        </MgFromPassword><br/><br/><br/>
-                                        <ButtonLogin type='submit' onClick={props.onSubmit()}>เข้าสู่ระบบ</ButtonLogin>
-                                        <Link href='/register'>
-                                            <MgRegister>
-                                                สมัครสมาชิก
-                                            </MgRegister>
-                                        </Link>
-                                    </Form>
-                                </MarginDrowMenu>
-                            </Dropdown>
-                        </MenuItem>
-                    </Link>
-                </TextHeader>
+                {
+                    props.authStore.accessToken
+                    ? <div>
+                        {/* <ImageHeader as='h4' floated='left'>
+                            <Image  src='https://www.img.in.th/images/687206af74ec86d36b815002c694b34e.png' size='small' />
+                        </ImageHeader>
+                        <TextHeader as='h4' floated='left'>
+                            <MenuItem>
+                                {props.authStore.currentUser.email}
+                            </MenuItem>
+                        </TextHeader> */}
+                        <TextHeader as='h4' floated='right' onClick={() => props.authStore.logout()}> 
+                            <Link>
+                                <MenuItem >
+                                    ออกจากระบบ
+                                </MenuItem>
+                            </Link>
+                        </TextHeader>
+                        <TextHeader as='h4' floated='right' >
+                            <Link href={{ pathname : '../Resume/Personal_information' }}>
+                                <MenuItem>
+                                    ข้อมูลส่วนตัว
+                                </MenuItem>
+                            </Link>
+                        </TextHeader>
+                        <TextHeader as='h4' floated='right'>
+                            <Link href='#'>
+                                <MenuItem>
+                                    ประวัติการสมัครงาน
+                                </MenuItem>
+                            </Link>
+                        </TextHeader>
+                        <TextHeader as='h4' floated='right'>
+                            <Link href='../Interview/ListPositionInterview'>
+                                <MenuItem>
+                                    ประกาศผล
+                                </MenuItem>
+                            </Link>
+                        </TextHeader>
+                    </div> 
+                    : <div>
+                        <TextHeader as='h4' floated='right'>
+                            <Link href='#'>
+                                <MenuItem>
+                                    <Dropdown text='เข้าสู่ระบบ' >
+                                        <MarginDrowMenu>
+                                            <Form>
+                                                <center>
+                                                    <TextLogin>เข้าสู่ระบบ</TextLogin>
+                                                    <MgHR/>
+                                                </center>
+                                                <MgFrom>
+                                                    <label>อีเมล :</label>
+                                                    <TextInputLogin type="email" name="email" placeholder='กรุณากรอกอีเมล' onClick={e => e.stopPropagation()} onChange={props.onChange()}/>
+                                                </MgFrom>
+                                                <MgFromPassword>
+                                                    <label>รหัสผ่าน :</label>
+                                                    <TextInputLogin type="password" name="password" placeholder='กรุณากรอกรหัสผ่าน' onClick={e => e.stopPropagation()} onChange={props.onChange()}/>
+                                                </MgFromPassword><br/><br/><br/>
+                                                <ButtonLogin type='submit' onClick={props.onSubmitLogin()}>เข้าสู่ระบบ</ButtonLogin>
+                                                <Link href='/register'>
+                                                    <MgRegister>
+                                                        สมัครสมาชิก
+                                                    </MgRegister>
+                                                </Link>
+                                            </Form>
+                                        </MarginDrowMenu>
+                                    </Dropdown>
+                                </MenuItem>
+                            </Link>
+                        </TextHeader>
+                    </div>
+                }
                 <TextHeader as='h4' floated='right'>
                     <Link href='/index'>
                         <MenuItem>
@@ -185,44 +238,6 @@ export default enhance((props) =>
                     </Link>
                 </TextHeader>
             </Container>
-            {/* <Container>
-                <TextHeader as='h4' floated='right'>
-                    <MenuItem>
-                         <Dropdown simple item options={options} text='พงศธร จันด้วง' />
-                    </MenuItem>
-                </TextHeader>
-                <ImageHeader as='h4' floated='right'>
-                    <Image  src='https://www.img.in.th/images/687206af74ec86d36b815002c694b34e.png' size='small' />
-                </ImageHeader>
-                <TextHeader as='h4' floated='right'>
-                    <Link href='#'>
-                        <MenuItem>
-                            ข้อมูลส่วนตัว
-                        </MenuItem>
-                    </Link>
-                </TextHeader>
-                <TextHeader as='h4' floated='right'>
-                    <Link href='#'>
-                        <MenuItem>
-                            ประวัติการสมัครงาน
-                        </MenuItem>
-                    </Link>
-                </TextHeader>
-                <TextHeader as='h4' floated='right'>
-                    <Link href='../Interview/ListPositionInterview'>
-                        <MenuItem>
-                            ประกาศผล
-                        </MenuItem>
-                    </Link>
-                </TextHeader>
-                <TextHeader as='h4' floated='right'>
-                    <Link href='/index'>
-                        <MenuItem>
-                            ตำแหน่งเปิดรับสมัคร
-                        </MenuItem>
-                    </Link>
-                </TextHeader>
-            </Container> */}
         </SegmentHeader>
     </div>
 )

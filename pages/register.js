@@ -1,7 +1,7 @@
 import React from 'react'
-import { withLayout } from '../hoc'
+import { withLayout , withApp } from '../hoc'
 import styled from 'styled-components'
-import { compose , withProps, withHandlers, withState } from 'recompose'
+import { compose , withProps, withHandlers, withState , lifecycle } from 'recompose'
 import { Container, Grid, Button, Form } from 'semantic-ui-react'
 import theme from '../theme/default'
 import { 
@@ -9,7 +9,8 @@ import {
     input2Gride
 } from '../components/Input'
 import {CarouselCompane} from '../components/Carousel'
-import auth from '../firebase'
+import { inject, observer } from 'mobx-react'
+
 
 const BoxHead = styled.div`
     margin-top: 40px !important;
@@ -66,6 +67,8 @@ const ButtonCancel = styled(Button)`
 `;
 
 const enhance = compose(
+    withApp,
+    inject('authStore'),
     withState('firstName','setFirstName'),
     withState('email','setEmail'),
     withState('password','setPassword'),
@@ -83,26 +86,28 @@ const enhance = compose(
             event.preventDefault()
             const { email , password , passwordCheck } = props   
             if (password === passwordCheck) {
-                auth
-                .createUserWithEmailAndPassword(email, password)
-                .then(response => {
-                    console.log(response.user , 'response.user');
-                })
-                .catch(error => {
-                    console.log(error.message, 'error.message');               
-                })
+                props.authStore.createUser(email,password)
             }
             else{
                 window.alert('wrong password')
             }
         }
-    })
+    }),
+    lifecycle({
+        componentDidMount(){
+            console.log('this.props.authStore' , this.props.authStore);
+            
+            !this.props.authStore.accessToken ? null : window.history.back()
+        }
+    }),
+    observer
 )
  
 export default enhance((props) => 
     <div>
         {CarouselCompane ('CUPCODE CO., LTD.')}
         <Container>
+            {console.log(props.authStore.accessToken , 'props.authStore.currentUser')}
             <BoxHead>
                 <center><br/><TextBox>สมัครสมาชิก</TextBox></center><br/>
             </BoxHead>
@@ -122,7 +127,7 @@ export default enhance((props) =>
                     <Grid columns={2} padded='horizontally'>
                         <Grid.Column>
                             <MgGridLeft>
-                                {input2GrideGrideMG('อีเมล :', 'กรุณากรอกอีเมล' , props.onChange() , 'text' , '' , 'email')}
+                                {input2GrideGrideMG('อีเมล :', 'กรุณากรอกอีเมล' , props.onChange() , 'email' , '' , 'email')}
                             </MgGridLeft>
                         </Grid.Column>
                         <Grid.Column>
@@ -132,11 +137,11 @@ export default enhance((props) =>
                     <Grid columns={2} padded='horizontally'>
                         <Grid.Column>
                             <MgGridLeft>
-                                {input2GrideGrideMG('รหัสผ่าน :', 'กรุณากรอกรหัสผ่าน' , props.onChange() , 'text' , '' , 'password')}
+                                {input2GrideGrideMG('รหัสผ่าน :', 'กรุณากรอกรหัสผ่าน' , props.onChange() , 'password' , '' , 'password')}
                             </MgGridLeft>
                         </Grid.Column>
                         <Grid.Column>
-                            {input2Gride('ยืนยันรหัสผ่าน :', 'ยืนยันรหัสผ่าน' , props.onChange() , 'text' , '' , 'passwordCheck')}
+                            {input2Gride('ยืนยันรหัสผ่าน :', 'ยืนยันรหัสผ่าน' , props.onChange() , 'password' , '' , 'passwordCheck')}
                         </Grid.Column>
                     </Grid>
                 <ButtonRegister type='submit' onClick={props.onSubmit()}>ยืนยันการสมัครสมาชิก</ButtonRegister>
