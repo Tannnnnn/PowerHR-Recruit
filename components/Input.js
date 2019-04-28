@@ -102,23 +102,23 @@ export const inputOnkeyup = (data , placeholder , fn , type , value) => (
     </div>
 )
 
-export const input2GrideGrideMG = (data , placeholder , fn , type , value) => (
+export const input2GrideGrideMG = (data , placeholder , fn , type , value , name) => (
     <div>
         <Form>
             <WidthForm>
                 <SizeText1>{data}</SizeText1>
-                <SizeTextinput placeholder={placeholder} onChange={fn} defaultValue={value} type={type}/>
+                <SizeTextinput placeholder={placeholder} onChange={fn} defaultValue={value} type={type} name={name}/>
             </WidthForm>
         </Form>
     </div>
 )
 
-export const input2Gride = (data , placeholder , fn , type , value) => (
+export const input2Gride = (data , placeholder , fn , type , value , name) => (
     <div>
         <Form>
             <WidthFormRight>
                 <SizeText1>{data}</SizeText1>
-                <SizeTextinput placeholder={placeholder} onChange={fn} type={type} defaultValue={value}/>
+                <SizeTextinput placeholder={placeholder} onChange={fn} type={type} defaultValue={value} name={name}/>
             </WidthFormRight>
         </Form>
     </div>

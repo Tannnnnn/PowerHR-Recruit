@@ -358,7 +358,7 @@ const enhance = compose(
                 window.alert('คุณกรอกข้อมูลไม่ถูกต้อง หรือ ไม่ครบถ้วน \nกรุณากรอกข้อมูลใหม่อีกครั้ง !!!')
             }      
             else{
-                Router.push({ pathname : '/ApplyJob/Ability_information' , query : { id : props.url.query.id }})
+                Router.push({ pathname : '/Resume/Ability_information' , query : { id : props.url.query.id }})
             }
         },
         saveThisPagePrev: props => () => event => {
@@ -384,14 +384,14 @@ const enhance = compose(
                 'otherSchool_grade' : props.otherSchool_grade,
                 'otherSchool_congrate' : props.otherSchool_congrate,
             }))      
-            Router.push({ pathname : '/ApplyJob/Address_information' , query : { id : props.url.query.id }})
+            Router.push({ pathname : '/Resume/Address_information' , query : { id : props.url.query.id }})
         },
     })
 )
 
 export default enhance( (props)=> 
     <Container>
-        {Breadcrumb3Page('ตำแหน่งเปิดรับ', `รายละเอียดตำแหน่ง ${props.position_name}` , 'สมัครงาน' , '../index' ,`${props.url.query.id}` )}
+        <br/><br/>
         <BoxHead>
             <center><br/><TextBox>สมัครงาน</TextBox></center><br/>
         </BoxHead>

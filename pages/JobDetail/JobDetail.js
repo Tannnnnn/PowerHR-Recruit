@@ -1,12 +1,14 @@
 import React from 'react'
-import { withLayout } from '../../hoc'
+import { withLayout , withApp } from '../../hoc'
 import { compose , withState , lifecycle , withHandlers , withProps } from 'recompose'
 import {CarouselCompane} from '../../components/Carousel'
 import styled from 'styled-components'
-import { Container , Divider , Grid , Button , Image , Label} from 'semantic-ui-react'
+import { Container , Divider , Grid , Button , Image , Label , Modal , Form } from 'semantic-ui-react'
 import {Breadcrumb2Page} from '../../components/Breadcrumb'
 import axios from 'axios'
-import Link from 'next/link'
+import {inputOnkeyup } from '../../components/Input'
+import { inject, observer } from 'mobx-react'
+// import auth from '../firebase'
 
 const BodyBox = styled.div`
     background : #ffffff;
@@ -78,10 +80,78 @@ const IMGSize = styled(Image)`
     display: inline-block !important;
 `;
 
+const BgHandTask = styled.div`
+    background : #ee3900 !important;
+    height: 62px !important;
+    width: 100% !important;
+    border-radius: 5px;
+`;
+
+const TextTask = styled.p`
+    color : #fff !important;
+    font-size: 25px !important;
+    padding-top: 3% !important;
+`;
+
+const MgFrom = styled(Form.Field)`
+    width: 100% !important;
+    height: 47px !important;
+    margin-top: 5% !important;
+    font-family: 'Kanit', sans-serif !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+`;
+
+const TextPosition = styled.p`
+    font-size: 16px !important;
+    margin-top: 3% !important;
+    font-weight: 600 !important;
+`;
+
+const TextSmallPosition = styled.small`
+    font-size: 16px !important;
+    font-weight: 600 !important;
+`;
+
+const ButtonOK = styled(Button)`
+    margin-top: 3% !important;
+    margin-left: 3px !important;
+    background : #ee3900 !important;
+    floated : right;
+    fontSize: 18 !important;
+    font-family: 'Kanit', sans-serif !important;
+    width: 34% !important;
+    height: 46px !important;
+    color: #ffffff !important;
+    font-weight: 500 !important;
+`;
+
+const ButtonCancel = styled(Button)`
+    floated : right;
+    margin-left: 30% !important;
+    fontSize: 18 !important;
+    font-family: 'Kanit', sans-serif !important;
+    width: 34% !important;
+    height: 46px !important;
+    background-color: #ffffff !important;
+    font-weight: 600 !important;
+`;
+
+const MgLogin = styled.div`
+    margin-top: 3% !important;
+`;
+
+const MgPassword = styled.div`
+    margin-top: 3% !important;
+`;
+
 const enhance = compose(
+    withApp,
+    inject('authStore'),
     withState('detail','setDetail',[]),
     withState('startdate','setStartdate'),
     withState('enddate','setEnddate'),
+    withState('salary','setSalary'),
     withProps({
         pageTitle: 'Jobs Detail'
     }),
@@ -141,19 +211,53 @@ const enhance = compose(
     withHandlers({
         handleButtonApplyJob: props => (name) => {                        
             return(
-                <Link href={{ pathname : '../ApplyJob/Personal_information' , query : { id : props.url.query.id } }}>
-                    <MarginBTN as='div' labelPosition='right'>
+                <Modal size={'tiny'} trigger={
+                    <MarginBTN as='div' labelPosition='right' >
                         <ColorBTN>
                             สมัครงาน
                         </ColorBTN>
                         <Colorlabel as='a'>
                             <Image src='https://www.img.in.th/images/68c0f730b867d22a3086b9fdfd7cf787.png' size='small' />
                         </Colorlabel>
-                    </MarginBTN>
-                </Link>
+                    </MarginBTN>}>
+                    {
+                        props.authStore.accessToken
+                        ? <Modal.Content>
+                            <Modal.Description>
+                                <center>
+                                    <BgHandTask>
+                                        <TextTask>สมัครงาน</TextTask>
+                                    </BgHandTask>
+                                </center>
+                                <from>
+                                    <TextPosition>ตำแหน่งงานที่สมัคร : <smaTextSmallPositionll>{name}</smaTextSmallPositionll></TextPosition>
+                                    {inputOnkeyup('เงินเดือนที่ต้องการ :','กรุณากรอกเงินเดือนที่ต้องการ' , '' , 'text' , '')}
+                                    <ButtonCancel>ยกเลิกสมัครงาน</ButtonCancel>
+                                    <ButtonOK>ยืนยันสมัครงาน</ButtonOK>
+                                </from>
+                            </Modal.Description>
+                        </Modal.Content>
+                        :<Modal.Content>
+                            <Modal.Description>
+                                <center>
+                                    <BgHandTask>
+                                        <TextTask>เข้าสู่ระบบ</TextTask>
+                                    </BgHandTask>
+                                </center>
+                                <from>
+                                    <MgLogin>{inputOnkeyup('อีเมล :','กรุณากรอกอีเมล' , '' , 'email' , '')}</MgLogin>
+                                    <MgPassword>{inputOnkeyup('รหัสผ่าน :','กรุณากรอกรหัสผ่าน' , '' , 'password' , '')}</MgPassword>
+                                    <ButtonCancel>สมัครสมาชิก</ButtonCancel>
+                                    <ButtonOK>เข้าสู่ระบบ</ButtonOK>
+                                </from>
+                            </Modal.Description>
+                        </Modal.Content>
+                    }
+                </Modal>
             )
         }
-    })
+    }),
+    observer
 )
 
 export default enhance( (props)=> 

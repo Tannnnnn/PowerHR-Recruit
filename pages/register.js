@@ -1,5 +1,5 @@
 import React from 'react'
-import { withLayout } from '../hoc'
+import { withLayout , withApp } from '../hoc'
 import styled from 'styled-components'
 import { compose , withProps, withHandlers, withState , lifecycle } from 'recompose'
 import { Container, Grid, Button, Form } from 'semantic-ui-react'
@@ -10,6 +10,8 @@ import {
     input2Gride
 } from '../components/Input'
 import {CarouselCompane} from '../components/Carousel'
+import { inject, observer } from 'mobx-react'
+
 
 const BoxHead = styled.div`
     margin-top: 40px !important;
@@ -66,26 +68,31 @@ const ButtonCancel = styled(Button)`
 `;
 
 const enhance = compose(
-    withState('all_users','setAllUsers'),
+    withApp,
+    inject('authStore'),
     withState('firstName','setFirstName'),
-    withState('lastName','setLastName'),
+    withState('lastName', 'setLastName'),
     withState('email','setEmail'),
-    withState('password','setPassword'),
-    withState('confirmPassword','setConfirmPassword'),
     withState('idCard','setIdCard'),
+    withState('password','setPassword'),
+    withState('passwordCheck','setPasswordCheck'),
     withProps({
         pageTitle: 'Register'
     }),
     withLayout,
     lifecycle({
         async componentDidMount(){
-          const url = `http://localhost:4000/user`
-          const res = await axios.get(url)
-          let users = []
-          res.data.map( data => {
-            users.push(data.firstName , data.lastName , data.email , data.password , data.idCard)
-          })
-          this.props.setAllUsers(users) 
+        //   const urlIdCard = `http://localhost:4000/user/${this.props.urlIdCard.query.data}`
+        //   const resIdCard = await axios.get(urlIdCard)
+        //   this.props.setIdCard(resIdCard.data[0].idCard)
+
+        //   const url = `http://localhost:4000/user`
+        //   const res = await axios.get(url)
+        //   let users = []
+        //   res.data.map( data => {
+        //     users.push(data.firstName , data.lastName , data.email , data.password , data.idCard)
+        //   })
+        //   this.props.setAllUsers(users) 
         }
     }),
     withHandlers({
@@ -95,41 +102,62 @@ const enhance = compose(
         handleLastName : props => () => event => {
             props.setLastName(event.target.value)
         },
-        handleEmail : props => () => event => {
-            props.setEmail(event.target.value)
-        },
-        handlePassword : props => () => event => {
-            props.setPassword(event.target.value)
-        },
-        handleConfirmPassword : props => () => event => {
-            props.setConfirmPassword(event.target.value)
-        },
         handleIdCard : props => () => event => {
             props.setIdCard(event.target.value)
         },
-        handleSaveUser : props => () => event => {
-            const url = 'http://localhost:4000/user'
-            axios.post(url , {
-                firstName : props.firstName,
-                lastName : props.lastName,
-                email : props.email,
-                password : props.password,
-                idCard : props.idCard
-            })
-            .then( res => {
-                console.log(res)
-            })
-            .catch( err => {
-                console.log(err);
-            })
+        onChange: props => () => event => {
+            const { name , value } = event.target
+            name === 'email' ? props.setEmail(value) : name === 'password' ? props.setPassword(value) : props.setPasswordCheck(value)
+        },
+        onSubmit: props => () => event => {        
+            event.preventDefault()
+            const { email , password , passwordCheck , idCard, firstName, lastName } = props   
+            if (password == passwordCheck) {
+                const urlIdCard = `http://localhost:4000/user/${props.idCard}`
+                axios.get(urlIdCard)
+                .then( res => {
+                    console.log(res);
+                })
+                .catch( err => console.log(err))
+            }
+            // props.authStore.createUser(email,password)
+            
+            //     const url = 'http://localhost:4000/user'
+            //     axios.post(url , {
+            //         firstName : props.firstName,
+            //         lastName : props.lastName,
+            //         email : props.email,
+            //         password : props.password,
+            //         idCard : props.idCard
+            //     })
+            //     .then( res => {
+            //         console.log(res)
+            //        
+            //     })
+            //     .catch( err => {
+            //         console.log(err);
+            //     })
+            // }
+            // else{
+            //     window.alert('wrong password')
+            // }
         }
-    })
+    }),
+    lifecycle({
+        componentDidMount(){
+            console.log('this.props.authStore' , this.props.authStore);
+            
+            !this.props.authStore.accessToken ? null : window.history.back()
+        }
+    }),
+    observer
 )
  
 export default enhance((props) => 
     <div>
         {CarouselCompane ('CUPCODE CO., LTD.')}
         <Container>
+            {console.log(props.authStore.accessToken , 'props.authStore.currentUser')}
             <BoxHead>
                 <center><br/><TextBox>สมัครสมาชิก</TextBox></center><br/>
             </BoxHead>
@@ -139,7 +167,7 @@ export default enhance((props) =>
                     <Grid columns={2} padded='horizontally'>
                         <Grid.Column>
                             <MgGridLeft>
-                                {input2GrideGrideMG('ชื่อ (ภาษาไทย) :', 'กรุณากรอกชื่อ (ภาษาไทย)' , props.handleFirstName() , 'text' , props.firstName)}
+                                {input2GrideGrideMG('ชื่อ (ภาษาไทย) :', 'กรุณากรอกชื่อ (ภาษาไทย)' , props.handleFirstName(), 'text' , props.firstname )}
                             </MgGridLeft>
                         </Grid.Column>
                         <Grid.Column>
@@ -149,7 +177,7 @@ export default enhance((props) =>
                     <Grid columns={2} padded='horizontally'>
                         <Grid.Column>
                             <MgGridLeft>
-                                {input2GrideGrideMG('อีเมล :', 'กรุณากรอกอีเมล' , props.handleEmail() , 'email' , props.email)}
+                                {input2GrideGrideMG('อีเมล :', 'กรุณากรอกอีเมล' , props.onChange() , 'email' , props.email)}
                             </MgGridLeft>
                         </Grid.Column>
                         <Grid.Column>
@@ -159,15 +187,15 @@ export default enhance((props) =>
                     <Grid columns={2} padded='horizontally'>
                         <Grid.Column>
                             <MgGridLeft>
-                                {input2GrideGrideMG('รหัสผ่าน :', 'กรุณากรอกรหัสผ่าน' , props.handlePassword() , 'password' , props.password)}
+                                {input2GrideGrideMG('รหัสผ่าน :', 'กรุณากรอกรหัสผ่าน' , props.onChange() , 'password' , props.password )}
                             </MgGridLeft>
                         </Grid.Column>
                         <Grid.Column>
-                            {input2Gride('ยืนยันรหัสผ่าน :', 'ยืนยันรหัสผ่าน' , props.handleConfirmPassword() , 'password' , props.confirmPassword)}
+                            {input2Gride('ยืนยันรหัสผ่าน :', 'ยืนยันรหัสผ่าน' , props.onChange() , 'password' , props.passwordCheck)}
                         </Grid.Column>
                     </Grid>
-                <ButtonRegister type='submit' onClick={props.handleSaveUser()}>ยืนยันการสมัครสมาชิก</ButtonRegister>
-                <ButtonCancel href="javascript:history.back()">ยกเลิกการสมัคร</ButtonCancel>
+                <ButtonRegister type='submit' onClick={props.onSubmit()}>ยืนยันการสมัครสมาชิก</ButtonRegister>
+                <ButtonCancel>ยกเลิกการสมัคร</ButtonCancel>
                 <br/><br/>
             </Box>
         </Container>

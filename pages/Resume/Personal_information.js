@@ -417,7 +417,7 @@ const enhance = compose(
                 window.alert('คุณกรอกข้อมูลไม่ถูกต้อง หรือ ไม่ครบถ้วน \nกรุณากรอกข้อมูลใหม่อีกครั้ง !!!')
             }
             else{
-                Router.push({ pathname : '/ApplyJob/Address_information' , query : { id : props.url.query.id }})
+                Router.push({ pathname : '/Resume/Address_information' , query : { id : props.url.query.id }})
             }
         },
         onChangeSalary: props => () => event => {                 
@@ -847,7 +847,7 @@ const enhance = compose(
 
 export default enhance((props) =>
     <Container>
-        {Breadcrumb3Page('ตำแหน่งเปิดรับ', `รายละเอียดตำแหน่ง ${props.position_name}` , 'สมัครงาน' , '../index' ,`${props.url.query.id}` )}
+        <br/><br/>
         <BoxHead>
             <center><br /><TextBox>สมัครงาน</TextBox></center><br />
         </BoxHead>
