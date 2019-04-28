@@ -102,24 +102,29 @@ const enhance = compose(
         pageTitle: 'Ability information'
     }),
     withLayout,
+    withHandlers({
+        initAbilityLocalStorege: props => () => {
+            if (localStorage.Ability_page) {
+                props.setMotorcycles(JSON.parse(localStorage.getItem('Ability_page')).motorcycles)            
+                props.setCar(JSON.parse(localStorage.getItem('Ability_page')).car)            
+                props.setOuter(JSON.parse(localStorage.getItem('Ability_page')).outer)            
+                props.setEnglish(JSON.parse(localStorage.getItem('Ability_page')).english)            
+                props.setEnglish_speak(JSON.parse(localStorage.getItem('Ability_page')).english_speak)            
+                props.setEnglish_read(JSON.parse(localStorage.getItem('Ability_page')).english_read)            
+                props.setEnglish_writh(JSON.parse(localStorage.getItem('Ability_page')).english_writh)            
+                props.setThaiprint(JSON.parse(localStorage.getItem('Ability_page')).thaiprint)            
+                props.setEngprint(JSON.parse(localStorage.getItem('Ability_page')).engprint)            
+                props.setComputerSkill(JSON.parse(localStorage.getItem('Ability_page')).computerSkill) 
+            }
+            if (localStorage) {
+                props.setPosition_name(JSON.parse(localStorage.getItem('Personal_page')).position)
+            }
+        }
+    }),
     lifecycle({
         async componentDidMount(){
             window.scrollTo(0, 0)
-            if (localStorage.Ability_page) {
-                this.props.setMotorcycles(JSON.parse(localStorage.getItem('Ability_page')).motorcycles)            
-                this.props.setCar(JSON.parse(localStorage.getItem('Ability_page')).car)            
-                this.props.setOuter(JSON.parse(localStorage.getItem('Ability_page')).outer)            
-                this.props.setEnglish(JSON.parse(localStorage.getItem('Ability_page')).english)            
-                this.props.setEnglish_speak(JSON.parse(localStorage.getItem('Ability_page')).english_speak)            
-                this.props.setEnglish_read(JSON.parse(localStorage.getItem('Ability_page')).english_read)            
-                this.props.setEnglish_writh(JSON.parse(localStorage.getItem('Ability_page')).english_writh)            
-                this.props.setThaiprint(JSON.parse(localStorage.getItem('Ability_page')).thaiprint)            
-                this.props.setEngprint(JSON.parse(localStorage.getItem('Ability_page')).engprint)            
-                this.props.setComputerSkill(JSON.parse(localStorage.getItem('Ability_page')).computerSkill) 
-            }
-            if (localStorage) {
-                this.props.setPosition_name(JSON.parse(localStorage.getItem('Personal_page')).position)
-            }
+            await this.props.initAbilityLocalStorege()
         }
     }),
     withHandlers({
@@ -208,14 +213,15 @@ const enhance = compose(
                 'thaiprint' : props.thaiprint,
                 'engprint' : props.engprint,
                 'computerSkill' : props.computerSkill,
-            }))            
-            const checkInputData = Object.getOwnPropertyNames(JSON.parse(localStorage.getItem('Ability_page')));
-            if (checkInputData.length < 10) {
-                window.alert('คุณกรอกข้อมูลไม่ถูกต้อง หรือ ไม่ครบถ้วน \nกรุณากรอกข้อมูลใหม่อีกครั้ง !!!')
-            }
-            else{
-                Router.push({ pathname : '/Resume/Task_information' , query : { id : props.url.query.id }})
-            }
+            }))    
+            Router.push({ pathname : '/Resume/Task_information' })        
+            // const checkInputData = Object.getOwnPropertyNames(JSON.parse(localStorage.getItem('Ability_page')));
+            // if (checkInputData.length < 10) {
+            //     window.alert('คุณกรอกข้อมูลไม่ถูกต้อง หรือ ไม่ครบถ้วน \nกรุณากรอกข้อมูลใหม่อีกครั้ง !!!')
+            // }
+            // else{
+            //     Router.push({ pathname : '/Resume/Task_information' , query : { id : props.url.query.id }})
+            // }
         },
         saveThisPagePrev: props => () => event => {
             localStorage.setItem('Ability_page', JSON.stringify({
@@ -230,7 +236,7 @@ const enhance = compose(
                 'engprint' : props.engprint,
                 'computerSkill' : props.computerSkill,
             }))            
-            Router.push({ pathname : '/Resume/School_information' , query : { id : props.url.query.id }})
+            Router.push({ pathname : '/Resume/School_information' })
         },
     })
 )
@@ -239,7 +245,7 @@ export default enhance( (props)=>
     <Container>
         <br/><br/>
         <BoxHead>
-            <center><br/><TextBox>สมัครงาน</TextBox></center><br/>
+            <center><br/><TextBox>ประวัติส่วนตัว</TextBox></center><br/>
         </BoxHead>
         <BoxHead2/>
         <Box>

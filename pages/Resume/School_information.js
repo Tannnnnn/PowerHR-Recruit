@@ -87,37 +87,42 @@ const enhance = compose(
         pageTitle: 'School information'
     }),
     withLayout,
+    withHandlers({
+        initSchoolLocalStorege: props => () => {
+            if (localStorage.School_page) {
+                props.setHighSchool_name(JSON.parse(localStorage.getItem('School_page')).highSchool_name)            
+                props.setHighSchool_country(JSON.parse(localStorage.getItem('School_page')).highSchool_country)            
+                props.setHighSchool_major(JSON.parse(localStorage.getItem('School_page')).highSchool_major)            
+                props.setHighSchool_grade(JSON.parse(localStorage.getItem('School_page')).highSchool_grade)            
+                props.setHighSchool_congrate(JSON.parse(localStorage.getItem('School_page')).highSchool_congrate) 
+
+                props.setDiplomaSchool_name(JSON.parse(localStorage.getItem('School_page')).diplomaSchool_name)            
+                props.setDiplomaSchool_country(JSON.parse(localStorage.getItem('School_page')).diplomaSchool_country)            
+                props.setDiplomaSchool_major(JSON.parse(localStorage.getItem('School_page')).diplomaSchool_major)            
+                props.setDiplomaSchool_grade(JSON.parse(localStorage.getItem('School_page')).diplomaSchool_grade)            
+                props.setDiplomaSchool_congrate(JSON.parse(localStorage.getItem('School_page')).diplomaSchool_congrate) 
+
+                props.setBechelorSchool_name(JSON.parse(localStorage.getItem('School_page')).bechelorSchool_name)            
+                props.setBechelorSchool_country(JSON.parse(localStorage.getItem('School_page')).bechelorSchool_country)            
+                props.setBechelorSchool_major(JSON.parse(localStorage.getItem('School_page')).bechelorSchool_major)            
+                props.setBechelorSchool_grade(JSON.parse(localStorage.getItem('School_page')).bechelorSchool_grade)            
+                props.setBechelorSchool_congrate(JSON.parse(localStorage.getItem('School_page')).bechelorSchool_congrate)  
+
+                props.setOtherSchool_name(JSON.parse(localStorage.getItem('School_page')).otherSchool_name)            
+                props.setOtherSchool_country(JSON.parse(localStorage.getItem('School_page')).otherSchool_country)            
+                props.setOtherSchool_major(JSON.parse(localStorage.getItem('School_page')).otherSchool_major)            
+                props.setOtherSchool_grade(JSON.parse(localStorage.getItem('School_page')).otherSchool_grade)            
+                props.setOtherSchool_congrate(JSON.parse(localStorage.getItem('School_page')).otherSchool_congrate)
+            }
+            if (localStorage) {
+                props.setPosition_name(JSON.parse(localStorage.getItem('Personal_page')).position)
+            }
+        }
+    }),
     lifecycle({
         async componentDidMount(){
             window.scrollTo(0, 0)
-            if (localStorage.School_page) {
-                this.props.setHighSchool_name(JSON.parse(localStorage.getItem('School_page')).highSchool_name)            
-                this.props.setHighSchool_country(JSON.parse(localStorage.getItem('School_page')).highSchool_country)            
-                this.props.setHighSchool_major(JSON.parse(localStorage.getItem('School_page')).highSchool_major)            
-                this.props.setHighSchool_grade(JSON.parse(localStorage.getItem('School_page')).highSchool_grade)            
-                this.props.setHighSchool_congrate(JSON.parse(localStorage.getItem('School_page')).highSchool_congrate) 
-
-                this.props.setDiplomaSchool_name(JSON.parse(localStorage.getItem('School_page')).diplomaSchool_name)            
-                this.props.setDiplomaSchool_country(JSON.parse(localStorage.getItem('School_page')).diplomaSchool_country)            
-                this.props.setDiplomaSchool_major(JSON.parse(localStorage.getItem('School_page')).diplomaSchool_major)            
-                this.props.setDiplomaSchool_grade(JSON.parse(localStorage.getItem('School_page')).diplomaSchool_grade)            
-                this.props.setDiplomaSchool_congrate(JSON.parse(localStorage.getItem('School_page')).diplomaSchool_congrate) 
-
-                this.props.setBechelorSchool_name(JSON.parse(localStorage.getItem('School_page')).bechelorSchool_name)            
-                this.props.setBechelorSchool_country(JSON.parse(localStorage.getItem('School_page')).bechelorSchool_country)            
-                this.props.setBechelorSchool_major(JSON.parse(localStorage.getItem('School_page')).bechelorSchool_major)            
-                this.props.setBechelorSchool_grade(JSON.parse(localStorage.getItem('School_page')).bechelorSchool_grade)            
-                this.props.setBechelorSchool_congrate(JSON.parse(localStorage.getItem('School_page')).bechelorSchool_congrate)  
-
-                this.props.setOtherSchool_name(JSON.parse(localStorage.getItem('School_page')).otherSchool_name)            
-                this.props.setOtherSchool_country(JSON.parse(localStorage.getItem('School_page')).otherSchool_country)            
-                this.props.setOtherSchool_major(JSON.parse(localStorage.getItem('School_page')).otherSchool_major)            
-                this.props.setOtherSchool_grade(JSON.parse(localStorage.getItem('School_page')).otherSchool_grade)            
-                this.props.setOtherSchool_congrate(JSON.parse(localStorage.getItem('School_page')).otherSchool_congrate)
-            }
-            if (localStorage) {
-                this.props.setPosition_name(JSON.parse(localStorage.getItem('Personal_page')).position)
-            }
+            await this.props.initSchoolLocalStorege()
         }
     }),
     withHandlers({
@@ -131,9 +136,9 @@ const enhance = compose(
             props.setHighSchool_major(event.target.value)
         },
         handleHighSchoolGrade: props => () => event => {
-            let stack = props.highSchool_grade
+            let stack = props.highSchool_grade            
             if (event.target.value < '5') {
-                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode === 110) {                 
+                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode === 110 || event.keyCode > 47 && event.keyCode < 58 || event.keyCode === 190) {                 
                     if (event.target.value.length > 4 || event.target.value.length === 2 && event.target.value[1] !== '.') {
                         event.target.value = stack
                     }
@@ -156,7 +161,7 @@ const enhance = compose(
         },
         handleHighSchoolCongrate: props => () => event => {
             let stack = props.highSchool_congrate
-            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode > 47 && event.keyCode < 58) { 
                 if (event.target.value.length > 4) {
                     event.target.value = stack
                 }
@@ -185,7 +190,7 @@ const enhance = compose(
         handleDiplomaSchoolGrade: props => () => event => {
             let stack = props.diplomaSchool_grade
             if (event.target.value < '5') {
-                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode === 110) {                 
+                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode === 110 || event.keyCode > 47 && event.keyCode < 58 || event.keyCode === 190) {                 
                     if (event.target.value.length > 4 || event.target.value.length === 2 && event.target.value[1] !== '.') {
                         event.target.value = stack
                     }
@@ -208,7 +213,7 @@ const enhance = compose(
         },
         handleDiplomaSchoolCongrate: props => () => event => {
             let stack = props.diplomaSchool_congrate
-            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode > 47 && event.keyCode < 58) { 
                 if (event.target.value.length > 4) {
                     event.target.value = stack
                 }
@@ -237,7 +242,7 @@ const enhance = compose(
         handleBechelorSchoolGrade: props => () => event => {
             let stack = props.bechelorSchool_grade
             if (event.target.value > '1' && event.target.value < '5') {
-                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode === 110) {                 
+                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode === 110 || event.keyCode > 47 && event.keyCode < 58 || event.keyCode === 190) {                 
                     if (event.target.value.length > 4 || event.target.value.length === 2 && event.target.value[1] !== '.') {
                         event.target.value = stack
                     }
@@ -260,7 +265,7 @@ const enhance = compose(
         },
         handleBechelorSchoolCoungrate: props => () => event => {
             let stack = props.bechelorSchool_congrate
-            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode > 47 && event.keyCode < 58) { 
                 if (event.target.value.length > 4) {
                     event.target.value = stack
                 }
@@ -289,7 +294,7 @@ const enhance = compose(
         handleOtherSchoolGrade: props => () => event => {
             let stack = props.otherSchool_grade
             if (event.target.value < '5') {
-                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode === 110) {                 
+                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode === 110 || event.keyCode > 47 && event.keyCode < 58 || event.keyCode === 190) {                 
                     if (event.target.value.length > 4 || event.target.value.length === 2 && event.target.value[1] !== '.') {
                         event.target.value = stack
                     }
@@ -312,7 +317,7 @@ const enhance = compose(
         },
         handleOtherSchoolCongrate: props => () => event => {
             let stack = props.otherSchool_congrate
-            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode > 47 && event.keyCode < 58) { 
                 if (event.target.value.length > 4) {
                     event.target.value = stack
                 }
@@ -352,14 +357,15 @@ const enhance = compose(
                 'otherSchool_major' : props.otherSchool_major !== undefined ? props.otherSchool_major : '-',
                 'otherSchool_grade' : props.otherSchool_grade !== undefined ? props.otherSchool_grade : '-',
                 'otherSchool_congrate' : props.otherSchool_congrate !== undefined ? props.otherSchool_congrate : '-', 
-            }))            
-            const checkInputData = Object.getOwnPropertyNames(JSON.parse(localStorage.getItem('School_page')));            
-            if (checkInputData.length < 10){
-                window.alert('คุณกรอกข้อมูลไม่ถูกต้อง หรือ ไม่ครบถ้วน \nกรุณากรอกข้อมูลใหม่อีกครั้ง !!!')
-            }      
-            else{
-                Router.push({ pathname : '/Resume/Ability_information' , query : { id : props.url.query.id }})
-            }
+            }))    
+            Router.push({ pathname : '/Resume/Ability_information' })        
+            // const checkInputData = Object.getOwnPropertyNames(JSON.parse(localStorage.getItem('School_page')));            
+            // if (checkInputData.length < 10){
+            //     window.alert('คุณกรอกข้อมูลไม่ถูกต้อง หรือ ไม่ครบถ้วน \nกรุณากรอกข้อมูลใหม่อีกครั้ง !!!')
+            // }      
+            // else{
+            //     Router.push({ pathname : '/Resume/Ability_information' , query : { id : props.url.query.id }})
+            // }
         },
         saveThisPagePrev: props => () => event => {
             localStorage.setItem('School_page', JSON.stringify({
@@ -384,7 +390,7 @@ const enhance = compose(
                 'otherSchool_grade' : props.otherSchool_grade,
                 'otherSchool_congrate' : props.otherSchool_congrate,
             }))      
-            Router.push({ pathname : '/Resume/Address_information' , query : { id : props.url.query.id }})
+            Router.push({ pathname : '/Resume/Address_information'})
         },
     })
 )
@@ -393,7 +399,7 @@ export default enhance( (props)=>
     <Container>
         <br/><br/>
         <BoxHead>
-            <center><br/><TextBox>สมัครงาน</TextBox></center><br/>
+            <center><br/><TextBox>ประวัติส่วนตัว</TextBox></center><br/>
         </BoxHead>
         <BoxHead2/>
         <Box>
