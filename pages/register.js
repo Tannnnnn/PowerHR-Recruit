@@ -144,10 +144,8 @@ const enhance = compose(
         }
     }),
     lifecycle({
-        componentDidMount(){
-            console.log('this.props.authStore' , this.props.authStore);
-            
-            !this.props.authStore.accessToken ? null : window.history.back()
+        componentDidMount(){            
+            !this.props.authStore.accessToken ? null : window.location.href = '/'
         }
     }),
     observer
@@ -157,7 +155,6 @@ export default enhance((props) =>
     <div>
         {CarouselCompane ('CUPCODE CO., LTD.')}
         <Container>
-            {console.log(props.authStore.accessToken , 'props.authStore.currentUser')}
             <BoxHead>
                 <center><br/><TextBox>สมัครสมาชิก</TextBox></center><br/>
             </BoxHead>

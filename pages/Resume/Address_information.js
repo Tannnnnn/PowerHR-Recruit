@@ -108,35 +108,40 @@ const enhance = compose(
         pageTitle: 'Address information'
     }),
     withLayout,
+    withHandlers({
+        initAddressLocalStorege: props => () => {
+            if (localStorage.Address_page) {
+                props.setPrimary_hno(JSON.parse(localStorage.getItem('Address_page')).primary_hno)
+                props.setPrimary_vilno(JSON.parse(localStorage.getItem('Address_page')).primary_vilno)
+                props.setPrimary_alley(JSON.parse(localStorage.getItem('Address_page')).primary_alley)
+                props.setPrimary_road(JSON.parse(localStorage.getItem('Address_page')).primary_road)
+                props.setPrimary_area(JSON.parse(localStorage.getItem('Address_page')).primary_area)
+                props.setPrimary_district(JSON.parse(localStorage.getItem('Address_page')).primary_district)
+                props.setPrimary_province(JSON.parse(localStorage.getItem('Address_page')).primary_province)
+                props.setPrimary_zipcode(JSON.parse(localStorage.getItem('Address_page')).primary_zipcode)
+                props.setPrimary_tel(JSON.parse(localStorage.getItem('Address_page')).primary_tel)
+                props.setPrimary_phone(JSON.parse(localStorage.getItem('Address_page')).primary_phone)
+                props.setCheckAddress(JSON.parse(localStorage.getItem('Address_page')).checkAddress)
+                props.setPresent_hno(JSON.parse(localStorage.getItem('Address_page')).present_hno)
+                props.setPresent_vilno(JSON.parse(localStorage.getItem('Address_page')).present_vilno)
+                props.setPresent_alley(JSON.parse(localStorage.getItem('Address_page')).present_alley)  
+                props.setPresent_road(JSON.parse(localStorage.getItem('Address_page')).present_road)      
+                props.setPresent_area(JSON.parse(localStorage.getItem('Address_page')).present_area)      
+                props.setPresent_district(JSON.parse(localStorage.getItem('Address_page')).present_district)     
+                props.setPresent_province(JSON.parse(localStorage.getItem('Address_page')).present_province)      
+                props.setPresent_zipcode(JSON.parse(localStorage.getItem('Address_page')).present_zipcode)      
+                props.setPresent_tel(JSON.parse(localStorage.getItem('Address_page')).present_tel)      
+                props.setPresent_phone(JSON.parse(localStorage.getItem('Address_page')).present_phone)       
+            }
+            if (localStorage) {
+                props.setPosition_name(JSON.parse(localStorage.getItem('Personal_page')).position)
+            }
+        }
+    }),
     lifecycle({
         async componentDidMount(){
             window.scrollTo(0, 0)
-            if (localStorage.Address_page) {
-                this.props.setPrimary_hno(JSON.parse(localStorage.getItem('Address_page')).primary_hno)
-                this.props.setPrimary_vilno(JSON.parse(localStorage.getItem('Address_page')).primary_vilno)
-                this.props.setPrimary_alley(JSON.parse(localStorage.getItem('Address_page')).primary_alley)
-                this.props.setPrimary_road(JSON.parse(localStorage.getItem('Address_page')).primary_road)
-                this.props.setPrimary_area(JSON.parse(localStorage.getItem('Address_page')).primary_area)
-                this.props.setPrimary_district(JSON.parse(localStorage.getItem('Address_page')).primary_district)
-                this.props.setPrimary_province(JSON.parse(localStorage.getItem('Address_page')).primary_province)
-                this.props.setPrimary_zipcode(JSON.parse(localStorage.getItem('Address_page')).primary_zipcode)
-                this.props.setPrimary_tel(JSON.parse(localStorage.getItem('Address_page')).primary_tel)
-                this.props.setPrimary_phone(JSON.parse(localStorage.getItem('Address_page')).primary_phone)
-                this.props.setCheckAddress(JSON.parse(localStorage.getItem('Address_page')).checkAddress)
-                this.props.setPresent_hno(JSON.parse(localStorage.getItem('Address_page')).present_hno)
-                this.props.setPresent_vilno(JSON.parse(localStorage.getItem('Address_page')).present_vilno)
-                this.props.setPresent_alley(JSON.parse(localStorage.getItem('Address_page')).present_alley)  
-                this.props.setPresent_road(JSON.parse(localStorage.getItem('Address_page')).present_road)      
-                this.props.setPresent_area(JSON.parse(localStorage.getItem('Address_page')).present_area)      
-                this.props.setPresent_district(JSON.parse(localStorage.getItem('Address_page')).present_district)     
-                this.props.setPresent_province(JSON.parse(localStorage.getItem('Address_page')).present_province)      
-                this.props.setPresent_zipcode(JSON.parse(localStorage.getItem('Address_page')).present_zipcode)      
-                this.props.setPresent_tel(JSON.parse(localStorage.getItem('Address_page')).present_tel)      
-                this.props.setPresent_phone(JSON.parse(localStorage.getItem('Address_page')).present_phone)       
-            }
-            if (localStorage) {
-                this.props.setPosition_name(JSON.parse(localStorage.getItem('Personal_page')).position)
-            }
+            await this.props.initAddressLocalStorege()
         }
     }),
     withHandlers({
@@ -184,7 +189,7 @@ const enhance = compose(
         },
         handlePrimaryZipcode: props => () => event => {
             let stack = props.primary_zipcode
-            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode > 47 && event.keyCode < 58) { 
                 if (event.target.value.length > 5) {
                     event.target.value = stack
                 }
@@ -206,7 +211,7 @@ const enhance = compose(
         },
         handlePrimaryTelephone: props => () => event => {
             let stack = props.primary_tel    
-            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode > 47 && event.keyCode < 58) { 
                 if (event.target.value.length > 9) {
                     event.target.value = stack
                 }
@@ -228,7 +233,7 @@ const enhance = compose(
         },
         handlePrimaryPhone: props => () => event => {
             let stack = props.primary_phone    
-            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode > 47 && event.keyCode < 58) { 
                 if (event.target.value.length > 10) {
                     event.target.value = stack
                 }
@@ -321,7 +326,7 @@ const enhance = compose(
         },
         handlePresentZipcode: props => () => event => {
             let stack = props.present_zipcode
-            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) {                 
+            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode > 47 && event.keyCode < 58) {                 
                 if (event.target.value.length > 5) {
                     event.target.value = stack
                 }
@@ -343,7 +348,7 @@ const enhance = compose(
         },
         handlePresentTelephone: props => () => event => {
             let stack = props.present_tel
-            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode > 47 && event.keyCode < 58) { 
                 if (event.target.value.length > 9) {
                     event.target.value = stack
                 }
@@ -365,7 +370,7 @@ const enhance = compose(
         },
         handlePresentPhone: props => () => event => {
             let stack = props.present_phone
-            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode > 47 && event.keyCode < 58) { 
                 if (event.target.value.length > 9) {
                     event.target.value = stack
                 }
@@ -410,18 +415,18 @@ const enhance = compose(
                 'present_tel' : props.present_tel,
                 'present_phone' : props.present_phone
             }))
-            const checkInputData = Object.getOwnPropertyNames(JSON.parse(localStorage.getItem('Address_page')));            
-            if (
-                checkInputData.length < 20 ||
-                props.primary_zipcode.length !== 5 && props.present_zipcode.length !== 5 ||
-                props.primary_tel.length !== 9 && props.present_tel.length !== 9 ||
-                props.primary_phone.length !== 10 && props.primary_phone !== 10
-            ) {
-                window.alert('คุณกรอกข้อมูลไม่ถูกต้อง หรือ ไม่ครบถ้วน \nกรุณากรอกข้อมูลใหม่อีกครั้ง !!!')
-            }
-            else{
-                Router.push({ pathname : '/Resume/School_information' , query : { id : props.url.query.id }})
-            }
+            Router.push({ pathname : '/Resume/School_information' })
+            // const checkInputData = Object.getOwnPropertyNames(JSON.parse(localStorage.getItem('Address_page')));            
+            // if (
+            //     props.primary_zipcode.length !== 5 && props.present_zipcode.length !== 5 ||
+            //     props.primary_tel.length !== 9 && props.present_tel.length !== 9 ||
+            //     props.primary_phone.length !== 10 && props.primary_phone !== 10
+            // ) {
+            //     window.alert('คุณกรอกข้อมูลไม่ถูกต้อง หรือ ไม่ครบถ้วน \nกรุณากรอกข้อมูลใหม่อีกครั้ง !!!')
+            // }
+            // else{
+            //     Router.push({ pathname : '/Resume/School_information' , query : { id : props.url.query.id }})
+            // }
         },
         saveThisPagePrev: props => () => event => {
             localStorage.setItem('Address_page', JSON.stringify({
@@ -447,7 +452,7 @@ const enhance = compose(
                 'present_tel' : props.present_tel,
                 'present_phone' : props.present_phone
             }))            
-            Router.push({ pathname : '/Resume/Personal_information' , query : { id : props.url.query.id }})
+            Router.push({ pathname : '/Resume/Personal_information' })
         },
     })
 )
@@ -456,7 +461,7 @@ export default enhance( (props)=>
     <Container>
         <br/><br/>
         <BoxHead>
-            <center><br/><TextBox>สมัครงาน</TextBox></center><br/>
+            <center><br/><TextBox>ประวัติส่วนตัว</TextBox></center><br/>
         </BoxHead>
         <BoxHead2/>
         <Box>

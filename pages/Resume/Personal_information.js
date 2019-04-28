@@ -1,9 +1,9 @@
 import React from 'react'
-import { withLayout } from '../../hoc'
+import { withLayout ,withApp } from '../../hoc'
 import { compose, withProps, withState, withHandlers, lifecycle } from 'recompose'
 import styled from 'styled-components'
 import { Container, Step, Icon, Divider, Grid, Image, Form, Radio } from 'semantic-ui-react'
-import { Breadcrumb3Page } from '../../components/Breadcrumb'
+import { inject, observer } from 'mobx-react'
 import theme from '../../theme/default'
 import { 
     inputAge , 
@@ -188,6 +188,8 @@ const ImgUserHidden = styled(Image)`
 `;
 
 const enhance = compose(
+    withApp,
+    inject('authStore'),
     withState('salary', 'setSalary'),
     withState('imageBase64', 'setImageBase64', undefined),
     withState('fname_thai', 'setFname_thai'),
@@ -236,51 +238,48 @@ const enhance = compose(
         pageTitle: 'Personal information'
     }),
     withLayout,
-    lifecycle({
-        async componentDidMount() {
-            const url = `http://localhost:4000/job_position/${this.props.url.query.id}`
-            const res =  await axios.get(url)            
-            this.props.setPosition_name(res.data[0].position_name)
+    withHandlers({
+        initPersonalLocalStorege: props => () => {
             if (localStorage.Personal_page) {
-                this.props.setSalary(JSON.parse(localStorage.getItem('Personal_page')).salary)            
-                this.props.setSex(JSON.parse(localStorage.getItem('Personal_page')).sex)
-                this.props.setSoldier(JSON.parse(localStorage.getItem('Personal_page')).soldier)
-                this.props.setFname_thai(JSON.parse(localStorage.getItem('Personal_page')).fname_thai)
-                this.props.setLname_thai(JSON.parse(localStorage.getItem('Personal_page')).lname_thai)
-                this.props.setFname_eng(JSON.parse(localStorage.getItem('Personal_page')).fname_eng)
-                this.props.setLname_eng(JSON.parse(localStorage.getItem('Personal_page')).lname_eng)
-                this.props.setEmail(JSON.parse(localStorage.getItem('Personal_page')).email)
-                this.props.setFacebook(JSON.parse(localStorage.getItem('Personal_page')).facebook)
-                this.props.setIdcard(JSON.parse(localStorage.getItem('Personal_page')).idcard)
-                this.props.setTel(JSON.parse(localStorage.getItem('Personal_page')).tel)
-                this.props.setBirthday(JSON.parse(localStorage.getItem('Personal_page')).birthday)
-                this.props.setAge(JSON.parse(localStorage.getItem('Personal_page')).age)
-                this.props.setWeight(JSON.parse(localStorage.getItem('Personal_page')).weight)
-                this.props.setHeight(JSON.parse(localStorage.getItem('Personal_page')).height)
-                this.props.setEthnicity(JSON.parse(localStorage.getItem('Personal_page')).ethnicity)
-                this.props.setNationality(JSON.parse(localStorage.getItem('Personal_page')).nationality)
-                this.props.setReligion(JSON.parse(localStorage.getItem('Personal_page')).religion)
-                this.props.setDad_name(JSON.parse(localStorage.getItem('Personal_page')).dad_name)
-                this.props.setDad_career(JSON.parse(localStorage.getItem('Personal_page')).dad_career)
-                this.props.setMom_name(JSON.parse(localStorage.getItem('Personal_page')).mom_name)
-                this.props.setMom_career(JSON.parse(localStorage.getItem('Personal_page')).mom_career)
-                this.props.setBrethren(JSON.parse(localStorage.getItem('Personal_page')).brethren)
-                this.props.setSequence(JSON.parse(localStorage.getItem('Personal_page')).sequence)
-                this.props.setUrgent_contact(JSON.parse(localStorage.getItem('Personal_page')).urgent_contact)
-                this.props.setUrgent_relation(JSON.parse(localStorage.getItem('Personal_page')).urgent_relation)
-                this.props.setUrgent_phone(JSON.parse(localStorage.getItem('Personal_page')).urgent_phone)
-                this.props.setUrgent_apply(JSON.parse(localStorage.getItem('Personal_page')).urgent_apply)
-                this.props.setRefer_name(JSON.parse(localStorage.getItem('Personal_page')).refer_name)
-                this.props.setRefer_address(JSON.parse(localStorage.getItem('Personal_page')).refer_address)
-                this.props.setRefer_phone(JSON.parse(localStorage.getItem('Personal_page')).refer_phone)
-                this.props.setRefer_career(JSON.parse(localStorage.getItem('Personal_page')).refer_career)
-                this.props.setImageBase64(JSON.parse(localStorage.getItem('Personal_page')).imageBase64)
+                // props.setSalary(JSON.parse(localStorage.getItem('Personal_page')).salary)            
+                props.setSex(JSON.parse(localStorage.getItem('Personal_page')).sex)
+                props.setSoldier(JSON.parse(localStorage.getItem('Personal_page')).soldier)
+                props.setFname_thai(JSON.parse(localStorage.getItem('Personal_page')).fname_thai)
+                props.setLname_thai(JSON.parse(localStorage.getItem('Personal_page')).lname_thai)
+                // props.setFname_eng(JSON.parse(localStorage.getItem('Personal_page')).fname_eng)
+                // props.setLname_eng(JSON.parse(localStorage.getItem('Personal_page')).lname_eng)
+                props.setEmail(JSON.parse(localStorage.getItem('Personal_page')).email)
+                props.setFacebook(JSON.parse(localStorage.getItem('Personal_page')).facebook)
+                props.setIdcard(JSON.parse(localStorage.getItem('Personal_page')).idcard)
+                props.setTel(JSON.parse(localStorage.getItem('Personal_page')).tel)
+                props.setBirthday(JSON.parse(localStorage.getItem('Personal_page')).birthday)
+                props.setAge(JSON.parse(localStorage.getItem('Personal_page')).age)
+                props.setWeight(JSON.parse(localStorage.getItem('Personal_page')).weight)
+                props.setHeight(JSON.parse(localStorage.getItem('Personal_page')).height)
+                props.setEthnicity(JSON.parse(localStorage.getItem('Personal_page')).ethnicity)
+                props.setNationality(JSON.parse(localStorage.getItem('Personal_page')).nationality)
+                props.setReligion(JSON.parse(localStorage.getItem('Personal_page')).religion)
+                props.setDad_name(JSON.parse(localStorage.getItem('Personal_page')).dad_name)
+                props.setDad_career(JSON.parse(localStorage.getItem('Personal_page')).dad_career)
+                props.setMom_name(JSON.parse(localStorage.getItem('Personal_page')).mom_name)
+                props.setMom_career(JSON.parse(localStorage.getItem('Personal_page')).mom_career)
+                props.setBrethren(JSON.parse(localStorage.getItem('Personal_page')).brethren)
+                props.setSequence(JSON.parse(localStorage.getItem('Personal_page')).sequence)
+                props.setUrgent_contact(JSON.parse(localStorage.getItem('Personal_page')).urgent_contact)
+                props.setUrgent_relation(JSON.parse(localStorage.getItem('Personal_page')).urgent_relation)
+                props.setUrgent_phone(JSON.parse(localStorage.getItem('Personal_page')).urgent_phone)
+                props.setUrgent_apply(JSON.parse(localStorage.getItem('Personal_page')).urgent_apply)
+                props.setRefer_name(JSON.parse(localStorage.getItem('Personal_page')).refer_name)
+                props.setRefer_address(JSON.parse(localStorage.getItem('Personal_page')).refer_address)
+                props.setRefer_phone(JSON.parse(localStorage.getItem('Personal_page')).refer_phone)
+                props.setRefer_career(JSON.parse(localStorage.getItem('Personal_page')).refer_career)
+                props.setImageBase64(JSON.parse(localStorage.getItem('Personal_page')).imageBase64)
 
                 const local_status = JSON.parse(localStorage.getItem('Personal_page')).status
-                this.props.setStatus(local_status)    
+                props.setStatus(local_status)    
                 if (local_status === 'สมรส') {
-                    this.props.setCheck_status(true)
-                    this.setState({
+                    props.setCheck_status(true)
+                    setState({
                         status_married_fname: JSON.parse(localStorage.getItem('Personal_page')).status_married_fname,
                         status_married_lname: JSON.parse(localStorage.getItem('Personal_page')).status_married_lname,
                         status_married_child: JSON.parse(localStorage.getItem('Personal_page')).status_married_child,
@@ -289,15 +288,25 @@ const enhance = compose(
                 }        
 
                 const local_congenitalDisease = JSON.parse(localStorage.getItem('Personal_page')).congenitalDisease
-                this.props.SetCongenitalDisease(local_congenitalDisease)
+                props.SetCongenitalDisease(local_congenitalDisease)
                 if (local_congenitalDisease === 'มี') {
-                    this.props.setCheck_status_congenitalDisease(true)
-                    this.props.SetCongenitalDisease_name(JSON.parse(localStorage.getItem('Personal_page')).congenitalDisease_name)
+                    props.setCheck_status_congenitalDisease(true)
+                    props.SetCongenitalDisease_name(JSON.parse(localStorage.getItem('Personal_page')).congenitalDisease_name)
                 }
                 else{
-                    this.props.SetCongenitalDisease_name('')
+                    props.SetCongenitalDisease_name('')
                 }
             }
+        }
+    }),
+    lifecycle({
+        async componentDidMount() {            
+            window.scrollTo(0, 0)
+            await this.props.initPersonalLocalStorege()
+            // const url = `http://localhost:4000/job_position/${this.props.url.query.id}`
+            // const res =  await axios.get(url)            
+            // this.props.setPosition_name(res.data[0].position_name)
+            
         },
     }),
     withHandlers({
@@ -364,12 +373,12 @@ const enhance = compose(
         },
         saveThisPage: props => () => event => {
             localStorage.setItem('Personal_page', JSON.stringify({
-                'position' : props.position_name , 
-                'salary' : props.salary , 
+                // 'position' : props.position_name , 
+                // 'salary' : props.salary , 
                 'fname_thai' : props.fname_thai ,
                 'lname_thai' : props.lname_thai ,
-                'fname_eng' : props.fname_eng ,
-                'lname_eng' : props.lname_eng ,
+                // 'fname_eng' : props.fname_eng ,
+                // 'lname_eng' : props.lname_eng ,
                 'email' : props.email ,
                 'facebook' : props.facebook ,
                 'idcard' : props.idcard ,
@@ -406,9 +415,8 @@ const enhance = compose(
                 'refer_career' : props.refer_career ,
                 'imageBase64' : props.imageBase64,
             }))            
-            const checkInputData = Object.getOwnPropertyNames(JSON.parse(localStorage.getItem('Personal_page')));
+            // const checkInputData = Object.getOwnPropertyNames(JSON.parse(localStorage.getItem('Personal_page')));
             if (
-                checkInputData.length < 36 || 
                 props.congenitalDisease === 'มี' && 
                 props.congenitalDisease_name === '' ||
                 props.check_status === true &&
@@ -417,44 +425,38 @@ const enhance = compose(
                 window.alert('คุณกรอกข้อมูลไม่ถูกต้อง หรือ ไม่ครบถ้วน \nกรุณากรอกข้อมูลใหม่อีกครั้ง !!!')
             }
             else{
-                Router.push({ pathname : '/Resume/Address_information' , query : { id : props.url.query.id }})
+                Router.push({ pathname : '/Resume/Address_information' })
             }
         },
-        onChangeSalary: props => () => event => {                 
-            let stack = props.salary
-            if (parseInt(event.target.value) < 1) {
-                event.target.value = ''
-            }        
-            else{
-                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
-                    if (event.target.value.length > 6) {
-                        event.target.value = stack
-                    }
-                    else{
-                        props.setSalary(event.target.value)
-                    }
-                }
-                else{
-                    if (event.keyCode === 9) {
-                        event.target.value = ''
-                    }
-                    else{
-                        event.target.value = stack
-                    }
-                }
-            }
-        },
+        // onChangeSalary: props => () => event => {                 
+        //     let stack = props.salary
+        //     if (parseInt(event.target.value) < 1) {
+        //         event.target.value = ''
+        //     }        
+        //     else{
+        //         if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+        //             if (event.target.value.length > 6) {
+        //                 event.target.value = stack
+        //             }
+        //             else{
+        //                 props.setSalary(event.target.value)
+        //             }
+        //         }
+        //         else{
+        //             if (event.keyCode === 9) {
+        //                 event.target.value = ''
+        //             }
+        //             else{
+        //                 event.target.value = stack
+        //             }
+        //         }
+        //     }
+        // },
         handleFnameThai: props => () => event => {
             props.setFname_thai(event.target.value)
         },
         handleLnameThai: props => () => event => {
             props.setLname_thai(event.target.value)
-        },
-        handleFnameEng: props => () => event => {
-            props.setFname_eng(event.target.value)
-        },
-        handleLnameEng: props => () => event => {
-            props.setLname_eng(event.target.value)
         },
         handleEmail: props => () => event => {
             props.setEmail(event.target.value)
@@ -463,9 +465,9 @@ const enhance = compose(
             props.setFacebook(event.target.value)
         },
         handleIdcard: props => () => event => {
-            let keycode = event.keyCode
+            let keycode = event.keyCode            
             let stack = props.idcard
-            if (keycode > 95 && keycode < 106 || keycode === 8) {
+            if (keycode > 95 && keycode < 106 || keycode === 8 || keycode > 47 && keycode < 58) {
                 if (event.target.value.length > 17) {
                     event.target.value = stack
                 }
@@ -503,7 +505,7 @@ const enhance = compose(
         },
         handleTel: props => () => event => {
             let stack = props.tel    
-            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode > 47 && event.keyCode < 58) { 
                 if (event.target.value.length > 10) {
                     event.target.value = stack
                 }
@@ -557,9 +559,6 @@ const enhance = compose(
                 props.setAge(yearAge)
             }
         },
-        handleAge: props => () => event => {
-            props.setAge(event.target.value)
-        },
         handleChangeSex: props => (sex) => event => {
             props.setSex(sex)
         },
@@ -569,7 +568,7 @@ const enhance = compose(
                 event.target.value = stack
             }
             else{
-                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode > 47 && event.keyCode < 58) { 
                     if (event.target.value.length > 3) {
                         event.target.value = stack
                     }
@@ -593,7 +592,7 @@ const enhance = compose(
                 event.target.value = stack
             }
             else{
-                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode > 47 && event.keyCode < 58) { 
                     if (event.target.value.length > 3) {
                         event.target.value = stack
                     }
@@ -638,7 +637,7 @@ const enhance = compose(
                 event.target.value = stack
             }
             else{
-                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode > 47 && event.keyCode < 58) { 
                     if (event.target.value.length > 2) {
                         event.target.value = stack
                     }
@@ -663,7 +662,7 @@ const enhance = compose(
                 event.target.value = stack
             }
             else{
-                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode > 47 && event.keyCode < 58) { 
                     if (event.target.value.length > 2) {
                         event.target.value = stack
                     }
@@ -702,7 +701,7 @@ const enhance = compose(
                 event.target.value = stack
             }
             else{
-                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode > 47 && event.keyCode < 58) { 
                     if (event.target.value.length > 2) {
                         event.target.value = stack
                     }
@@ -747,7 +746,7 @@ const enhance = compose(
         },
         handleUrgenPhone: props => () => event => {
             let stack = props.urgent_phone    
-            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode > 47 && event.keyCode < 58) { 
                 if (event.target.value.length > 10) {
                     event.target.value = stack
                 }
@@ -775,7 +774,7 @@ const enhance = compose(
         },
         handleReferPhone: props => () => event => {
             let stack = props.refer_phone    
-            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+            if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode > 47 && event.keyCode < 58) { 
                 if (event.target.value.length > 10) {
                     event.target.value = stack
                 }
@@ -842,14 +841,15 @@ const enhance = compose(
                 return null
             }
         },
-    })
+    }),
+    observer
 )
 
 export default enhance((props) =>
     <Container>
         <br/><br/>
         <BoxHead>
-            <center><br /><TextBox>สมัครงาน</TextBox></center><br />
+            <center><br /><TextBox>ประวัติส่วนตัว</TextBox></center><br />
         </BoxHead>
         <BoxHead2 />
         <Box>
@@ -875,10 +875,10 @@ export default enhance((props) =>
                         </DivImage>
                     </BoxImg>
                 </Grid.Column>
-                <Grid.Column>
+                {/* <Grid.Column>
                     {inputGridePosition('ตำแหน่งงานที่รับสมัคร :', 'กรุณากรอกตำแหน่งงงานที่รับสมัคร', props.position_name )}<br /><br />
                     {input2GrideOnKeyUp('เงินเดือนที่ต้องการ :', 'กรุณากรอกเงินเดือนที่ต้องการ', props.onChangeSalary(), 'text', props.salary)}
-                </Grid.Column>
+                </Grid.Column> */}
             </Grid>
             <Grid columns={2} padded='horizontally'>
                 <Grid.Column>
@@ -888,14 +888,14 @@ export default enhance((props) =>
                     {input2Gride('นามสกุล (ภาษาไทย) :', 'กรุณากรอกนามสกุล (ภาษาไทย)', props.handleLnameThai(), 'text', props.lname_thai)}
                 </Grid.Column>
             </Grid>
-            <Grid columns={2} padded='horizontally'>
+            {/* <Grid columns={2} padded='horizontally'>
                 <Grid.Column>
                     <MgGridLeft>{input2GrideGrideMG('ชื่อ (ภาษาอังกฤษ) :', 'Please enter your firstname in English.', props.handleFnameEng(), 'text', props.fname_eng)}</MgGridLeft>
                 </Grid.Column>
                 <Grid.Column>
                     {input2Gride('นามสกุล (ภาษาอังกฤษ) :', 'Please enter your lastname in English.', props.handleLnameEng(), 'text', props.lname_eng)}
                 </Grid.Column>
-            </Grid>
+            </Grid> */}
             <Grid columns={2} padded='horizontally'>
                 <Grid.Column>
                     <MgGridLeft>{input2GrideGrideMG('อีเมล :', 'ตัวอย่าง Example@test.com', props.handleEmail(), 'email', props.email)}</MgGridLeft>
@@ -919,7 +919,7 @@ export default enhance((props) =>
                 <Grid.Column>
                     <Grid columns={2}>
                         <Grid.Column>
-                            {inputAge('อายุ (ปี) :', 'กรุณากรอกอายุ', props.handleAge(), 'number', props.age)}
+                            {inputAge('อายุ (ปี) :', 'กรุณากรอกอายุ', null, 'number' ,  props.age)}
                         </Grid.Column>
                         <Grid.Column>
                             <RadioSex>

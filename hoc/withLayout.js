@@ -7,6 +7,7 @@ import { withApp } from './'
 
 const ContentWrapper = styled(Box) `
     backgroud-color: lightgray;
+    font-family: 'Kanit', sans-serif ;
 `
 
 const enhance = compose(

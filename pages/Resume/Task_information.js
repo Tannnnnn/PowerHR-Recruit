@@ -3,7 +3,6 @@ import { withLayout } from '../../hoc'
 import { compose, withProps , withState , withHandlers, lifecycle } from 'recompose'
 import styled from 'styled-components'
 import { Container , Icon , Divider , Grid , Checkbox , Button , Header , Label , Modal , Image } from 'semantic-ui-react'
-import { Breadcrumb3Page } from '../../components/Breadcrumb'
 import theme from '../../theme/default'
 import { input2GrideOnKeyUp , inputOnkeyup , input2GrideGrideMG , input2Gride , InputTextArea , InputTextAreaMini } from '../../components/Input'
 import { StepApplyJobTask } from '../../components/Step'
@@ -167,37 +166,42 @@ const enhance = compose(
         pageTitle: 'Task information'
     }),
     withLayout,
+    withHandlers({
+        initTaskInfoLocalStorage: props => () => {
+            if (localStorage.Task_page) {
+                props.setCurrent_work(JSON.parse(localStorage.getItem('Task_page')).current_work)            
+                props.setCurrent_position(JSON.parse(localStorage.getItem('Task_page')).current_position)
+                props.setCurrent_description(JSON.parse(localStorage.getItem('Task_page')).current_description)
+                props.setCurrent_startwork(JSON.parse(localStorage.getItem('Task_page')).current_startwork)
+                props.setCurrent_endwork(JSON.parse(localStorage.getItem('Task_page')).current_endwork)
+                props.setCurrent_final_salary(JSON.parse(localStorage.getItem('Task_page')).current_final_salary)
+                props.setCurrent_other_income(JSON.parse(localStorage.getItem('Task_page')).current_other_income)
+                props.setCurrent_net_income(JSON.parse(localStorage.getItem('Task_page')).current_net_income)
+                props.setCurrent_welfare(JSON.parse(localStorage.getItem('Task_page')).current_welfare)
+                props.setCurrent_resign(JSON.parse(localStorage.getItem('Task_page')).current_resign)
+                props.setOld_work(JSON.parse(localStorage.getItem('Task_page')).old_work)
+                props.setOld_position(JSON.parse(localStorage.getItem('Task_page')).old_position)
+                props.setOld_final_salary(JSON.parse(localStorage.getItem('Task_page')).old_final_salary)
+                props.setOld_startwork(JSON.parse(localStorage.getItem('Task_page')).old_startwork)
+                props.setOld_endwork(JSON.parse(localStorage.getItem('Task_page')).old_endwork)
+                props.setOld_resign(JSON.parse(localStorage.getItem('Task_page')).old_resign)
+                props.setOlder_work(JSON.parse(localStorage.getItem('Task_page')).older_work)
+                props.setOlder_position(JSON.parse(localStorage.getItem('Task_page')).older_position)
+                props.setOlder_final_salary(JSON.parse(localStorage.getItem('Task_page')).older_final_salary)
+                props.setOlder_startwork(JSON.parse(localStorage.getItem('Task_page')).older_startwork)
+                props.setOlder_endwork(JSON.parse(localStorage.getItem('Task_page')).older_endwork)
+                props.setOlder_resign(JSON.parse(localStorage.getItem('Task_page')).older_resign)
+                props.setCheckAccept(JSON.parse(localStorage.getItem('Task_page')).checkAccept)
+            } 
+            if (localStorage) {
+                props.setPosition_name(JSON.parse(localStorage.getItem('Personal_page')).position)
+            }
+        }
+    }),
     lifecycle({
         async componentDidMount(){
             window.scrollTo(0, 0)
-            if (localStorage.Task_page) {
-                this.props.setCurrent_work(JSON.parse(localStorage.getItem('Task_page')).current_work)            
-                this.props.setCurrent_position(JSON.parse(localStorage.getItem('Task_page')).current_position)
-                this.props.setCurrent_description(JSON.parse(localStorage.getItem('Task_page')).current_description)
-                this.props.setCurrent_startwork(JSON.parse(localStorage.getItem('Task_page')).current_startwork)
-                this.props.setCurrent_endwork(JSON.parse(localStorage.getItem('Task_page')).current_endwork)
-                this.props.setCurrent_final_salary(JSON.parse(localStorage.getItem('Task_page')).current_final_salary)
-                this.props.setCurrent_other_income(JSON.parse(localStorage.getItem('Task_page')).current_other_income)
-                this.props.setCurrent_net_income(JSON.parse(localStorage.getItem('Task_page')).current_net_income)
-                this.props.setCurrent_welfare(JSON.parse(localStorage.getItem('Task_page')).current_welfare)
-                this.props.setCurrent_resign(JSON.parse(localStorage.getItem('Task_page')).current_resign)
-                this.props.setOld_work(JSON.parse(localStorage.getItem('Task_page')).old_work)
-                this.props.setOld_position(JSON.parse(localStorage.getItem('Task_page')).old_position)
-                this.props.setOld_final_salary(JSON.parse(localStorage.getItem('Task_page')).old_final_salary)
-                this.props.setOld_startwork(JSON.parse(localStorage.getItem('Task_page')).old_startwork)
-                this.props.setOld_endwork(JSON.parse(localStorage.getItem('Task_page')).old_endwork)
-                this.props.setOld_resign(JSON.parse(localStorage.getItem('Task_page')).old_resign)
-                this.props.setOlder_work(JSON.parse(localStorage.getItem('Task_page')).older_work)
-                this.props.setOlder_position(JSON.parse(localStorage.getItem('Task_page')).older_position)
-                this.props.setOlder_final_salary(JSON.parse(localStorage.getItem('Task_page')).older_final_salary)
-                this.props.setOlder_startwork(JSON.parse(localStorage.getItem('Task_page')).older_startwork)
-                this.props.setOlder_endwork(JSON.parse(localStorage.getItem('Task_page')).older_endwork)
-                this.props.setOlder_resign(JSON.parse(localStorage.getItem('Task_page')).older_resign)
-                this.props.setCheckAccept(JSON.parse(localStorage.getItem('Task_page')).checkAccept)
-            } 
-            if (localStorage) {
-                this.props.setPosition_name(JSON.parse(localStorage.getItem('Personal_page')).position)
-            }
+            await this.props.initTaskInfoLocalStorage()
         }
     }),
     withHandlers({
@@ -469,7 +473,7 @@ const enhance = compose(
                 'older_resign' : props.older_resign,
                 'checkAccept' : props.checkAccept,
             }))      
-            Router.push({ pathname : '/Resume/Ability_information' , query : { id : props.url.query.id }})      
+            Router.push({ pathname : '/Resume/Ability_information' })      
         },
         handleCheckAccept: props => () => event => {
             const { checkAccept } = props
@@ -487,7 +491,7 @@ export default enhance( (props)=>
     <Container>
         <br/><br/>
         <BoxHead>
-            <center><br/><TextBox>สมัครงาน</TextBox></center><br/>
+            <center><br/><TextBox>ประวัติส่วนตัว</TextBox></center><br/>
         </BoxHead>
         <BoxHead2/>
             <Box>
@@ -630,7 +634,7 @@ export default enhance( (props)=>
                             </Modal> */}
                             <Button as='div' labelPosition='right'>
                                 <BtnSuccess onClick={props.saveThisPageNext(props.handleChangTimeToThai)}>
-                                    ยืนยันการสมัคร
+                                    บันทึกข้อมูล
                                 </BtnSuccess>
                                 <Colorlabel as='a'>
                                     <Image src='https://www.img.in.th/images/4ecc343bc0f151339a458ed57dfe5618.png' size='small' />

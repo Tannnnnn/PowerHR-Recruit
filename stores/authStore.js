@@ -16,11 +16,9 @@ class AuthStore {
   }
 
   @action createUser(username,password){
-    console.log('create' , username,password);
     auth
     .createUserWithEmailAndPassword(username, password)
     .then(response => {
-      console.log(response.user , 'response.user');
       storejs.set('currentUser' , response.user)
       storejs.set('accessToken', response.user.uid);
       return window.location.href = '/'
@@ -39,7 +37,6 @@ class AuthStore {
     let response = await auth.signOut()
     storejs.set('accessToken',null);
     storejs.set('currentUser', null);
-    console.log(response , 'logout' , this.accessToken , this.currentUser);
     return window.location.href = '/'
   }
 

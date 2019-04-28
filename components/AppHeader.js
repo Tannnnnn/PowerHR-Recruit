@@ -150,8 +150,9 @@ const enhance = compose(
         }
     }),
     lifecycle({
-        componentDidMount(){
-            
+        async componentDidMount(){
+            const authPath = window.location.pathname.split('/')
+            authPath[1] === 'Resume' && this.props.authStore.accessToken === null ? window.location.href = '/' : null
         }
     }),
     observer 
@@ -173,7 +174,7 @@ export default enhance((props) =>
                             </MenuItem>
                         </TextHeader> */}
                         <TextHeader as='h4' floated='right' onClick={() => props.authStore.logout()}> 
-                            <Link>
+                            <Link href='#'>
                                 <MenuItem >
                                     ออกจากระบบ
                                 </MenuItem>
