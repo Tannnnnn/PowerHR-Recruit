@@ -111,36 +111,24 @@ const enhance = compose(
         },
         onSubmit: props => () => event => {        
             event.preventDefault()
-            const { email , password , passwordCheck , idCard, firstName, lastName } = props   
-            if (password == passwordCheck) {
-                const urlIdCard = `http://localhost:4000/user/${props.idCard}`
-                axios.get(urlIdCard)
+            const { email , password , passwordCheck , idCard, firstName, lastName } = props  
+            if (firstName && lastName && email && password && passwordCheck && idCard) {
+                const urlIdcard = `http://localhost:4000/user/${idCard}` 
+                axios.get(urlIdcard)
                 .then( res => {
-                    console.log(res);
+                    if (password == passwordCheck && res.data === true) {
+                        props.authStore.createUser(props)
+                    }
+                    else{
+                        !res.data ? alert('ไม่สามารถสมัครสมาชิกได้ เนื่องรหัสบัตรประชาชนนี้มีอยู่ในระบบแล้ว !')
+                        : alert('กรุณากรอกพาสเวิร์ดให้ตรงกันทั้งสองช่อง')
+                    }
                 })
                 .catch( err => console.log(err))
-            }
-            // props.authStore.createUser(email,password)
-            
-            //     const url = 'http://localhost:4000/user'
-            //     axios.post(url , {
-            //         firstName : props.firstName,
-            //         lastName : props.lastName,
-            //         email : props.email,
-            //         password : props.password,
-            //         idCard : props.idCard
-            //     })
-            //     .then( res => {
-            //         console.log(res)
-            //        
-            //     })
-            //     .catch( err => {
-            //         console.log(err);
-            //     })
-            // }
-            // else{
-            //     window.alert('wrong password')
-            // }
+            }   
+            else{
+                alert('กรุณากรอกข้อมูลให้ครบถ้วนก่อนทำการกดยืนยัน!')
+            }     
         }
     }),
     lifecycle({
@@ -174,7 +162,7 @@ export default enhance((props) =>
                     <Grid columns={2} padded='horizontally'>
                         <Grid.Column>
                             <MgGridLeft>
-                                {input2GrideGrideMG('อีเมล :', 'กรุณากรอกอีเมล' , props.onChange() , 'email' , props.email)}
+                                {input2GrideGrideMG('อีเมล :', 'กรุณากรอกอีเมล' , props.onChange() , 'email' , props.email , 'email')}
                             </MgGridLeft>
                         </Grid.Column>
                         <Grid.Column>
@@ -184,11 +172,11 @@ export default enhance((props) =>
                     <Grid columns={2} padded='horizontally'>
                         <Grid.Column>
                             <MgGridLeft>
-                                {input2GrideGrideMG('รหัสผ่าน :', 'กรุณากรอกรหัสผ่าน' , props.onChange() , 'password' , props.password )}
+                                {input2GrideGrideMG('รหัสผ่าน :', 'กรุณากรอกรหัสผ่าน' , props.onChange() , 'password' , props.password , 'password' )}
                             </MgGridLeft>
                         </Grid.Column>
                         <Grid.Column>
-                            {input2Gride('ยืนยันรหัสผ่าน :', 'ยืนยันรหัสผ่าน' , props.onChange() , 'password' , props.passwordCheck)}
+                            {input2Gride('ยืนยันรหัสผ่าน :', 'ยืนยันรหัสผ่าน' , props.onChange() , 'password' , props.passwordCheck , 'passwordCheck')}
                         </Grid.Column>
                     </Grid>
                 <ButtonRegister type='submit' onClick={props.onSubmit()}>ยืนยันการสมัครสมาชิก</ButtonRegister>

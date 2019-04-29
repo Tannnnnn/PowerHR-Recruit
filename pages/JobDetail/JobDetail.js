@@ -8,7 +8,7 @@ import {Breadcrumb2Page} from '../../components/Breadcrumb'
 import axios from 'axios'
 import {inputOnkeyup } from '../../components/Input'
 import { inject, observer } from 'mobx-react'
-// import auth from '../firebase'
+import auth from '../../firebase'
 
 const BodyBox = styled.div`
     background : #ffffff;
@@ -88,6 +88,7 @@ const BgHandTask = styled.div`
 `;
 
 const TextTask = styled.p`
+    font-family: 'Kanit', sans-serif !important;
     color : #fff !important;
     font-size: 25px !important;
     padding-top: 3% !important;
@@ -103,6 +104,7 @@ const MgFrom = styled(Form.Field)`
 `;
 
 const TextPosition = styled.p`
+    font-family: 'Kanit', sans-serif !important;
     font-size: 16px !important;
     margin-top: 3% !important;
     font-weight: 600 !important;
@@ -152,10 +154,35 @@ const enhance = compose(
     withState('startdate','setStartdate'),
     withState('enddate','setEnddate'),
     withState('salary','setSalary'),
+    withState('email','setEmail'),
+    withState('password','setPassword'),
     withProps({
         pageTitle: 'Jobs Detail'
     }),
     withLayout,
+    withHandlers({
+        onChange: props => () => event => {
+            const { name , value } = event.target
+            name === 'email' ? props.setEmail(value) : props.setPassword(value)            
+        },
+        onSubmitLogin: props => () => event => { 
+            event.preventDefault()
+            const { email , password } = props   
+            auth.signInWithEmailAndPassword(email, password)
+            .then(response => {
+                props.authStore.login(response)
+                window.location.href = `/JobDetail/JobDetail?id=${this.props.url.query.id}`
+            })
+            .catch(error => {
+                const errorCode = error.code;
+                if (errorCode === 'auth/wrong-password') {
+                    alert('รหัสผ่านไม่ถูกต้อง');
+                } else {
+                    alert('อีเมลไม่ถูกต้อง หรือ ไม่มีอยู่ในระบบ');
+                }             
+            })
+        }
+    }),
     lifecycle({
         async componentDidMount(){
             if (this.props.url.query.id !== undefined) {
@@ -245,10 +272,10 @@ const enhance = compose(
                                     </BgHandTask>
                                 </center>
                                 <from>
-                                    <MgLogin>{inputOnkeyup('อีเมล :','กรุณากรอกอีเมล' , '' , 'email' , '')}</MgLogin>
-                                    <MgPassword>{inputOnkeyup('รหัสผ่าน :','กรุณากรอกรหัสผ่าน' , '' , 'password' , '')}</MgPassword>
+                                    <MgLogin>{inputOnkeyup('อีเมล :','กรุณากรอกอีเมล' , props.onChange() , 'email' , props.email , 'email')}</MgLogin>
+                                    <MgPassword>{inputOnkeyup('รหัสผ่าน :','กรุณากรอกรหัสผ่าน' , props.onChange() , 'password' , props.password, 'password')}</MgPassword>
                                     <ButtonCancel>สมัครสมาชิก</ButtonCancel>
-                                    <ButtonOK>เข้าสู่ระบบ</ButtonOK>
+                                    <ButtonOK onClick={props.onSubmitLogin()}>เข้าสู่ระบบ</ButtonOK>
                                 </from>
                             </Modal.Description>
                         </Modal.Content>

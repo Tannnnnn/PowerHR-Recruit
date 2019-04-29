@@ -2,6 +2,7 @@ import { action, observable, toJS } from 'mobx'
 import storejs from 'store'
 import _ from 'lodash'
 import auth from '../firebase'
+import axios from 'axios'
 
 let store = null
 
@@ -15,16 +16,29 @@ class AuthStore {
     this.currentUser = storejs.get('currentUser')
   }
 
-  @action createUser(username,password){
+  @action createUser(data){
     auth
-    .createUserWithEmailAndPassword(username, password)
+    .createUserWithEmailAndPassword(data.email, data.password)
     .then(response => {
-      storejs.set('currentUser' , response.user)
-      storejs.set('accessToken', response.user.uid);
-      return window.location.href = '/'
+      console.log(response , 'response');
+      const url = 'http://localhost:4000/user'
+      axios.post(url , {
+          firstName : data.firstName,
+          lastName : data.lastName,
+          email : data.email,
+          password : data.password,
+          idCard : data.idCard
+      })
+      .then( res => {
+        storejs.set('currentUser' , response.user)
+        storejs.set('accessToken', response.user.uid);
+        console.log(res.data , 'database' , response.user);
+        // return window.location.href = '/'
+      })
+      .catch( err => alert(err))
     })
     .catch(error => {
-        console.log(error.message, 'error.message');               
+        alert(error.message)               
     })
   }
 
