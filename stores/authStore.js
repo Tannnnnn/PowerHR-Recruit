@@ -16,26 +16,28 @@ class AuthStore {
     this.currentUser = storejs.get('currentUser')
   }
 
-  @action createUser(data){
+  @action createUser(data , idcard){
     auth
     .createUserWithEmailAndPassword(data.email, data.password)
     .then(response => {
       console.log(response , 'response');
       const url = 'http://localhost:4000/user'
       axios.post(url , {
-          firstName : data.firstName,
-          lastName : data.lastName,
-          email : data.email,
-          password : data.password,
-          idCard : data.idCard
+        firstname : data.firstName,
+        lastname : data.lastName,
+        email : data.email,
+        password : data.password,
+        idcard : idcard
       })
       .then( res => {
+        console.log(res.data , 'database' , response.user);
         storejs.set('currentUser' , response.user)
         storejs.set('accessToken', response.user.uid);
-        console.log(res.data , 'database' , response.user);
-        // return window.location.href = '/'
+        return window.location.href = '/'
       })
-      .catch( err => alert(err))
+      .catch( err => {
+          console.log(err);
+      })
     })
     .catch(error => {
         alert(error.message)               

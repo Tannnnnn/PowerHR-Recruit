@@ -7,7 +7,8 @@ import theme from '../theme/default'
 import axios from 'axios'
 import { 
     input2GrideGrideMG,
-    input2Gride
+    input2Gride,
+    input2GrideOnKeyUp
 } from '../components/Input'
 import {CarouselCompane} from '../components/Carousel'
 import { inject, observer } from 'mobx-react'
@@ -73,7 +74,7 @@ const enhance = compose(
     withState('firstName','setFirstName'),
     withState('lastName', 'setLastName'),
     withState('email','setEmail'),
-    withState('idCard','setIdCard'),
+    withState('idcard','setIdcard'),
     withState('password','setPassword'),
     withState('passwordCheck','setPasswordCheck'),
     withProps({
@@ -82,17 +83,7 @@ const enhance = compose(
     withLayout,
     lifecycle({
         async componentDidMount(){
-        //   const urlIdCard = `http://localhost:4000/user/${this.props.urlIdCard.query.data}`
-        //   const resIdCard = await axios.get(urlIdCard)
-        //   this.props.setIdCard(resIdCard.data[0].idCard)
-
-        //   const url = `http://localhost:4000/user`
-        //   const res = await axios.get(url)
-        //   let users = []
-        //   res.data.map( data => {
-        //     users.push(data.firstName , data.lastName , data.email , data.password , data.idCard)
-        //   })
-        //   this.props.setAllUsers(users) 
+        
         }
     }),
     withHandlers({
@@ -102,8 +93,33 @@ const enhance = compose(
         handleLastName : props => () => event => {
             props.setLastName(event.target.value)
         },
-        handleIdCard : props => () => event => {
-            props.setIdCard(event.target.value)
+        handleIdcard : props => () => event => {
+            let keycode = event.keyCode            
+            let stack = props.idcard
+            if (keycode > 95 && keycode < 106 || keycode === 8 || keycode > 47 && keycode < 58) {
+                if (event.target.value.length > 17) {
+                    event.target.value = stack
+                }
+                else{
+                    if (
+                        event.target.value.length === 1 && keycode !== 8 || 
+                        event.target.value.length === 6 && keycode !== 8 || 
+                        event.target.value.length === 12 && keycode !== 8 || 
+                        event.target.value.length === 15 && keycode !== 8 
+                    ){
+                        event.target.value += '-'
+                    }                
+                    props.setIdcard(event.target.value)                    
+                }
+            }
+            else{
+                if (event.keyCode === 9) {
+                    event.target.value = ''
+                }
+                else{
+                    event.target.value = stack
+                }
+            }
         },
         onChange: props => () => event => {
             const { name , value } = event.target
@@ -111,13 +127,14 @@ const enhance = compose(
         },
         onSubmit: props => () => event => {        
             event.preventDefault()
-            const { email , password , passwordCheck , idCard, firstName, lastName } = props  
-            if (firstName && lastName && email && password && passwordCheck && idCard) {
-                const urlIdcard = `http://localhost:4000/user/${idCard}` 
+            const { email , password , passwordCheck , idcard, firstName, lastName } = props
+            let result_idcard = parseInt(idcard.split('-').join(''))                   
+            if (firstName && lastName && email && password && passwordCheck && result_idcard) {
+                const urlIdcard = `http://localhost:4000/user/${result_idcard}` 
                 axios.get(urlIdcard)
                 .then( res => {
                     if (password == passwordCheck && res.data === true) {
-                        props.authStore.createUser(props)
+                        props.authStore.createUser(props , result_idcard)
                     }
                     else{
                         !res.data ? alert('ไม่สามารถสมัครสมาชิกได้ เนื่องรหัสบัตรประชาชนนี้มีอยู่ในระบบแล้ว !')
@@ -166,7 +183,7 @@ export default enhance((props) =>
                             </MgGridLeft>
                         </Grid.Column>
                         <Grid.Column>
-                            {input2Gride('เลขบัตรประจำตัวประชาชน :', 'กรุณากรอกเลขบัตรประจำตัวประชาชน' , props.handleIdCard() , 'text' , props.idCard)}
+                            {input2GrideOnKeyUp('เลขบัตรประจำตัวประชาชน :', 'ตัวอย่าง 1-2345-67890-12-3', props.handleIdcard(), 'text', props.idcard)}
                         </Grid.Column>
                     </Grid>
                     <Grid columns={2} padded='horizontally'>

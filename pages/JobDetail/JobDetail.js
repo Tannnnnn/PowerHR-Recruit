@@ -9,6 +9,7 @@ import axios from 'axios'
 import {inputOnkeyup } from '../../components/Input'
 import { inject, observer } from 'mobx-react'
 import auth from '../../firebase'
+import Link from 'next/link'
 
 const BodyBox = styled.div`
     background : #ffffff;
@@ -147,6 +148,11 @@ const MgPassword = styled.div`
     margin-top: 3% !important;
 `;
 
+const TextNoLogin = styled.p`
+    font-size: 20px !important;
+    font-family: 'Kanit', sans-serif !important;
+`;
+
 const enhance = compose(
     withApp,
     inject('authStore'),
@@ -246,7 +252,7 @@ const enhance = compose(
                         <Colorlabel as='a'>
                             <Image src='https://www.img.in.th/images/68c0f730b867d22a3086b9fdfd7cf787.png' size='small' />
                         </Colorlabel>
-                    </MarginBTN>}>
+                    </MarginBTN>} closeIcon>
                     {
                         props.authStore.accessToken
                         ? <Modal.Content>
@@ -265,7 +271,7 @@ const enhance = compose(
                             </Modal.Description>
                         </Modal.Content>
                         :<Modal.Content>
-                            <Modal.Description>
+                            {/* <Modal.Description>
                                 <center>
                                     <BgHandTask>
                                         <TextTask>เข้าสู่ระบบ</TextTask>
@@ -274,9 +280,27 @@ const enhance = compose(
                                 <from>
                                     <MgLogin>{inputOnkeyup('อีเมล :','กรุณากรอกอีเมล' , props.onChange() , 'email' , props.email , 'email')}</MgLogin>
                                     <MgPassword>{inputOnkeyup('รหัสผ่าน :','กรุณากรอกรหัสผ่าน' , props.onChange() , 'password' , props.password, 'password')}</MgPassword>
-                                    <ButtonCancel>สมัครสมาชิก</ButtonCancel>
+                                    <Link href='../register'>
+                                        <ButtonCancel>สมัครสมาชิก</ButtonCancel>
+                                    </Link>
                                     <ButtonOK onClick={props.onSubmitLogin()}>เข้าสู่ระบบ</ButtonOK>
                                 </from>
+                            </Modal.Description> */}
+                            <Modal.Description>
+                                <center>
+                                    <TextNoLogin>ไม่สามารถสมัครงานได้ เนื่องจากท่านยังไม่ได้เข้าสู่ระบบ</TextNoLogin>
+                                    {/* <BgHandTask>
+                                        <TextTask>เข้าสู่ระบบ</TextTask>
+                                    </BgHandTask> */}
+                                </center>
+                                {/* <from>
+                                    <MgLogin>{inputOnkeyup('อีเมล :','กรุณากรอกอีเมล' , props.onChange() , 'email' , props.email , 'email')}</MgLogin>
+                                    <MgPassword>{inputOnkeyup('รหัสผ่าน :','กรุณากรอกรหัสผ่าน' , props.onChange() , 'password' , props.password, 'password')}</MgPassword>
+                                    <Link href='../register'>
+                                        <ButtonCancel>สมัครสมาชิก</ButtonCancel>
+                                    </Link>
+                                    <ButtonOK onClick={props.onSubmitLogin()}>เข้าสู่ระบบ</ButtonOK>
+                                </from> */}
                             </Modal.Description>
                         </Modal.Content>
                     }
