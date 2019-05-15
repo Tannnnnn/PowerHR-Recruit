@@ -11,7 +11,6 @@ import {
     inputOnkeyup , 
     input2GrideGrideMG, 
     input2Gride, 
-    inputGridePosition,
     inputWeigth,
     inputHeigth
 } from '../../components/Input'
@@ -195,8 +194,6 @@ const enhance = compose(
     withState('imageBase64', 'setImageBase64', undefined),
     withState('fname_thai', 'setFname_thai'),
     withState('lname_thai', 'setLname_thai'),
-    withState('fname_eng', 'setFname_eng'),
-    withState('lname_eng', 'setLname_eng'),
     withState('email', 'setEmail'),
     withState('facebook', 'setFacebook'),
     withState('idcard', 'setIdcard'),
@@ -243,13 +240,10 @@ const enhance = compose(
     withHandlers({
         initPersonalLocalStorege: props => () => {
             if (localStorage.Personal_page) {
-                // props.setSalary(JSON.parse(localStorage.getItem('Personal_page')).salary)            
                 props.setSex(JSON.parse(localStorage.getItem('Personal_page')).sex)
                 props.setSoldier(JSON.parse(localStorage.getItem('Personal_page')).soldier)
                 props.setFname_thai(JSON.parse(localStorage.getItem('Personal_page')).fname_thai)
                 props.setLname_thai(JSON.parse(localStorage.getItem('Personal_page')).lname_thai)
-                // props.setFname_eng(JSON.parse(localStorage.getItem('Personal_page')).fname_eng)
-                // props.setLname_eng(JSON.parse(localStorage.getItem('Personal_page')).lname_eng)
                 props.setEmail(JSON.parse(localStorage.getItem('Personal_page')).email)
                 props.setFacebook(JSON.parse(localStorage.getItem('Personal_page')).facebook)
                 props.setIdcard(JSON.parse(localStorage.getItem('Personal_page')).idcard)
@@ -306,7 +300,19 @@ const enhance = compose(
             window.scrollTo(0, 0)
             await this.props.initPersonalLocalStorege()
             this.props.sex && this.props.sex === 'ชาย' ? this.props.setCheck_soldier(true) : this.props.setCheck_soldier(false)
-            // const url = `http://localhost:4000/job_position/${this.props.url.query.id}`
+            this.props.authStore.userData && this.props.authStore.userData.map( data => { 
+                this.props.setFname_thai(data.firstname)
+                this.props.setLname_thai(data.lastname)
+                this.props.setEmail(data.email)
+                let result1 = [data.idcard.slice(0,1), '-', data.idcard.slice(1)].join('');
+                let result2 = [result1.slice(0,6), '-', result1.slice(6)].join('');
+                let result3 = [result2.slice(0,12), '-', result2.slice(12)].join('');
+                let result4 = [result3.slice(0,15), '-', result3.slice(15)].join('');
+                this.props.setIdcard(result4)
+            })
+            console.log(this.props.authStore);
+            
+            // const url = `http://localhost:data.idcard4000/job_position/${this.props.url.query.id}`
             // const res =  await axios.get(url)            
             // this.props.setPosition_name(res.data[0].position_name)
             
@@ -376,12 +382,8 @@ const enhance = compose(
         },
         saveThisPage: props => () => event => {
             localStorage.setItem('Personal_page', JSON.stringify({
-                // 'position' : props.position_name , 
-                // 'salary' : props.salary , 
                 'fname_thai' : props.fname_thai ,
                 'lname_thai' : props.lname_thai ,
-                // 'fname_eng' : props.fname_eng ,
-                // 'lname_eng' : props.lname_eng ,
                 'email' : props.email ,
                 'facebook' : props.facebook ,
                 'idcard' : props.idcard ,

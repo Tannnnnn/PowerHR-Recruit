@@ -98,17 +98,6 @@ const ButtonLogin = styled(Button)`
     margin-left: 60% !important;
 `;
 
-// const HR = styled.hr`
-//     width: 100.4%;
-//     height: 5px;
-//     margin-left: -0.3% !important;
-//     color: #ee3900 !important;
-//     margin-top: 7% !important;
-//     background-color: #ee3900 !important;
-//     border: aliceblue;
-//     border-radius: 87px;
-// `;
-
 const MgRegister = styled.text`
     margin-left: -60% !important;
     font-family: 'Kanit', sans-serif !important;
@@ -151,7 +140,6 @@ const enhance = compose(
     }),
     lifecycle({
         async componentDidMount(){
-            console.log(this.props.authStore);
             const authPath = window.location.pathname.split('/')
             authPath[1] === 'Resume' && this.props.authStore.accessToken === null ? window.location.href = '/' : null
         }

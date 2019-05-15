@@ -57,7 +57,7 @@ class AuthStore {
     const url = `http://localhost:4000/user/alldata/${email}`
     const res = await axios.get(url)
     if (res) {
-      storejs.set('userData', res.data);
+      storejs.set('userData', res.data);      
     }
   }
 

@@ -128,8 +128,9 @@ const enhance = compose(
         onSubmit: props => () => event => {        
             event.preventDefault()
             const { email , password , passwordCheck , idcard, firstName, lastName } = props
-            let result_idcard = parseInt(idcard.split('-').join(''))                   
-            if (firstName && lastName && email && password && passwordCheck && result_idcard) {
+            let result_idcard = parseInt(idcard.split('-').join(''))    
+            let check = idcard.split('-').join('')   
+            if (firstName && lastName && email && password && passwordCheck && check.length === 13) {
                 const urlIdcard = `http://localhost:4000/user/${result_idcard}` 
                 axios.get(urlIdcard)
                 .then( res => {
