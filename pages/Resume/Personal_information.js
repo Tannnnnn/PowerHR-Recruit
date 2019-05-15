@@ -235,6 +235,7 @@ const enhance = compose(
     withState('refer_career', 'setRefer_career'),
     withState('stack', 'setStack' , false),
     withState('position_name' , 'setPosition_name' , ''),
+    withState('check_soldier', 'setCheck_soldier'),
     withProps({
         pageTitle: 'Personal information'
     }),
@@ -304,6 +305,7 @@ const enhance = compose(
         async componentDidMount() {            
             window.scrollTo(0, 0)
             await this.props.initPersonalLocalStorege()
+            this.props.sex && this.props.sex === 'ชาย' ? this.props.setCheck_soldier(true) : this.props.setCheck_soldier(false)
             // const url = `http://localhost:4000/job_position/${this.props.url.query.id}`
             // const res =  await axios.get(url)            
             // this.props.setPosition_name(res.data[0].position_name)
@@ -561,7 +563,14 @@ const enhance = compose(
             }
         },
         handleChangeSex: props => (sex) => event => {
-            props.setSex(sex)
+            if (sex === 'ชาย') {
+                props.setCheck_soldier(true)
+                props.setSex(sex)
+            }
+            else{
+                props.setCheck_soldier(false)
+                props.setSex(sex)
+            }
         },
         handleWeight: props => () => event => {
             let stack = props.weight    
@@ -1043,54 +1052,37 @@ export default enhance((props) =>
                 </Grid.Column>
             </Grid>
             {props.showPanelStatus(props.handleMarriedFirstname(),props.handleMarriedLastname(),props.handleMarriedChild(),props.handleMarriedCompany())}
-            <Grid columns={1} padded='horizontally'>
-                <Grid.Column>
-                    <MgRedioStatus>
-                        <Form>
-                            <SizeFontRadio>
-                                การรับราชการทหาร :
-                            </SizeFontRadio>
-                            <Form.Field>
-                                <MgRedio
-                                    label='รับราชการทหารแล้ว'
-                                    name='militaryService'
-                                    value='รับราชการทหารแล้ว'
-                                    checked={props.soldier === 'รับราชการทหารแล้ว'}
-                                    onChange={props.handleChangeSoldier('รับราชการทหารแล้ว')}
-                                />
-                                <MgRedio
-                                    label='ได้รับการผ่อนผัน'
-                                    name='receivedWaiver'
-                                    value='ได้รับการผ่อนผัน'
-                                    checked={props.soldier === 'ได้รับการผ่อนผัน'}
-                                    onChange={props.handleChangeSoldier('ได้รับการผ่อนผัน')}
-                                />
-                                <MgRedio
-                                    label='จบโรงเรียนรักษาดินแดน'
-                                    name='graduate'
-                                    value='จบโรงเรียนรักษาดินแดน'
-                                    checked={props.soldier === 'จบโรงเรียนรักษาดินแดน'}
-                                    onChange={props.handleChangeSoldier('จบโรงเรียนรักษาดินแดน')}
-                                />
-                                <MgRedio
-                                    label='จับใบดำ'
-                                    name='blackLeaf'
-                                    value='จับใบดำ'
-                                    checked={props.soldier === 'จับใบดำ'}
-                                    onChange={props.handleChangeSoldier('จับใบดำ')}
-                                />
-                                <MgRedio
-                                    label='ได้รับการยกเว้น'
-                                    name='except'
-                                    value='ได้รับการยกเว้น'
-                                    checked={props.soldier === 'ได้รับการยกเว้น'}
-                                    onChange={props.handleChangeSoldier('ได้รับการยกเว้น')}
-                                />
-                            </Form.Field>
-                        </Form>
-                    </MgRedioStatus>
-                </Grid.Column>
-            </Grid>
+            {
+                props.check_soldier
+                    ?  <Grid columns={1} padded='horizontally'>
+                            <Grid.Column>
+                                <MgRedioStatus>
+                                    <Form>
+                                        <SizeFontRadio>
+                                            การรับราชการทหาร :
+                                        </SizeFontRadio>
+                                        <Form.Field>
+                                            <MgRedio
+                                                label='รับราชการทหารแล้ว'
+                                                name='militaryService'
+                                                value='รับราชการทหารแล้ว'
+                                                checked={props.soldier === 'รับราชการทหารแล้ว'}
+                                                onChange={props.handleChangeSoldier('รับราชการทหารแล้ว')}
+                                            />
+                                            <MgRedio
+                                                label='ยังไม่ได้รับราชการทหาร'
+                                                name='receivedWaiver'
+                                                value='ยังไม่ได้รับราชการทหาร'
+                                                checked={props.soldier === 'ยังไม่ได้รับราชการทหาร'}
+                                                onChange={props.handleChangeSoldier('ยังไม่ได้รับราชการทหาร')}
+                                            />
+                                        </Form.Field>
+                                    </Form>
+                                </MgRedioStatus>
+                            </Grid.Column>
+                        </Grid>
+                    : null
+            }
             <Grid columns={1} padded='horizontally'>
                 <Grid.Column>
                     <MgRedioStatus>

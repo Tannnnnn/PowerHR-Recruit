@@ -136,7 +136,7 @@ const enhance = compose(
             const { email , password } = props   
             auth.signInWithEmailAndPassword(email, password)
             .then(response => {
-                props.authStore.login(response)
+                props.authStore.login(response,email)
                 window.location.href = '/'
             })
             .catch(error => {
@@ -151,6 +151,7 @@ const enhance = compose(
     }),
     lifecycle({
         async componentDidMount(){
+            console.log(this.props.authStore);
             const authPath = window.location.pathname.split('/')
             authPath[1] === 'Resume' && this.props.authStore.accessToken === null ? window.location.href = '/' : null
         }

@@ -194,6 +194,7 @@ const enhance = compose(
     }),
     lifecycle({
         async componentDidMount(){
+            console.log(this.props.authStore , 'authStore')
             if (this.props.url.query.id !== undefined) {
                 const url = `http://localhost:4000/job_position/${this.props.url.query.id}`
                 const res = await axios.get(url)

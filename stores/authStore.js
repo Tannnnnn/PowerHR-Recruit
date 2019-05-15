@@ -10,17 +10,18 @@ class AuthStore {
 
   @observable accessToken = null
   @observable currentUser = null
+  @observable userData = null
 
   constructor(isServer) {
     this.accessToken = storejs.get('accessToken')
     this.currentUser = storejs.get('currentUser')
+    this.userData = storejs.get('userData')
   }
 
   @action createUser(data , idcard){
     auth
     .createUserWithEmailAndPassword(data.email, data.password)
     .then(response => {
-      console.log(response , 'response');
       const url = 'http://localhost:4000/user'
       axios.post(url , {
         firstname : data.firstName,
@@ -30,10 +31,16 @@ class AuthStore {
         idcard : idcard
       })
       .then( res => {
-        console.log(res.data , 'database' , response.user);
-        storejs.set('currentUser' , response.user)
-        storejs.set('accessToken', response.user.uid);
-        return window.location.href = '/'
+        const url = `http://localhost:4000/user/alldata/${data.email}`
+        axios.get(url)
+        .then( resp => {
+          storejs.set('currentUser' , response.user)
+          storejs.set('idcard', idcard)
+          storejs.set('accessToken', response.user.uid)
+          storejs.set('userData', resp.data)
+          return window.location.href = '/'
+        })
+        .catch( err => console.log(err))
       })
       .catch( err => {
           console.log(err);
@@ -44,15 +51,21 @@ class AuthStore {
     })
   }
 
-  @action async login(response){    
+  @action async login(response,email){    
     storejs.set('accessToken', response.user.uid);
     storejs.set('currentUser', response.user);
+    const url = `http://localhost:4000/user/alldata/${email}`
+    const res = await axios.get(url)
+    if (res) {
+      storejs.set('userData', res.data);
+    }
   }
 
   @action async logout(){    
     let response = await auth.signOut()
     storejs.set('accessToken',null);
     storejs.set('currentUser', null);
+    storejs.set('userData', null);
     return window.location.href = '/'
   }
 
