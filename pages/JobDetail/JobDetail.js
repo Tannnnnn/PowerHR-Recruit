@@ -181,6 +181,9 @@ const enhance = compose(
                     alert('อีเมลไม่ถูกต้อง หรือ ไม่มีอยู่ในระบบ');
                 }             
             })
+        },
+        handleSubmitRegister: props => () => event => {
+            alert('สมัครงานสำเร็จ *หมายเหตุ: ผู้ที่ผ่านการพิจารณาเบื้องต้น ทางฝ่ายบุคคลจะติดต่อไปหาผู้สมัครโดยตรง');
         }
     }),
     lifecycle({
@@ -260,7 +263,7 @@ const enhance = compose(
                                     <TextPosition>ตำแหน่งงานที่สมัคร : <smaTextSmallPositionll>{name}</smaTextSmallPositionll></TextPosition>
                                     {inputOnkeyup('เงินเดือนที่ต้องการ :','กรุณากรอกเงินเดือนที่ต้องการ' , '' , 'text' , '')}
                                     <ButtonCancel>ยกเลิกสมัครงาน</ButtonCancel>
-                                    <ButtonOK>ยืนยันสมัครงาน</ButtonOK>
+                                    <ButtonOK onClick={props.handleSubmitRegister()}>ยืนยันสมัครงาน</ButtonOK>
                                 </from>
                             </Modal.Description>
                         </Modal.Content>
