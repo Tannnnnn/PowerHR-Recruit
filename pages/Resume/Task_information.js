@@ -29,6 +29,7 @@ pdfMake.fonts = {
 }
 
 const BoxHead = styled.div`
+    margin-top: 3% !important;
     background-color: ${theme.colors.elementBackground};
     box-shadow: ${theme.colors.boxShadow};
 `;
