@@ -11,6 +11,8 @@ import Link from 'next/link'
 import Router from 'next/router'
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
+import { firebase } from '../../firebase/index'
+import { inject, observer } from 'mobx-react'
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 pdfMake.fonts = {
@@ -138,6 +140,8 @@ const ButtonClick = styled(Button)`
 `;
 
 const enhance = compose(
+    withLayout,
+    inject('authStore'),
     withState('current_work' , 'setCurrent_work'),
     withState('current_position' , 'setCurrent_position'),
     withState('current_description' , 'setCurrent_description'),
@@ -166,7 +170,6 @@ const enhance = compose(
     withProps({
         pageTitle: 'Task information'
     }),
-    withLayout,
     withHandlers({
         initTaskInfoLocalStorage: props => () => {
             if (localStorage.Task_page) {
@@ -227,7 +230,7 @@ const enhance = compose(
                 event.target.value = ''
             }        
             else{
-                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode > 47 && event.keyCode < 58) { 
                     if (event.target.value.length > 6) {
                         event.target.value = stack
                     }
@@ -251,7 +254,7 @@ const enhance = compose(
                 event.target.value = ''
             }        
             else{
-                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode > 47 && event.keyCode < 58) { 
                     if (event.target.value.length > 6) {
                         event.target.value = stack
                     }
@@ -275,7 +278,7 @@ const enhance = compose(
                 event.target.value = ''
             }        
             else{
-                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode > 47 && event.keyCode < 58) { 
                     if (event.target.value.length > 7) {
                         event.target.value = stack
                     }
@@ -311,7 +314,7 @@ const enhance = compose(
                 event.target.value = ''
             }        
             else{
-                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode > 47 && event.keyCode < 58) { 
                     if (event.target.value.length > 6) {
                         event.target.value = stack
                     }
@@ -350,7 +353,7 @@ const enhance = compose(
                 event.target.value = ''
             }        
             else{
-                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode > 47 && event.keyCode < 58) { 
                     if (event.target.value.length > 6) {
                         event.target.value = stack
                     }
@@ -391,7 +394,8 @@ const enhance = compose(
                 return '-'
             }
         },
-        saveThisPageNext: props => (setTimeLocal) => event => {                       
+        saveThisPageNext: props => (setTimeLocal) => event => {    
+            const uid = props.authStore.currentUser.uid                                    
             localStorage.setItem('Task_page', JSON.stringify({
                 'current_work' : props.current_work ,
                 'current_position' : props.current_position,
@@ -442,7 +446,32 @@ const enhance = compose(
                 window.alert('คุณกรอกข้อมูลไม่ครบถ้วน \nกรุณากดยอมรับข้อตกลงในการสมัครงาน !!!')
             }
             else{
-                PDF_GENERATOR(localStorage,props,setTimeLocal)
+                firebase.database().ref('resume/' + uid).update({
+                    current_work : props.current_work ,
+                    current_position : props.current_position,
+                    current_description : props.current_description,
+                    current_startwork : props.current_startwork,
+                    current_endwork : props.current_endwork,
+                    current_final_salary : props.current_final_salary,
+                    current_other_income : props.current_other_income,
+                    current_net_income : props.current_net_income,
+                    current_welfare : props.current_welfare,
+                    current_resign : props.current_resign,
+                    old_work : props.old_work  !== undefined ? props.old_work : '-',
+                    old_position : props.old_position !== undefined ? props.old_position : '-',
+                    old_final_salary : props.old_final_salary !== undefined ? props.old_final_salary : '-',
+                    old_startwork : props.old_startwork || null,
+                    old_endwork : props.old_endwork || null,
+                    old_resign : props.old_resign !== undefined ? props.old_resign : '-',
+                    older_work : props.older_work !== undefined ? props.older_work : '-',
+                    older_position : props.older_position !== undefined ? props.older_position : '-',
+                    older_final_salary : props.older_final_salary !== undefined ? props.older_final_salary : '-',
+                    older_startwork : props.older_startwork  || null,
+                    older_endwork : props.older_endwork  || null,
+                    older_resign : props.older_resign !== undefined ? props.older_resign : '-',
+                    checkAccept : props.checkAccept !== undefined ? props.checkAccept : '-',
+                })
+                // PDF_GENERATOR(localStorage,props,setTimeLocal)
                 setTimeout(() => {
                     Router.push('/index')
                 }, 2000);  
@@ -473,7 +502,7 @@ const enhance = compose(
                 'older_endwork' : props.older_endwork,
                 'older_resign' : props.older_resign,
                 'checkAccept' : props.checkAccept,
-            }))      
+            }))
             Router.push({ pathname : '/Resume/Ability_information' })      
         },
         handleCheckAccept: props => () => event => {

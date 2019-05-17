@@ -16,6 +16,8 @@ import {
 import {btn_NextBack} from '../../components/Button'
 import {stepApplyJobAddress} from '../../components/Step'
 import Router from 'next/router'
+import {firebase} from '../../firebase/index'
+import { inject, observer } from 'mobx-react'
 
 const BoxHead = styled.div`
     margin-top: 3% !important;
@@ -83,6 +85,8 @@ const MgBTNOrange = styled.div`
 `;
 
 const enhance = compose(
+    withLayout,
+    inject('authStore'),
     withState('primary_hno' , 'setPrimary_hno'),
     withState('primary_vilno' , 'setPrimary_vilno'),
     withState('primary_alley' , 'setPrimary_alley'),
@@ -108,7 +112,6 @@ const enhance = compose(
     withProps({
         pageTitle: 'Address information'
     }),
-    withLayout,
     withHandlers({
         initAddressLocalStorege: props => () => {
             if (localStorage.Address_page) {
@@ -393,6 +396,7 @@ const enhance = compose(
         },
 
         saveThisPageNext: props => () => event => {
+            const uid = props.authStore.currentUser.uid                 
             localStorage.setItem('Address_page', JSON.stringify({
                 'primary_hno' : props.primary_hno ,
                 'primary_vilno' : props.primary_vilno,
@@ -416,6 +420,28 @@ const enhance = compose(
                 'present_tel' : props.present_tel,
                 'present_phone' : props.present_phone
             }))
+            firebase.database().ref('resume/' + uid).update({
+                primary_hno : props.primary_hno ,
+                primary_vilno : props.primary_vilno,
+                primary_alley : props.primary_alley,
+                primary_road : props.primary_road,
+                primary_area : props.primary_area,
+                primary_district : props.primary_district,
+                primary_province : props.primary_province,
+                primary_zipcode : props.primary_zipcode,
+                primary_tel : props.primary_tel,
+                primary_phone : props.primary_phone,
+                present_hno : props.present_hno,
+                present_vilno : props.present_vilno,
+                present_alley : props.present_alley,
+                present_road : props.present_road,
+                present_area : props.present_area,
+                present_district : props.present_district,
+                present_province : props.present_province,
+                present_zipcode : props.present_zipcode,
+                present_tel : props.present_tel,
+                present_phone : props.present_phone
+            })
             Router.push({ pathname : '/Resume/School_information' })
             // const checkInputData = Object.getOwnPropertyNames(JSON.parse(localStorage.getItem('Address_page')));            
             // if (
@@ -452,10 +478,11 @@ const enhance = compose(
                 'present_zipcode' : props.present_zipcode,
                 'present_tel' : props.present_tel,
                 'present_phone' : props.present_phone
-            }))            
+            }))    
             Router.push({ pathname : '/Resume/Personal_information' })
         },
-    })
+    }),
+    observer
 )
 
 export default enhance( (props)=> 

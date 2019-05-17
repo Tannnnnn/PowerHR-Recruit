@@ -1,7 +1,7 @@
 import { action, observable, toJS } from 'mobx'
 import storejs from 'store'
 import _ from 'lodash'
-import auth from '../firebase'
+import { auth , firebase } from '../firebase/index'
 import axios from 'axios'
 
 let store = null
@@ -19,32 +19,23 @@ class AuthStore {
   }
 
   @action createUser(data , idcard){
+    const result = {
+      firstname : data.firstName,
+      lastname : data.lastName,
+      email : data.email,
+      password : data.password,
+      idcard : idcard
+    }
     auth
     .createUserWithEmailAndPassword(data.email, data.password)
     .then(response => {
-      const url = 'http://localhost:4000/user'
-      axios.post(url , {
-        firstname : data.firstName,
-        lastname : data.lastName,
-        email : data.email,
-        password : data.password,
-        idcard : idcard
-      })
-      .then( res => {
-        const url = `http://localhost:4000/user/alldata/${data.email}`
-        axios.get(url)
-        .then( resp => {
-          storejs.set('currentUser' , response.user)
-          storejs.set('idcard', idcard)
-          storejs.set('accessToken', response.user.uid)
-          storejs.set('userData', resp.data)
-          return window.location.href = '/'
-        })
-        .catch( err => console.log(err))
-      })
-      .catch( err => {
-          console.log(err);
-      })
+      firebase.database().ref('users/' + response.user.uid).set(result)
+      storejs.set('currentUser' , response.user)
+      storejs.set('idcard', idcard)
+      storejs.set('accessToken', response.user.uid)
+      storejs.set('userData', result)
+      return window.location.href = '/'
+      
     })
     .catch(error => {
         alert(error.message)               

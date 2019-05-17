@@ -12,6 +12,7 @@ import {
 } from '../components/Input'
 import {CarouselCompane} from '../components/Carousel'
 import { inject, observer } from 'mobx-react'
+import { firebase } from '../firebase/index'
 
 
 const BoxHead = styled.div`
@@ -81,11 +82,6 @@ const enhance = compose(
         pageTitle: 'Register'
     }),
     withLayout,
-    lifecycle({
-        async componentDidMount(){
-        
-        }
-    }),
     withHandlers({
         handleFirstName : props => () => event => {
             props.setFirstName(event.target.value)
@@ -125,24 +121,26 @@ const enhance = compose(
             const { name , value } = event.target
             name === 'email' ? props.setEmail(value) : name === 'password' ? props.setPassword(value) : props.setPasswordCheck(value)
         },
-        onSubmit: props => () => event => {        
+        onSubmit: props => () => event => {      
+           
             event.preventDefault()
             const { email , password , passwordCheck , idcard, firstName, lastName } = props
             let result_idcard = parseInt(idcard.split('-').join(''))    
             let check = idcard.split('-').join('')   
             if (firstName && lastName && email && password && passwordCheck && check.length === 13) {
-                const urlIdcard = `http://localhost:4000/user/${result_idcard}` 
-                axios.get(urlIdcard)
-                .then( res => {
-                    if (password == passwordCheck && res.data === true) {
-                        props.authStore.createUser(props , result_idcard)
-                    }
-                    else{
-                        !res.data ? alert('ไม่สามารถสมัครสมาชิกได้ เนื่องรหัสบัตรประชาชนนี้มีอยู่ในระบบแล้ว !')
-                        : alert('กรุณากรอกพาสเวิร์ดให้ตรงกันทั้งสองช่อง')
-                    }
-                })
-                .catch( err => console.log(err))
+                firebase.database()
+                    .ref("users")
+                    .orderByChild("idcard")
+                    .equalTo(result_idcard)
+                    .once("value").then( snapshot => {
+                        if (password === passwordCheck && !snapshot.val()) {
+                            props.authStore.createUser(props , result_idcard)
+                        }
+                        else{
+                            snapshot.val() ? alert('ไม่สามารถสมัครสมาชิกได้ เนื่องรหัสบัตรประชาชนนี้มีอยู่ในระบบแล้ว !')
+                            : alert('กรุณากรอกพาสเวิร์ดให้ตรงกันทั้งสองช่อง')
+                        }
+                    })
             }   
             else{
                 alert('กรุณากรอกข้อมูลให้ครบถ้วนก่อนทำการกดยืนยัน!')

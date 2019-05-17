@@ -9,6 +9,8 @@ import {input2GrideOnKeyUp,inputOnkeyup , InputTextArea} from '../../components/
 import {btn_NextBack} from '../../components/Button'
 import {StepApplyJobAbility} from '../../components/Step'
 import Router from 'next/router'
+import {firebase} from '../../firebase/index'
+import { inject, observer } from 'mobx-react'
 
 const BoxHead = styled.div`
     margin-top: 3% !important;
@@ -86,6 +88,8 @@ const FontRadioCar = styled.p`
 `;
 
 const enhance = compose(
+    withLayout,
+    inject('authStore'),
     withState('option', 'setOption', [{ key: 'พอใช้', text: 'พอใช้', value: 'พอใช้' }, { key: 'ดี', text: 'ดี', value: 'ดี' } , { key: 'ดีมาก', text: 'ดีมาก', value: 'ดีมาก' }]),
     withState('motorcycles', 'setMotorcycles'),
     withState('car','setCar'),
@@ -102,7 +106,6 @@ const enhance = compose(
     withProps({
         pageTitle: 'Ability information'
     }),
-    withLayout,
     withHandlers({
         initAbilityLocalStorege: props => () => {
             if (localStorage.Ability_page) {
@@ -156,7 +159,7 @@ const enhance = compose(
                 event.target.value = ''
             }        
             else{
-                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode > 47 && event.keyCode < 58) { 
                     if (event.target.value.length > 3) {
                         event.target.value = stack
                     }
@@ -180,7 +183,7 @@ const enhance = compose(
                 event.target.value = ''
             }        
             else{
-                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
+                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode > 47 && event.keyCode < 58) { 
                     if (event.target.value.length > 3) {
                         event.target.value = stack
                     }
@@ -203,6 +206,7 @@ const enhance = compose(
         },
 
         saveThisPageNext: props => () => event => {
+            const uid = props.authStore.currentUser.uid                 
             localStorage.setItem('Ability_page', JSON.stringify({
                 'motorcycles' : props.motorcycles ,
                 'car' : props.car,
@@ -215,6 +219,18 @@ const enhance = compose(
                 'engprint' : props.engprint,
                 'computerSkill' : props.computerSkill,
             }))    
+            firebase.database().ref('resume/' + uid).update({
+                motorcycles : props.motorcycles ,
+                car : props.car,
+                outer : props.outer,
+                english : props.english,
+                english_speak : props.english_speak,
+                english_read : props.english_read,
+                english_writh : props.english_writh,
+                thaiprint : props.thaiprint,
+                engprint : props.engprint,
+                computerSkill : props.computerSkill,
+            })
             Router.push({ pathname : '/Resume/Task_information' })        
             // const checkInputData = Object.getOwnPropertyNames(JSON.parse(localStorage.getItem('Ability_page')));
             // if (checkInputData.length < 10) {
@@ -236,10 +252,11 @@ const enhance = compose(
                 'thaiprint' : props.thaiprint,
                 'engprint' : props.engprint,
                 'computerSkill' : props.computerSkill,
-            }))            
+            }))
             Router.push({ pathname : '/Resume/School_information' })
         },
-    })
+    }),
+    observer
 )
 
 export default enhance( (props)=> 

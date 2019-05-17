@@ -12,12 +12,14 @@ import {
     input2GrideGrideMG, 
     input2Gride, 
     inputWeigth,
-    inputHeigth
+    inputHeigth,
+    inputEmail,
+    inputIdcard
 } from '../../components/Input'
 import { btn_orange } from '../../components/Button'
 import { stepApplyJobInfomation } from '../../components/Step'
+import {firebase} from '../../firebase/index'
 import Router from 'next/router'
-import axios from 'axios'
 
 const buildFileSelector = (fn) => {
     const fileSelector = document.createElement('input');
@@ -298,20 +300,18 @@ const enhance = compose(
     lifecycle({
         async componentDidMount() {            
             window.scrollTo(0, 0)
+            let data = this.props.authStore.userData
+            let resultIdcard = `${data.idcard}`
             await this.props.initPersonalLocalStorege()
             this.props.sex && this.props.sex === 'ชาย' ? this.props.setCheck_soldier(true) : this.props.setCheck_soldier(false)
-            this.props.authStore.userData && this.props.authStore.userData.map( data => { 
-                this.props.setFname_thai(data.firstname)
-                this.props.setLname_thai(data.lastname)
-                this.props.setEmail(data.email)
-                let result1 = [data.idcard.slice(0,1), '-', data.idcard.slice(1)].join('');
-                let result2 = [result1.slice(0,6), '-', result1.slice(6)].join('');
-                let result3 = [result2.slice(0,12), '-', result2.slice(12)].join('');
-                let result4 = [result3.slice(0,15), '-', result3.slice(15)].join('');
-                this.props.setIdcard(result4)
-            })
-            console.log(this.props.authStore);
-            
+            this.props.setFname_thai(data.firstname)
+            this.props.setLname_thai(data.lastname)
+            this.props.setEmail(data.email)
+            let result1 = [resultIdcard.slice(0,1), '-', resultIdcard.slice(1)].join('');
+            let result2 = [result1.slice(0,6), '-', result1.slice(6)].join('');
+            let result3 = [result2.slice(0,12), '-', result2.slice(12)].join('');
+            let result4 = [result3.slice(0,15), '-', result3.slice(15)].join('');
+            this.props.setIdcard(result4)
             // const url = `http://localhost:data.idcard4000/job_position/${this.props.url.query.id}`
             // const res =  await axios.get(url)            
             // this.props.setPosition_name(res.data[0].position_name)
@@ -430,33 +430,50 @@ const enhance = compose(
                 window.alert('คุณกรอกข้อมูลไม่ถูกต้อง หรือ ไม่ครบถ้วน \nกรุณากรอกข้อมูลใหม่อีกครั้ง !!!')
             }
             else{
+                const uid = props.authStore.currentUser.uid                 
+                firebase.database().ref('resume/' + uid).update({
+                    user_id : uid,
+                    email : props.authStore.userData.email,
+                    firstname : props.fname_thai,
+                    lastname : props.lname_thai, 
+                    idcard : props.authStore.userData.idcard,
+                    facebook : props.facebook,
+                    tel : props.tel ,
+                    birthday : props.birthday ,
+                    age : props.age ,
+                    sex : props.sex ,
+                    weight : props.weight ,
+                    height : props.height ,
+                    ethnicity : props.ethnicity ,
+                    nationality : props.nationality ,
+                    religion : props.religion ,
+                    dad_name : props.dad_name ,
+                    dad_career : props.dad_career ,
+                    mom_name : props.mom_name ,
+                    mom_career : props.mom_career ,
+                    brethren : props.brethren ,
+                    sequence : props.sequence ,
+                    status : props.status ,
+                    status_married_fname : props.status_married_fname || null ,
+                    status_married_lname : props.status_married_lname || null,
+                    status_married_child : props.status_married_child || null,
+                    status_married_company : props.status_married_company || null,
+                    soldier : props.soldier ,
+                    congenitalDisease : props.congenitalDisease ,
+                    congenitalDisease_name : props.congenitalDisease_name ,
+                    urgent_contact : props.urgent_contact ,
+                    urgent_relation : props.urgent_relation ,
+                    urgent_phone : props.urgent_phone ,
+                    urgent_apply : props.urgent_apply ,
+                    refer_name : props.refer_name ,
+                    refer_address : props.refer_address ,
+                    refer_phone : props.refer_phone ,
+                    refer_career : props.refer_career ,
+                    imageBase64 : props.imageBase64,
+                })
                 Router.push({ pathname : '/Resume/Address_information' })
             }
         },
-        // onChangeSalary: props => () => event => {                 
-        //     let stack = props.salary
-        //     if (parseInt(event.target.value) < 1) {
-        //         event.target.value = ''
-        //     }        
-        //     else{
-        //         if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8) { 
-        //             if (event.target.value.length > 6) {
-        //                 event.target.value = stack
-        //             }
-        //             else{
-        //                 props.setSalary(event.target.value)
-        //             }
-        //         }
-        //         else{
-        //             if (event.keyCode === 9) {
-        //                 event.target.value = ''
-        //             }
-        //             else{
-        //                 event.target.value = stack
-        //             }
-        //         }
-        //     }
-        // },
         handleFnameThai: props => () => event => {
             props.setFname_thai(event.target.value)
         },
@@ -813,18 +830,18 @@ const enhance = compose(
                         <MgGridHidden>
                             <Grid columns={2} >
                                 <Grid.Column>
-                                    {input2GrideGrideMG('ชื่อคู่สมรส :', 'กรุณากรอกชื่อคู่สมรส' , firstName , 'text' , props.status_married_fname )}
+                                    {input2GrideGrideMG('ชื่อคู่สมรส :', 'กรุณากรอกชื่อคู่สมรส' , firstName , 'text' , props.status_married_fname , '' , true )}
                                 </Grid.Column>
                                 <Grid.Column>
-                                    {input2GrideGrideMG('นามสกุลเดิมคู่สมรส :', 'กรุณากรอกนามสกุลเดิมคู่สมรส' , lastname , 'text' , props.status_married_lname)}
+                                    {input2GrideGrideMG('นามสกุลเดิมคู่สมรส :', 'กรุณากรอกนามสกุลเดิมคู่สมรส' , lastname , 'text' , props.status_married_lname , '' , true)}
                                 </Grid.Column>
                             </Grid>
                             <Grid columns={2} >
                                 <Grid.Column>
-                                    {inputOnkeyup('จำนวนบุตร (คน) :', 'หากไม่มีบุตรกรุณากรอก 0' , child , 'text' , props.status_married_child)}
+                                    {inputOnkeyup('จำนวนบุตร (คน) :', 'หากไม่มีบุตรกรุณากรอก 0' , child , 'text' , props.status_married_child , '', true)}
                                 </Grid.Column>
                                 <Grid.Column>
-                                    {input2GrideGrideMG('สถานที่ทำงานคู่สมรส :', 'กรุณากรอกสถานที่ทำงานคู่สมรส' , company , 'text' , props.status_married_company)}
+                                    {input2GrideGrideMG('สถานที่ทำงานคู่สมรส :', 'กรุณากรอกสถานที่ทำงานคู่สมรส' , company , 'text' , props.status_married_company , '' , true)}
                                 </Grid.Column>
                             </Grid>
                         </MgGridHidden>
@@ -842,7 +859,7 @@ const enhance = compose(
                         <MgGridHidden>
                             <Grid columns={1} >
                                 <Grid.Column>
-                                    {input2GrideGrideMG('โรคประจำตัว :', 'กรุณากรอกชื่อโรคประจำตัว' , name , 'text' , props.congenitalDisease_name)}
+                                    {input2GrideGrideMG('โรคประจำตัว :', 'กรุณากรอกชื่อโรคประจำตัว' , name , 'text' , props.congenitalDisease_name , '' , true)}
                                 </Grid.Column>
                             </Grid>
                         </MgGridHidden>
@@ -887,30 +904,18 @@ export default enhance((props) =>
                         </DivImage>
                     </BoxImg>
                 </Grid.Column>
-                {/* <Grid.Column>
-                    {inputGridePosition('ตำแหน่งงานที่รับสมัคร :', 'กรุณากรอกตำแหน่งงงานที่รับสมัคร', props.position_name )}<br /><br />
-                    {input2GrideOnKeyUp('เงินเดือนที่ต้องการ :', 'กรุณากรอกเงินเดือนที่ต้องการ', props.onChangeSalary(), 'text', props.salary)}
-                </Grid.Column> */}
             </Grid>
             <Grid columns={2} padded='horizontally'>
                 <Grid.Column>
-                    <MgGridLeft>{input2GrideGrideMG('ชื่อ (ภาษาไทย) :', 'กรุณากรอกชื่อ (ภาษาไทย)', props.handleFnameThai(), 'text', props.fname_thai)}</MgGridLeft>
+                    <MgGridLeft>{input2GrideGrideMG('ชื่อ (ภาษาไทย) :', 'กรุณากรอกชื่อ (ภาษาไทย)', props.handleFnameThai(), 'text', props.fname_thai , '',true)}</MgGridLeft>
                 </Grid.Column>
                 <Grid.Column>
-                    {input2Gride('นามสกุล (ภาษาไทย) :', 'กรุณากรอกนามสกุล (ภาษาไทย)', props.handleLnameThai(), 'text', props.lname_thai)}
+                    {input2Gride('นามสกุล (ภาษาไทย) :', 'กรุณากรอกนามสกุล (ภาษาไทย)', props.handleLnameThai(), 'text', props.lname_thai, '',true)}
                 </Grid.Column>
             </Grid>
-            {/* <Grid columns={2} padded='horizontally'>
-                <Grid.Column>
-                    <MgGridLeft>{input2GrideGrideMG('ชื่อ (ภาษาอังกฤษ) :', 'Please enter your firstname in English.', props.handleFnameEng(), 'text', props.fname_eng)}</MgGridLeft>
-                </Grid.Column>
-                <Grid.Column>
-                    {input2Gride('นามสกุล (ภาษาอังกฤษ) :', 'Please enter your lastname in English.', props.handleLnameEng(), 'text', props.lname_eng)}
-                </Grid.Column>
-            </Grid> */}
             <Grid columns={2} padded='horizontally'>
                 <Grid.Column>
-                    <MgGridLeft>{input2GrideGrideMG('อีเมล :', 'ตัวอย่าง Example@test.com', props.handleEmail(), 'email', props.email)}</MgGridLeft>
+                    <MgGridLeft>{inputEmail('อีเมล :', 'ตัวอย่าง Example@test.com', props.handleEmail(), 'email', props.email, '',true)}</MgGridLeft>
                 </Grid.Column>
                 <Grid.Column>
                     {input2Gride('เฟสบุ๊ค :', 'กรุณากรอกเฟสบุ๊ค', props.handleFacebook(), 'text', props.facebook)}
@@ -918,15 +923,15 @@ export default enhance((props) =>
             </Grid>
             <Grid columns={2} padded='horizontally'>
                 <Grid.Column>
-                    <MgGridLeft>{inputOnkeyup('เลขบัตรประจำตัวประชาชน :', 'ตัวอย่าง 1-2345-67890-12-3', props.handleIdcard(), 'text', props.idcard)}</MgGridLeft>
+                    <MgGridLeft>{inputIdcard('เลขบัตรประจำตัวประชาชน :', 'ตัวอย่าง 1-2345-67890-12-3', props.handleIdcard(), 'text', props.idcard, '',true)}</MgGridLeft>
                 </Grid.Column>
                 <Grid.Column>
-                    {input2GrideOnKeyUp('เบอร์โทรติดต่อ :', 'ตัวอย่าง 0881234567', props.handleTel(), 'text', props.tel)}
+                    {input2GrideOnKeyUp('เบอร์โทรติดต่อ :', 'ตัวอย่าง 0881234567', props.handleTel(), 'text', props.tel ,true)}
                 </Grid.Column>
             </Grid>
             <Grid columns={2} padded='horizontally'>
                 <Grid.Column>
-                    <MgGridLeft>{input2GrideGrideMG('วัน/เดือน/ปีเกิด :', 'กรุณาเลือกวัน/เดือน/ปีเกิด', props.handleBirthday(), 'date', props.birthday)}</MgGridLeft>
+                    <MgGridLeft>{input2GrideGrideMG('วัน/เดือน/ปีเกิด :', 'กรุณาเลือกวัน/เดือน/ปีเกิด', props.handleBirthday(), 'date', props.birthday, '',true)}</MgGridLeft>
                 </Grid.Column>
                 <Grid.Column>
                     <Grid columns={2}>
@@ -938,6 +943,7 @@ export default enhance((props) =>
                                 <Form>
                                     <SizeFontRadio>
                                         เพศ :
+                                        <text style={{ color : theme.colors.orange }}> *</text>
                                     </SizeFontRadio>
                                     <Form.Field>
                                         <MgRedio
@@ -965,20 +971,20 @@ export default enhance((props) =>
                 <Grid.Column>
                     <Grid columns={2}>
                         <Grid.Column>
-                            <WidthWeight>{inputWeigth('น้ำหนัก (กก.) :', 'กรุณากรอกน้ำหนัก', props.handleWeight(), 'text', props.weight)}</WidthWeight>
+                            <WidthWeight>{inputWeigth('น้ำหนัก (กก.) :', 'กรุณากรอกน้ำหนัก', props.handleWeight(), 'text', props.weight , true)}</WidthWeight>
                         </Grid.Column>
                         <Grid.Column>
-                            <MgGridHeight>{inputHeigth('ส่วนสูง (ซม.) :', 'กรุณากรอกส่วนสูง', props.handleHeight(), 'text', props.height)}</MgGridHeight>
+                            <MgGridHeight>{inputHeigth('ส่วนสูง (ซม.) :', 'กรุณากรอกส่วนสูง', props.handleHeight(), 'text', props.height , true)}</MgGridHeight>
                         </Grid.Column>
                     </Grid>
                 </Grid.Column>
                 <Grid.Column>
                     <Grid columns={2}>
                         <Grid.Column>
-                            <WidthWeight>{input2Gride('เชื้อชาติ :', 'กรุณากรอกเชื้อชาติ', props.handleEthnicity(), 'text', props.ethnicity)}</WidthWeight>
+                            <WidthWeight>{input2Gride('เชื้อชาติ :', 'กรุณากรอกเชื้อชาติ', props.handleEthnicity(), 'text', props.ethnicity , '' , true)}</WidthWeight>
                         </Grid.Column>
                         <Grid.Column>
-                            <Mg4Gridnationality>{input2Gride('สัญชาติ :', 'กรุณากรอกสัญชาติ', props.handleNationality(), 'text', props.nationality)}</Mg4Gridnationality>
+                            <Mg4Gridnationality>{input2Gride('สัญชาติ :', 'กรุณากรอกสัญชาติ', props.handleNationality(), 'text', props.nationality , '' , true)}</Mg4Gridnationality>
                         </Grid.Column>
                     </Grid>
                 </Grid.Column>
@@ -990,18 +996,18 @@ export default enhance((props) =>
             </Grid>
             <Grid columns={2} padded='horizontally'>
                 <Grid.Column>
-                    <MgGridLeft>{input2GrideGrideMG('ชื่อ-นามสกุล บิดา :', 'กรุณากรอกชื่อ-นามสกุลบิดา', props.handleDadName(), 'text', props.dad_name)}</MgGridLeft>
+                    <MgGridLeft>{input2GrideGrideMG('ชื่อ-นามสกุล บิดา :', 'กรุณากรอกชื่อ-นามสกุลบิดา', props.handleDadName(), 'text', props.dad_name , '' , true)}</MgGridLeft>
                 </Grid.Column>
                 <Grid.Column>
-                    {input2Gride('อาชีพ :', 'กรุณากรอกอาชีพ', props.handleDadCareer(), 'text', props.dad_career)}
+                    {input2Gride('อาชีพ :', 'กรุณากรอกอาชีพ', props.handleDadCareer(), 'text', props.dad_career , '' , true)}
                 </Grid.Column>
             </Grid>
             <Grid columns={2} padded='horizontally'>
                 <Grid.Column>
-                    <MgGridLeft>{input2GrideGrideMG('ชื่อ-นามสกุล มารดา :', 'กรุณากรอกชื่อ-นามสกุลมารดา', props.handleMomName(), 'text', props.mom_name)}</MgGridLeft>
+                    <MgGridLeft>{input2GrideGrideMG('ชื่อ-นามสกุล มารดา :', 'กรุณากรอกชื่อ-นามสกุลมารดา', props.handleMomName(), 'text', props.mom_name , '' , true)}</MgGridLeft>
                 </Grid.Column>
                 <Grid.Column>
-                    {input2Gride('อาชีพ :', 'กรุณากรอกอาชีพ', props.handleMomCareer(), 'text', props.mom_career)}
+                    {input2Gride('อาชีพ :', 'กรุณากรอกอาชีพ', props.handleMomCareer(), 'text', props.mom_career , '' , true)}
                 </Grid.Column>
             </Grid>
             <Grid columns={2} padded='horizontally'>
@@ -1018,6 +1024,7 @@ export default enhance((props) =>
                         <Form>
                             <SizeFontRadio>
                                 สถานภาพการสมรส :
+                                <text style={{ color : theme.colors.orange }}> *</text>
                             </SizeFontRadio>
                             <Form.Field>
                                 <MgRedio
@@ -1062,6 +1069,7 @@ export default enhance((props) =>
                                     <Form>
                                         <SizeFontRadio>
                                             การรับราชการทหาร :
+                                            <text style={{ color : theme.colors.orange }}> *</text>
                                         </SizeFontRadio>
                                         <Form.Field>
                                             <MgRedio
@@ -1091,6 +1099,7 @@ export default enhance((props) =>
                         <Form>
                             <SizeFontRadio>
                                 ท่านมีโรคประจำตัวหรือไม่ :
+                                <text style={{ color : theme.colors.orange }}> *</text>
                             </SizeFontRadio>
                             <Form.Field>
                                 <MgRedio
@@ -1115,15 +1124,15 @@ export default enhance((props) =>
             {props.showPanelCongenitalDisease(props.handleCongenitalDiseaseName())}
             <Grid columns={2} padded='horizontally'>
                 <Grid.Column>
-                    <MgGridLeft>{input2GrideGrideMG('บุคคลที่ติดต่อกรณีเร่งด่วน :', 'กรุณากรอกบุคคลที่ติดต่อกรณีเร่งด่วน' , props.handleUrgenContact() , 'text' , props.urgent_contact)}</MgGridLeft>
+                    <MgGridLeft>{input2GrideGrideMG('บุคคลที่ติดต่อกรณีเร่งด่วน :', 'กรุณากรอกบุคคลที่ติดต่อกรณีเร่งด่วน' , props.handleUrgenContact() , 'text' , props.urgent_contact , '' , true)}</MgGridLeft>
                 </Grid.Column>
                 <Grid.Column>
-                    {input2Gride('ความสัมพันธ์ :', 'กรุณากรอกความสัมพันธ์' , props.handleUrgenRelation() , 'text' , props.urgent_relation)}
+                    {input2Gride('ความสัมพันธ์ :', 'กรุณากรอกความสัมพันธ์' , props.handleUrgenRelation() , 'text' , props.urgent_relation , '' , true)}
                 </Grid.Column>
             </Grid>
             <Grid columns={2} padded='horizontally'>
                 <Grid.Column>
-                    <MgGridLeft>{inputOnkeyup('เบอร์โทรศัพท์ :', 'กรุณากรอกเบอร์โทร' , props.handleUrgenPhone() , 'text' , props.urgent_phone )}</MgGridLeft>
+                    <MgGridLeft>{inputOnkeyup('เบอร์โทรศัพท์ :', 'กรุณากรอกเบอร์โทร' , props.handleUrgenPhone() , 'text' , props.urgent_phone , '' , true)}</MgGridLeft>
                 </Grid.Column>
                 <Grid.Column>
                     {input2Gride('ทราบการรับสมัครจาก :', 'กรุณากรอกข้อมูล' , props.handleUrgenApply() , 'text' , props.urgent_apply)}
@@ -1137,18 +1146,18 @@ export default enhance((props) =>
             <br />
             <Grid columns={2} padded='horizontally'>
                 <Grid.Column>
-                    <MgGridLeft>{input2GrideGrideMG('ชื่อ-นามสกุล :', 'กรุณากรอกชื่อ-นามสกุล' , props.handleReferName() , 'text' , props.refer_name)}</MgGridLeft>
+                    <MgGridLeft>{input2GrideGrideMG('ชื่อ-นามสกุล :', 'กรุณากรอกชื่อ-นามสกุล' , props.handleReferName() , 'text' , props.refer_name , '' , true)}</MgGridLeft>
                 </Grid.Column>
                 <Grid.Column>
-                    {input2Gride('ที่อยู่ :', 'กรุณากรอกที่อยู่' , props.handleReferAddress() , 'text' , props.refer_address)}
+                    {input2Gride('ที่อยู่ :', 'กรุณากรอกที่อยู่' , props.handleReferAddress() , 'text' , props.refer_address , '' , true)}
                 </Grid.Column>
             </Grid>
             <Grid columns={2} padded='horizontally'>
                 <Grid.Column>
-                    <MgGridLeft>{inputOnkeyup('เบอร์โทรศัพท์ :', 'กรุณากรอกเบอร์โทรศัพท์' , props.handleReferPhone() , 'text' , props.refer_phone)}</MgGridLeft>
+                    <MgGridLeft>{inputOnkeyup('เบอร์โทรศัพท์ :', 'กรุณากรอกเบอร์โทรศัพท์' , props.handleReferPhone() , 'text' , props.refer_phone , '' , true)}</MgGridLeft>
                 </Grid.Column>
                 <Grid.Column>
-                    {input2Gride('อาชีพ :', 'กรุณากรอกอาชีพ' , props.handleReferCareer() , 'text' , props.refer_career)}
+                    {input2Gride('อาชีพ :', 'กรุณากรอกอาชีพ' , props.handleReferCareer() , 'text' , props.refer_career , '' , true)}
                 </Grid.Column>
             </Grid>
             <br /><br />

@@ -3,12 +3,13 @@ import { withLayout } from '../../hoc'
 import { compose , withProps , withState , withHandlers , lifecycle } from 'recompose'
 import styled from 'styled-components'
 import { Container , Icon , Divider , Grid  } from 'semantic-ui-react'
-import {Breadcrumb3Page} from '../../components/Breadcrumb'
 import theme from '../../theme/default'
 import { inputWeigth,inputHeigth,input2Gride , input4GrideMG , input4Gride} from '../../components/Input'
 import {btn_NextBack} from '../../components/Button'
 import {StepApplyJobSchool} from '../../components/Step'
 import Router from 'next/router'
+import {firebase} from '../../firebase/index'
+import { inject, observer } from 'mobx-react'
 
 const BoxHead = styled.div`
     margin-top: 3% !important;
@@ -62,6 +63,8 @@ const MgBTNOrange = styled.div`
 `;
 
 const enhance = compose(
+    withLayout,
+    inject('authStore'),
     withState('highSchool_name','setHighSchool_name'),
     withState('highSchool_country','setHighSchool_country'),
     withState('highSchool_major','setHighSchool_major'),
@@ -83,11 +86,9 @@ const enhance = compose(
     withState('otherSchool_grade','setOtherSchool_grade'),
     withState('otherSchool_congrate','setOtherSchool_congrate'),
     withState('position_name' , 'setPosition_name' , ''),
-
     withProps({
         pageTitle: 'School information'
     }),
-    withLayout,
     withHandlers({
         initSchoolLocalStorege: props => () => {
             if (localStorage.School_page) {
@@ -337,6 +338,7 @@ const enhance = compose(
         },
 
         saveThisPageNext: props => () => event => {
+            const uid = props.authStore.currentUser.uid                 
             localStorage.setItem('School_page', JSON.stringify({
                 'highSchool_name' : props.highSchool_name !== undefined ? props.highSchool_name : '-',
                 'highSchool_country' : props.highSchool_country !== undefined ? props.highSchool_country : '-',
@@ -359,6 +361,28 @@ const enhance = compose(
                 'otherSchool_grade' : props.otherSchool_grade !== undefined ? props.otherSchool_grade : '-',
                 'otherSchool_congrate' : props.otherSchool_congrate !== undefined ? props.otherSchool_congrate : '-', 
             }))    
+            firebase.database().ref('resume/' + uid).update({
+                highSchool_name : props.highSchool_name !== undefined ? props.highSchool_name : '-',
+                highSchool_country : props.highSchool_country !== undefined ? props.highSchool_country : '-',
+                highSchool_major : props.highSchool_major !== undefined ? props.highSchool_major : '-',
+                highSchool_grade : props.highSchool_grade !== undefined ? props.highSchool_grade : '-',
+                highSchool_congrate : props.highSchool_congrate !== undefined ? props.highSchool_congrate : '-',
+                diplomaSchool_name : props.diplomaSchool_name !== undefined ? props.diplomaSchool_name : '-',
+                diplomaSchool_country : props.diplomaSchool_country !== undefined ? props.diplomaSchool_country : '-',
+                diplomaSchool_major : props.diplomaSchool_major !== undefined ? props.diplomaSchool_major : '-',
+                diplomaSchool_grade : props.diplomaSchool_grade !== undefined ? props.diplomaSchool_grade : '-',
+                diplomaSchool_congrate : props.diplomaSchool_congrate !== undefined ? props.diplomaSchool_congrate : '-',
+                bechelorSchool_name : props.bechelorSchool_name !== undefined ? props.bechelorSchool_name : '-',
+                bechelorSchool_country : props.bechelorSchool_country !== undefined ? props.bechelorSchool_country : '-',
+                bechelorSchool_major : props.bechelorSchool_major !== undefined ? props.bechelorSchool_major : '-',
+                bechelorSchool_grade : props.bechelorSchool_grade !== undefined ? props.bechelorSchool_grade : '-',
+                bechelorSchool_congrate : props.bechelorSchool_congrate !== undefined ? props.bechelorSchool_congrate : '-',
+                otherSchool_name : props.otherSchool_name !== undefined ? props.otherSchool_name : '-',
+                otherSchool_country : props.otherSchool_country !== undefined ? props.otherSchool_country : '-',
+                otherSchool_major : props.otherSchool_major !== undefined ? props.otherSchool_major : '-',
+                otherSchool_grade : props.otherSchool_grade !== undefined ? props.otherSchool_grade : '-',
+                otherSchool_congrate : props.otherSchool_congrate !== undefined ? props.otherSchool_congrate : '-',
+            })
             Router.push({ pathname : '/Resume/Ability_information' })        
             // const checkInputData = Object.getOwnPropertyNames(JSON.parse(localStorage.getItem('School_page')));            
             // if (checkInputData.length < 10){
@@ -390,10 +414,11 @@ const enhance = compose(
                 'otherSchool_major' : props.otherSchool_major,
                 'otherSchool_grade' : props.otherSchool_grade,
                 'otherSchool_congrate' : props.otherSchool_congrate,
-            }))      
+            }))    
             Router.push({ pathname : '/Resume/Address_information'})
         },
-    })
+    }),
+    observer
 )
 
 export default enhance( (props)=> 

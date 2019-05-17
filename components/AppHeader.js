@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { compose , withProps, withHandlers, withState , lifecycle } from 'recompose'
 import { inject, observer } from 'mobx-react'
 import _ from 'lodash'
-import auth from '../firebase'
+import {auth} from '../firebase/index'
 
 const SegmentHeader = styled(Segment) `
     overflow : none !important;
