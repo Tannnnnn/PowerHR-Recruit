@@ -425,7 +425,7 @@ export default enhance( (props)=>
     <Container>
         <br/><br/>
         <BoxHead>
-            <center><br/><TextBox>ประวัติส่วนตัว</TextBox></center><br/>
+            <center><br/><TextBox>ข้อมูลส่วนตัว</TextBox></center><br/>
         </BoxHead>
         <BoxHead2/>
         <Box>

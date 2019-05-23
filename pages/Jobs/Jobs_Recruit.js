@@ -3,7 +3,8 @@ import styled from 'styled-components'
 import { Segment , Icon , Container , Header , Pagination , Image } from 'semantic-ui-react'
 import { compose , withHandlers , withState , lifecycle } from 'recompose'
 import Link from 'next/link'
-import axios from 'axios'
+import { inject, observer } from 'mobx-react'
+import { firebase } from '../../firebase/index'
 
 const SegmentHeader = styled(Segment)`
   height : 80px ;
@@ -84,7 +85,7 @@ const LabelSalary = styled.label`
 `
 const LabelPosition = styled.label`
   font-size: 22px !important ;
-  padding-left : 5% !important ;
+  padding-left : 3% !important ;
   cursor : pointer ;
   color : #ff5800 ;
   -webkit-transition:color .3s ease-in-out;
@@ -114,25 +115,30 @@ const HeaderNotHaveData = styled.h3`
 `
 
 const enhance = compose(
+  inject('jobStore'),
   withState('recruit' , 'setRecruit'),
   withState('dataInPage' , 'setDataInPage' , 5),
   withState('activePage' , 'setActivePage' , 1),
-  lifecycle({
-    async componentDidMount(){
-      let result = []
-      const url = 'http://localhost:4000/joinPosition'
-      const res = await axios.get(url)
-
-      res.data.map((data) => {   
-        const today = new Date() 
-        const endDate = new Date(data.enddate)
-        const startDate = new Date(data.startdate)
-       
-        if (today.setHours(0,0,0,0) >= startDate.setHours(0,0,0,0) && today.setHours(0,0,0,0) <= endDate) {
-          result.push(data)
-        }
+  withHandlers({
+    initGetJobPositionsData: props => () => {
+      firebase.database().ref("job_positions_log")
+      .once("value").then( snapshot => {
+        let data = Object.values(snapshot.val())
+        let result = data.map((data) => {   
+          const today = new Date() 
+          const endDate = new Date(data.enddate)
+          const startDate = new Date(data.startdate)
+          if (today.setHours(0,0,0,0) >= startDate.setHours(0,0,0,0) && today.setHours(0,0,0,0) <= endDate) {
+            return data
+          }
+        })
+        props.setRecruit(result)
       })
-      this.props.setRecruit(await result)
+    }
+  }),
+  lifecycle({
+    async componentDidMount(){      
+      await this.props.initGetJobPositionsData()
     }
   }),
   withHandlers({
@@ -144,8 +150,8 @@ const enhance = compose(
         const currentData = recruit.slice(indexOfFirst, indexOfLast);
         return  currentData.map( (data , i) => {           
                   return(
-                    <div key={i}>
-                      <Link href={{ pathname : '../JobDetail/JobDetail' , query : { id : data.id} }}>
+                    <div key={i} onClick={() => props.jobStore.job_positions = data}>
+                      <Link href={{ pathname : '../JobDetail/JobDetail' }} >
                         <SegmentContent >
                             <HeaderContentRight floated='right'>
                               <LabelDate>
@@ -158,7 +164,7 @@ const enhance = compose(
                             <HeaderContentLeft floated='left'>
                               <LabelPosition>{data.position_name}</LabelPosition><br/><br/>
                               <LabelSalary>
-                                <Icon name='usd' />{data.rate}
+                                <Icon name='money bill alternate outline' />{data.rate}
                               </LabelSalary>
                             </HeaderContentLeft>
                         </SegmentContent>

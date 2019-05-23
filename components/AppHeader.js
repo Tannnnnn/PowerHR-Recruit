@@ -27,8 +27,8 @@ const TextHeader = styled(Header)`
 `;
 
 const ImageHeader = styled(Header)`
-    margin-top: 0% !important;
-    margin-right: 0rem !important;
+    margin-top: -0.2% !important;
+    margin-right: -1rem !important;
 `;
 
 const MenuItem = styled(Menu.Item)`
@@ -109,6 +109,15 @@ const MgRegister = styled.text`
     }
 `;
 
+const DropdownButton = styled(Dropdown)`
+    margin-left : 4px !important;  
+    color : white ;
+    margin-bottom : 10px;
+`;
+const DropdownMenu = styled(Dropdown.Menu)`
+    margin-left : 30px !important;  
+    margin-top : 2px !important; 
+`;
 
 
 const enhance = compose(
@@ -125,8 +134,7 @@ const enhance = compose(
             const { email , password } = props   
             auth.signInWithEmailAndPassword(email, password)
             .then(response => {
-                props.authStore.login(response,email)
-                window.location.href = '/'
+                props.authStore.login(response)
             })
             .catch(error => {
                 const errorCode = error.code;
@@ -152,47 +160,54 @@ export default enhance((props) =>
         <SegmentHeader clearing >
             <Container>
                 {
-                    props.authStore.accessToken
+                    props.authStore.userData
                     ? <div>
-                        {/* <ImageHeader as='h4' floated='left'>
+                        <TextHeader as='h4' floated='right'> 
+                            <DropdownButton simple item text={props.authStore.userData.firstname + ' ' +props.authStore.userData.lastname}>
+                                <DropdownMenu>
+                                    <Dropdown.Item icon='sign-out' text="Logout" onClick={() => props.authStore.logout()}/>
+                                </DropdownMenu>
+                            </DropdownButton>
+                        </TextHeader>
+                        <ImageHeader as='h4' floated='right'>
                             <Image  src='https://www.img.in.th/images/687206af74ec86d36b815002c694b34e.png' size='small' />
                         </ImageHeader>
                         <TextHeader as='h4' floated='left'>
-                            <MenuItem>
-                                {props.authStore.currentUser.email}
-                            </MenuItem>
-                        </TextHeader> */}
-                        <TextHeader as='h4' floated='right' onClick={() => props.authStore.logout()}> 
-                            <Link href='#'>
-                                <MenuItem >
-                                    ออกจากระบบ
-                                </MenuItem>
-                            </Link>
-                        </TextHeader>
-                        <TextHeader as='h4' floated='right' >
-                            <Link href={{ pathname : '../Resume/Personal_information' }}>
+                            <Link href='/index'>
                                 <MenuItem>
-                                    ข้อมูลส่วนตัว
+                                    ตำแหน่งเปิดรับสมัคร
                                 </MenuItem>
                             </Link>
                         </TextHeader>
-                        <TextHeader as='h4' floated='right'>
-                            <Link href='#'>
-                                <MenuItem>
-                                    ประวัติการสมัครงาน
-                                </MenuItem>
-                            </Link>
-                        </TextHeader>
-                        <TextHeader as='h4' floated='right'>
+                        <TextHeader as='h4' floated='left'>
                             <Link href='../Interview/ListPositionInterview'>
                                 <MenuItem>
                                     ประกาศผล
                                 </MenuItem>
                             </Link>
                         </TextHeader>
+                        <TextHeader as='h4' floated='left'>
+                            <Link href='#'>
+                                <MenuItem>
+                                    ประวัติการสมัครงาน
+                                </MenuItem>
+                            </Link>
+                        </TextHeader>
+                        <TextHeader as='h4' floated='left' >
+                            <Link href={{ pathname : '../Resume/Personal_information' }}>
+                                <MenuItem>
+                                    ข้อมูลส่วนตัว
+                                </MenuItem>
+                            </Link>
+                        </TextHeader>
                     </div> 
                     : <div>
                         <TextHeader as='h4' floated='right'>
+                            <Link href='/index'>
+                                <MenuItem>
+                                    ตำแหน่งเปิดรับสมัคร
+                                </MenuItem>
+                            </Link>&nbsp;&nbsp;&nbsp;
                             <Link href='#'>
                                 <MenuItem>
                                     <Dropdown text='เข้าสู่ระบบ' >
@@ -224,13 +239,6 @@ export default enhance((props) =>
                         </TextHeader>
                     </div>
                 }
-                <TextHeader as='h4' floated='right'>
-                    <Link href='/index'>
-                        <MenuItem>
-                            ตำแหน่งเปิดรับสมัคร
-                        </MenuItem>
-                    </Link>
-                </TextHeader>
             </Container>
         </SegmentHeader>
     </div>

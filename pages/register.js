@@ -2,9 +2,8 @@ import React from 'react'
 import { withLayout , withApp } from '../hoc'
 import styled from 'styled-components'
 import { compose , withProps, withHandlers, withState , lifecycle } from 'recompose'
-import { Container, Grid, Button, Form } from 'semantic-ui-react'
+import { Container, Grid, Button } from 'semantic-ui-react'
 import theme from '../theme/default'
-import axios from 'axios'
 import { 
     input2GrideGrideMG,
     input2Gride,

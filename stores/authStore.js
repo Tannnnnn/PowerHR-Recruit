@@ -42,14 +42,15 @@ class AuthStore {
     })
   }
 
-  @action async login(response,email){    
+  @action async login(response){   
     storejs.set('accessToken', response.user.uid);
     storejs.set('currentUser', response.user);
-    const url = `http://localhost:4000/user/alldata/${email}`
-    const res = await axios.get(url)
-    if (res) {
-      storejs.set('userData', res.data);      
-    }
+    firebase.database().ref('users/' + response.user.uid)
+    .once("value").then( snapshot => {
+      storejs.set('userData', snapshot.val());
+      window.location.href = '/'
+    })
+    
   }
 
   @action async logout(){    

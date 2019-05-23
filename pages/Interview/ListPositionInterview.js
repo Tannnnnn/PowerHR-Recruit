@@ -71,13 +71,20 @@ const TextContant = styled.small`
     font-size: 16px;
     color: ${theme.colors.textGray};
 `;
-
+const TextSuccess = styled.small`
+    font-size: 16px;
+    color: #05E31F;
+`;
+const TextFail = styled.small`
+    font-size: 16px;
+    color: red;
+`;
 const MgRow = styled(Grid.Row)`
     margin-left: 8%;
 `;
 
 const enhance = compose(
-    withState('position','setPosition',[{position: 'Fontend Developer',  date: '28 พฤศจิกายน 2561', status:'รอการพิจารณา' }]),
+    withState('position','setPosition',[{position: 'React Developer',  date: '15 พฤษภาคม 2562', status:'ผ่านการพิจารณา' } , {position: 'Angular Developer',  date: '20 พฤษภาคม 2562', status:'ไม่ผ่านการพิจารณา' }]),
     withProps({
         pageTitle: 'Position Interview'
     }),
@@ -96,7 +103,15 @@ const enhance = compose(
                                     <TextTopic>วันที่สมัคร : <TextContant>{data.date}</TextContant></TextTopic>
                                 </Grid.Column>
                                 <Grid.Column>
-                                    <TextTopic>สถานะ : <TextContant>{data.status}</TextContant></TextTopic>
+                                    <TextTopic>สถานะ :  
+                                        {
+                                            data.status === 'รอการพิจารณา'
+                                                ? <TextContant> {data.status}</TextContant>
+                                                : data.status === 'ผ่านการพิจารณา'
+                                                    ? <TextSuccess> {data.status}</TextSuccess>
+                                                    : <TextFail> {data.status}</TextFail>
+                                        }
+                                    </TextTopic>
                                 </Grid.Column>
                             </MgRow>
                         </Grid>
@@ -115,7 +130,7 @@ export default enhance( (props)=>
         <Container>
             <BoxText>
                 <br/>
-                <center><TextHeadInterview>ประกาศผล</TextHeadInterview></center>
+                <center><TextHeadInterview>ประวัติการสมัครงาน</TextHeadInterview></center>
             </BoxText>
             {props.handleShowData()}
         </Container>

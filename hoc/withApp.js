@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Provider } from 'mobx-react'
 import Head from 'next/head';
 import { injectGlobal } from 'styled-components'
-import { initAuthStore } from '../stores';
+import { initAuthStore, initJobStore } from '../stores';
 
 injectGlobal`
     body {
@@ -24,11 +24,12 @@ export default function withApp(WrappedComponent) {
             super(props)
             const isServer = !process.browser
             this.authStore = initAuthStore(isServer)
+            this.jobStore = initJobStore(isServer)
         }
 
         render(){
             return (
-                <Provider authStore={this.authStore}>
+                <Provider authStore={this.authStore} jobStore={this.jobStore}>
                     <main>
                         <Head>
                             <title>Recruit Job : {this.props.pageTitle}</title>

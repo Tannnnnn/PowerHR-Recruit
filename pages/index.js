@@ -4,9 +4,11 @@ import { compose , withProps , lifecycle , withState , withHandlers } from 'reco
 import { Jobs_Company } from './Jobs/Jobs_Company'
 import { Benefit } from './Jobs/Benefit'
 import { Jobs_Recruit } from './Jobs/Jobs_Recruit'
+import { inject, observer } from 'mobx-react'
 
 const enhance = compose(
     withLayout,
+    inject('authStore'),
     withState('location','setLocation'),
     withProps({
         pageTitle: 'Home'
@@ -28,7 +30,8 @@ const enhance = compose(
         componentDidMount(){
             this.props.setLocation(window.location.pathname)
         }
-    })
+    }),
+    observer
 )
   
 export default enhance((props) => 
