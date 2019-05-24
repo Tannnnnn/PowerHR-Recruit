@@ -1,11 +1,12 @@
 import React from 'react'
 import { withLayout } from '../../hoc'
-import { compose, withProps , withState , withHandlers} from 'recompose'
+import { compose, withProps , withState , withHandlers , lifecycle} from 'recompose'
 import {CarouselCompane} from '../../components/Carousel'
 import styled from 'styled-components'
-import { Container , Divider , Segment , Header , Image , Pagination , Grid  } from 'semantic-ui-react'
+import { Container , Divider , Segment , Header , Grid  } from 'semantic-ui-react'
 import theme from '../../theme/default'
-
+import { inject, observer } from 'mobx-react'
+import { firebase } from '../../firebase/index'
 
 const SegmentHeader = styled(Segment)`
   height : 80px ;
@@ -84,43 +85,49 @@ const MgRow = styled(Grid.Row)`
 `;
 
 const enhance = compose(
-    withState('position','setPosition',[{position: 'React Developer',  date: '15 พฤษภาคม 2562', status:'ผ่านการพิจารณา' } , {position: 'Angular Developer',  date: '20 พฤษภาคม 2562', status:'ไม่ผ่านการพิจารณา' }]),
+    withLayout,
+    inject('authStore' , 'jobStore'),
+    withState('position','setPosition'),
+    withState('position_name','setPosition_name'),
     withProps({
         pageTitle: 'Position Interview'
     }),
-    withLayout,
     withHandlers({
-        handleShowData: props => () => {
-            return  props.position.map( (data,i) => {
-                return(
-                    <CardName key={i}>
-                        <Grid columns={3}>
-                            <MgRow>
-                                <Grid.Column>
-                                    <TextTopic>ตำแหน่ง : <TextContant>{data.position}</TextContant></TextTopic>
-                                </Grid.Column>
-                                <Grid.Column>
-                                    <TextTopic>วันที่สมัคร : <TextContant>{data.date}</TextContant></TextTopic>
-                                </Grid.Column>
-                                <Grid.Column>
-                                    <TextTopic>สถานะ :  
-                                        {
-                                            data.status === 'รอการพิจารณา'
-                                                ? <TextContant> {data.status}</TextContant>
-                                                : data.status === 'ผ่านการพิจารณา'
-                                                    ? <TextSuccess> {data.status}</TextSuccess>
-                                                    : <TextFail> {data.status}</TextFail>
-                                        }
-                                    </TextTopic>
-                                </Grid.Column>
-                            </MgRow>
-                        </Grid>
-                    </CardName>
-                )
+        initApplyJobsList: props => () => {
+            firebase.database()
+            .ref('apply_jobs')
+            .orderByChild("uid")
+            .equalTo(props.authStore.accessToken)
+            .once("value").then( snapshot => { 
+                let result = Object.values(snapshot.val())                
+                props.setPosition(result)
+            })
+        },
+        initGetDataPositions: props => () => {
+            firebase.database().ref('positions')
+            .once("value").then( snapshot => { 
+                let result = Object.values(snapshot.val())                
+                props.setPosition_name(result)
             })
         }
-    })
-    
+    }),
+    lifecycle({
+        async componentDidMount(){
+            await this.props.initApplyJobsList()
+            await this.props.initGetDataPositions()
+            console.log(this.props.position);
+        }
+    }),
+    withHandlers({
+        handleDateToThai: props => (date) => {
+            let timestamp = new Date(1970, 0, 1); // Epoch
+            timestamp.setMilliseconds(date);
+            const st_localDate = new Date(Date.UTC(timestamp.getFullYear(),timestamp.getMonth(),timestamp.getDate()));
+            const st_options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return st_localDate.toLocaleDateString('th-TH', st_options)
+        },
+    }),
+    observer
 )
 
 export default enhance( (props)=> 
@@ -130,11 +137,48 @@ export default enhance( (props)=>
             <Divider hidden />
             <BoxText>
                 <br/>
-                <center><TextHeadInterview>ประกาศผล</TextHeadInterview></center>
+                <center><TextHeadInterview>ประกาศผลการสมัคร</TextHeadInterview></center>
             </BoxText>
-            {props.handleShowData()}
-            <br/>
-            <Divider hidden />
+            {
+                props.position
+                ? props.position.map( (data,i) => {
+                    return(
+                        <CardName key={i}>
+                            <Grid columns={3}>
+                                <MgRow>
+                                    <Grid.Column>
+                                        <TextTopic>ตำแหน่ง :&nbsp; 
+                                            <TextContant>
+                                            {
+                                                props.position_name
+                                                ?   props.position_name.map( result => { return result.position_id === data.position_id ? result.position_name : null})
+                                                :   null
+                                            }
+                                            </TextContant>
+                                        </TextTopic>
+                                    </Grid.Column>
+                                    <Grid.Column>
+                                        <TextTopic>วันที่สมัคร : <TextContant>{props.handleDateToThai(data.apply_date)}</TextContant></TextTopic>
+                                    </Grid.Column>
+                                    <Grid.Column>
+                                        <TextTopic>สถานะ :  
+                                            {
+                                                data.status === 0
+                                                    ? <TextContant> รอการพิจารณา</TextContant>
+                                                    : data.status === 1
+                                                        ? <TextSuccess> ผ่านการพิจารณา </TextSuccess>
+                                                        : <TextFail> ไม่ผ่านการพิจารณา </TextFail>
+                                            }
+                                        </TextTopic>
+                                    </Grid.Column>
+                                </MgRow>
+                            </Grid>
+                        </CardName>
+                    )
+                })
+              : <center><br/><TextTopic>ไม่มีข้อมูลการประกาศผลการสมัครงานในขณะนี้</TextTopic><br/></center>
+            }
+            <br/><br/>
         </Container>
     </div>
 )
