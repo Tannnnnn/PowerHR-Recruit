@@ -7,12 +7,11 @@ import theme from '../../theme/default'
 import { input2GrideOnKeyUp , inputOnkeyup , input2GrideGrideMG , input2Gride , InputTextArea , InputTextAreaMini } from '../../components/Input'
 import { StepApplyJobTask } from '../../components/Step'
 import { PDF_GENERATOR } from '../../components/PdfMake'
-import Link from 'next/link'
 import Router from 'next/router'
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import { firebase } from '../../firebase/index'
-import { inject, observer } from 'mobx-react'
+import { inject } from 'mobx-react'
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 pdfMake.fonts = {

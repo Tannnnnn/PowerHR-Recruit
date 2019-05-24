@@ -61,7 +61,6 @@ class AuthStore {
         })
       }
     })
-
   }
 
   @action async logout(){    

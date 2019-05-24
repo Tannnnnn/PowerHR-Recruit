@@ -9,6 +9,25 @@ import {input2GrideGrideMG } from '../../components/Input'
 import { inject, observer } from 'mobx-react'
 import auth from '../../firebase'
 import {firebase} from '../../firebase/index'
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
+import { PDF_GENERATOR } from '../../components/PdfMake'
+
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
+pdfMake.fonts = {
+    Kanit: {
+      normal: 'Kanit-Light.ttf',
+      bold: 'Kanit-Bold.ttf',
+      italics: 'Kanit-Italic.ttf',
+      bolditalics: 'Kanit-BoldItalic.ttf'
+    },
+    Roboto: {
+      normal: 'Roboto-Regular.ttf',
+      bold: 'Roboto-Medium.ttf',
+      italics: 'Roboto-Italic.ttf',
+      bolditalics: 'Roboto-MediumItalic.ttf'
+    }
+}
 
 const BodyBox = styled.div`
     background : #ffffff;
@@ -130,6 +149,7 @@ const enhance = compose(
     withState('email','setEmail'),
     withState('password','setPassword'),
     withState('open' , 'setOpen' , false),
+    withState('resume' , 'setResume' , false),
     withProps({
         pageTitle: 'Jobs Detail'
     }),
@@ -157,21 +177,20 @@ const enhance = compose(
             })
         },
         handleSubmitRegister: props => () => event => {
-            props.setOpen(false)
-            let uniqueID = firebase.database().ref().push().key
-            let result = {
-                apply_job_id : uniqueID,
-                department_id : props.jobStore.job_positions.department_id,
-                apply_date : firebase.database.ServerValue.TIMESTAMP,
-                position_id : props.jobStore.job_positions.position_id,
-                job_position_id : props.jobStore.job_positions.job_position_id,
-                uid : props.authStore.accessToken,
-                rate : props.salary,
-                status : 0
-            }
-            firebase.database().ref('apply_jobs/' + uniqueID).set(result)
-            console.log(props.salary);
-            // alert('สมัครงานสำเร็จ *หมายเหตุ: ผู้ที่ผ่านการพิจารณาเบื้องต้น ทางฝ่ายบุคคลจะติดต่อไปหาผู้สมัครโดยตรง');
+            // props.setOpen(false)
+            // let uniqueID = firebase.database().ref().push().key
+            // let result = {
+            //     apply_job_id : uniqueID,
+            //     department_id : props.jobStore.job_positions.department_id,
+            //     apply_date : firebase.database.ServerValue.TIMESTAMP,
+            //     position_id : props.jobStore.job_positions.position_id,
+            //     job_position_id : props.jobStore.job_positions.job_position_id,
+            //     uid : props.authStore.accessToken,
+            //     rate : props.salary,
+            //     status : 0
+            // }
+            // firebase.database().ref('apply_jobs/' + uniqueID).set(result)            
+            PDF_GENERATOR(props.resume , props)
         },
         initGetJobPositionData: props => () => {
             let result = props.jobStore.job_positions
@@ -193,11 +212,18 @@ const enhance = compose(
             const end_localDate = new Date(Date.UTC(end_years,end_month,end_days));
             const end_options = { year: 'numeric', month: 'long', day: 'numeric' };
             props.setEnddate(end_localDate.toLocaleDateString('th-TH', end_options))
+        },
+        initGetDataResume: props => () => {
+            firebase.database().ref('resume/' + props.authStore.accessToken)
+            .once("value").then( snapshot => {
+                props.setResume(snapshot.val())
+            })
         }
     }),
     lifecycle({
         async componentDidMount(){
             await this.props.initGetJobPositionData()  
+            await this.props.initGetDataResume()
         }
     }),
     withHandlers({
