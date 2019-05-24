@@ -3,11 +3,12 @@ import { withLayout , withApp } from '../../hoc'
 import { compose , withState , lifecycle , withHandlers , withProps } from 'recompose'
 import {CarouselCompane} from '../../components/Carousel'
 import styled from 'styled-components'
-import { Container , Divider , Grid , Button , Image , Label , Modal , Form , Icon } from 'semantic-ui-react'
+import { Container , Divider , Grid , Button , Image , Label , Modal , Icon } from 'semantic-ui-react'
 import {Breadcrumb2Page} from '../../components/Breadcrumb'
-import {inputOnkeyup } from '../../components/Input'
+import {input2GrideGrideMG } from '../../components/Input'
 import { inject, observer } from 'mobx-react'
 import auth from '../../firebase'
+import {firebase} from '../../firebase/index'
 
 const BodyBox = styled.div`
     background : #ffffff;
@@ -157,6 +158,19 @@ const enhance = compose(
         },
         handleSubmitRegister: props => () => event => {
             props.setOpen(false)
+            let uniqueID = firebase.database().ref().push().key
+            let result = {
+                apply_job_id : uniqueID,
+                department_id : props.jobStore.job_positions.department_id,
+                apply_date : firebase.database.ServerValue.TIMESTAMP,
+                position_id : props.jobStore.job_positions.position_id,
+                job_position_id : props.jobStore.job_positions.job_position_id,
+                uid : props.authStore.accessToken,
+                rate : props.salary,
+                status : 0
+            }
+            firebase.database().ref('apply_jobs/' + uniqueID).set(result)
+            console.log(props.salary);
             // alert('สมัครงานสำเร็จ *หมายเหตุ: ผู้ที่ผ่านการพิจารณาเบื้องต้น ทางฝ่ายบุคคลจะติดต่อไปหาผู้สมัครโดยตรง');
         },
         initGetJobPositionData: props => () => {
@@ -183,9 +197,7 @@ const enhance = compose(
     }),
     lifecycle({
         async componentDidMount(){
-            console.log(this.props.jobStore.job_positions , 'log');
             await this.props.initGetJobPositionData()  
-                                               
         }
     }),
     withHandlers({
@@ -215,11 +227,11 @@ const enhance = compose(
                                 </BgHandTask>
                             </center>
                             <from>
-                                <TextPosition>ตำแหน่งงานที่สมัคร : <smaTextSmallPositionll>{name}</smaTextSmallPositionll></TextPosition>
-                                {inputOnkeyup('เงินเดือนที่ต้องการ :','กรุณากรอกเงินเดือนที่ต้องการ' , '' , 'text' , '')}
+                                <TextPosition>ตำแหน่งงานที่สมัคร : {name}</TextPosition>
+                                {input2GrideGrideMG('เงินเดือนที่ต้องการ :','กรุณากรอกเงินเดือนที่ต้องการ' , (event) => props.setSalary(event.target.value) , 'text' , '')}
                                 <center>
                                     <ButtonCancle onClick={() => props.setOpen(false) }>ยกเลิก</ButtonCancle>
-                                    <ButtonOK onClick={props.handleSubmitRegister()}>ยืนยันสมัครงาน</ButtonOK>
+                                    <ButtonOK onClick={props.handleSubmitRegister()} disabled={props.salary ? false : true}>ยืนยันสมัครงาน</ButtonOK>
                                 </center>
                             </from>
                         </Modal.Description>
