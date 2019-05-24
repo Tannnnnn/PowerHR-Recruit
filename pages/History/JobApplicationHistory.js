@@ -86,7 +86,7 @@ const MgRow = styled(Grid.Row)`
 const enhance = compose(
     withState('position','setPosition',[{position: 'React Developer',  date: '15 พฤษภาคม 2562', status:'ผ่านการพิจารณา' } , {position: 'Angular Developer',  date: '20 พฤษภาคม 2562', status:'ไม่ผ่านการพิจารณา' }]),
     withProps({
-        pageTitle: 'Position Interview'
+        pageTitle: 'Job appcation history'
     }),
     withLayout,
     withHandlers({
@@ -130,7 +130,7 @@ export default enhance( (props)=>
             <Divider hidden />
             <BoxText>
                 <br/>
-                <center><TextHeadInterview>ประกาศผล</TextHeadInterview></center>
+                <center><TextHeadInterview>ประวัติการสมัครงาน</TextHeadInterview></center>
             </BoxText>
             {props.handleShowData()}
             <br/>
