@@ -43,14 +43,25 @@ class AuthStore {
   }
 
   @action async login(response){   
-    storejs.set('accessToken', response.user.uid);
-    storejs.set('currentUser', response.user);
-    firebase.database().ref('users/' + response.user.uid)
+    firebase.database().ref('blacklist')
+    .orderByChild('user_id')
+    .equalTo(response.user.uid)
     .once("value").then( snapshot => {
-      storejs.set('userData', snapshot.val());
-      window.location.href = '/'
+      if (snapshot.val()) {
+        auth.signOut()
+        alert('ไม่สามารถเข้าสู่ระบบได้ เนื่องจากคุณอยู่ในรายชื่อแบล็คลิสต์')
+      }
+      else{
+        storejs.set('accessToken', response.user.uid);
+        storejs.set('currentUser', response.user);
+        firebase.database().ref('users/' + response.user.uid)
+        .once("value").then( snapshot => {
+          storejs.set('userData', snapshot.val());
+          window.location.href = '/'
+        })
+      }
     })
-    
+
   }
 
   @action async logout(){    
