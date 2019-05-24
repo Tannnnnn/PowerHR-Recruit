@@ -187,7 +187,7 @@ export default enhance((props) =>
                             </Link>
                         </TextHeader>
                         <TextHeader as='h4' floated='left'>
-                            <Link href='#'>
+                            <Link href='../History/JobApplicationHistory'>
                                 <MenuItem>
                                     ประวัติการสมัครงาน
                                 </MenuItem>

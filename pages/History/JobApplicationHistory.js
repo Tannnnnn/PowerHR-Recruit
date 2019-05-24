@@ -90,7 +90,7 @@ const enhance = compose(
     withState('position','setPosition'),
     withState('position_name','setPosition_name'),
     withProps({
-        pageTitle: 'Position Interview'
+        pageTitle: 'Job Application History'
     }),
     withHandlers({
         initApplyJobsList: props => () => {
@@ -137,7 +137,7 @@ export default enhance( (props)=>
             <Divider hidden />
             <BoxText>
                 <br/>
-                <center><TextHeadInterview>ประกาศผลการสมัคร</TextHeadInterview></center>
+                <center><TextHeadInterview>ประวัติการสมัครงาน</TextHeadInterview></center>
             </BoxText>
             {
                 props.position
