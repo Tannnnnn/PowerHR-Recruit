@@ -176,7 +176,7 @@ export default enhance( (props)=>
                         </CardName>
                     )
                 })
-              : <center><br/><TextTopic>ไม่มีข้อมูลการประกาศผลการสมัครงานในขณะนี้</TextTopic><br/></center>
+              : <center><br/><TextTopic>ไม่มีข้อมูลการสมัครงาน</TextTopic><br/></center>
             }
             <br/><br/>
         </Container>
