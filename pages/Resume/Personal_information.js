@@ -1,4 +1,5 @@
 import React from 'react'
+import Jimp from 'jimp'
 import { withLayout ,withApp } from '../../hoc'
 import { compose, withProps, withState, withHandlers, lifecycle } from 'recompose'
 import styled from 'styled-components'
@@ -361,7 +362,13 @@ const enhance = compose(
             let profileImg = event.target.files[0]
             let reader = new FileReader();
                 reader.onloadend = function() {
-                    props.setImageBase64(reader.result)
+                    var blob = new Blob([profileImg]); // create blob...
+                    var src = URL.createObjectURL(blob)
+                    Jimp.read(src,async (err, image) => {
+                        image.quality(80)
+                        let cimage = await image.getBase64Async(Jimp.MIME_PNG)
+                        props.setImageBase64(cimage)
+                    });
                 }
             reader.readAsDataURL(profileImg);
         },

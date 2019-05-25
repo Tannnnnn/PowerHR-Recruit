@@ -9,25 +9,8 @@ import {input2GrideGrideMG } from '../../components/Input'
 import { inject, observer } from 'mobx-react'
 import auth from '../../firebase'
 import {firebase} from '../../firebase/index'
-import pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
 import { PDF_GENERATOR } from '../../components/PdfMake'
-
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
-pdfMake.fonts = {
-    Kanit: {
-      normal: 'Kanit-Light.ttf',
-      bold: 'Kanit-Bold.ttf',
-      italics: 'Kanit-Italic.ttf',
-      bolditalics: 'Kanit-BoldItalic.ttf'
-    },
-    Roboto: {
-      normal: 'Roboto-Regular.ttf',
-      bold: 'Roboto-Medium.ttf',
-      italics: 'Roboto-Italic.ttf',
-      bolditalics: 'Roboto-MediumItalic.ttf'
-    }
-}
+import Images from '../../static/vendor/Images/ImageDataUrl'
 
 const BodyBox = styled.div`
     background : #ffffff;
@@ -149,7 +132,7 @@ const enhance = compose(
     withState('email','setEmail'),
     withState('password','setPassword'),
     withState('open' , 'setOpen' , false),
-    withState('resume' , 'setResume' , false),
+    withState('resume' , 'setResume'),
     withProps({
         pageTitle: 'Jobs Detail'
     }),
@@ -177,19 +160,7 @@ const enhance = compose(
             })
         },
         handleSubmitRegister: props => () => event => {
-            // props.setOpen(false)
-            // let uniqueID = firebase.database().ref().push().key
-            // let result = {
-            //     apply_job_id : uniqueID,
-            //     department_id : props.jobStore.job_positions.department_id,
-            //     apply_date : firebase.database.ServerValue.TIMESTAMP,
-            //     position_id : props.jobStore.job_positions.position_id,
-            //     job_position_id : props.jobStore.job_positions.job_position_id,
-            //     uid : props.authStore.accessToken,
-            //     rate : props.salary,
-            //     status : 0
-            // }
-            // firebase.database().ref('apply_jobs/' + uniqueID).set(result)            
+            props.setOpen(false)
             PDF_GENERATOR(props.resume , props)
         },
         initGetJobPositionData: props => () => {
