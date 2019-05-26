@@ -433,45 +433,5 @@ export const PDF_GENERATOR = (resume , props) => {
             font : 'Kanit',
         }
     };   
-    let pdfDocGenerator = pdfMake.createPdf(docDefinition)
-    console.log(props);
-    let uniqueID = firebase.database().ref().push().key
-    pdfDocGenerator.getDataUrl((dataUrl) => {
-        ref.child(uniqueID).putString(dataUrl, 'data_url')
-        .then( () => {
-            let getUrl = ref.child(props.detail.position_name)
-            getUrl.getDownloadURL()
-            .then(function(url) {
-                let result = {
-                    apply_job_id : uniqueID,
-                    department_id : props.jobStore.job_positions.department_id,
-                    apply_date : firebase.database.ServerValue.TIMESTAMP,
-                    position_id : props.jobStore.job_positions.position_id,
-                    job_position_id : props.jobStore.job_positions.job_position_id,
-                    uid : props.authStore.accessToken,
-                    rate : props.salary,
-                    status : 0,
-                    resume_pdf : url
-                }
-                firebase.database().ref('apply_jobs/' + uniqueID).set(result)    
-            })
-            .catch(function(error) {
-                switch (error.code) {
-                    case 'storage/object-not-found':
-                    break;
-                
-                    case 'storage/unauthorized':
-                    break;
-                
-                    case 'storage/canceled':
-                    break;
-                            
-                    case 'storage/unknown':
-                    break;
-                }
-            });
-            
-        })
-        .catch( err => console.log(err))
-    });
+    return pdfMake.createPdf(docDefinition)
 }
