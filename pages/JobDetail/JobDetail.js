@@ -8,7 +8,10 @@ import {Breadcrumb2Page} from '../../components/Breadcrumb'
 import {input2GrideGrideMG } from '../../components/Input'
 import { inject, observer } from 'mobx-react'
 import auth from '../../firebase'
-import {firebase} from '../../firebase/index'
+import { PDF_GENERATOR } from '../../components/PdfMake'
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
+import { ref , firebase } from '../../firebase/index'
 
 const BodyBox = styled.div`
     background : #ffffff;
@@ -130,6 +133,7 @@ const enhance = compose(
     withState('email','setEmail'),
     withState('password','setPassword'),
     withState('open' , 'setOpen' , false),
+    withState('resume' , 'setResume'),
     withProps({
         pageTitle: 'Jobs Detail'
     }),
@@ -158,20 +162,47 @@ const enhance = compose(
         },
         handleSubmitRegister: props => () => event => {
             props.setOpen(false)
+            let pdfDocGenerator = PDF_GENERATOR(props.resume , props)
             let uniqueID = firebase.database().ref().push().key
-            let result = {
-                apply_job_id : uniqueID,
-                department_id : props.jobStore.job_positions.department_id,
-                apply_date : firebase.database.ServerValue.TIMESTAMP,
-                position_id : props.jobStore.job_positions.position_id,
-                job_position_id : props.jobStore.job_positions.job_position_id,
-                uid : props.authStore.accessToken,
-                rate : props.salary,
-                status : 0
-            }
-            firebase.database().ref('apply_jobs/' + uniqueID).set(result)
-            console.log(props.salary);
-            // alert('สมัครงานสำเร็จ *หมายเหตุ: ผู้ที่ผ่านการพิจารณาเบื้องต้น ทางฝ่ายบุคคลจะติดต่อไปหาผู้สมัครโดยตรง');
+            let pdfID = firebase.database().ref().push().key            
+            pdfDocGenerator.getDataUrl((dataUrl) => {
+                ref.child(pdfID).putString(dataUrl, 'data_url')
+                .then( () => {
+                    let getUrl = ref.child(pdfID)
+                    getUrl.getDownloadURL()
+                    .then(function(url) {
+                        let result = {
+                            apply_job_id : uniqueID,
+                            department_id : props.jobStore.job_positions.department_id,
+                            apply_date : firebase.database.ServerValue.TIMESTAMP,
+                            position_id : props.jobStore.job_positions.position_id,
+                            job_position_id : props.jobStore.job_positions.job_position_id,
+                            uid : props.authStore.accessToken,
+                            rate : props.salary,
+                            status : 0,
+                            resume_pdf : url
+                        }
+                        firebase.database().ref('apply_jobs/' + uniqueID).set(result)    
+                    })
+                    .catch(function(error) {
+                        switch (error.code) {
+                            case 'storage/object-not-found':
+                            break;
+                        
+                            case 'storage/unauthorized':
+                            break;
+                        
+                            case 'storage/canceled':
+                            break;
+                                    
+                            case 'storage/unknown':
+                            break;
+                        }
+                    });
+                    
+                })
+                .catch( err => console.log(err))
+            });
         },
         initGetJobPositionData: props => () => {
             let result = props.jobStore.job_positions
@@ -193,11 +224,18 @@ const enhance = compose(
             const end_localDate = new Date(Date.UTC(end_years,end_month,end_days));
             const end_options = { year: 'numeric', month: 'long', day: 'numeric' };
             props.setEnddate(end_localDate.toLocaleDateString('th-TH', end_options))
+        },
+        initGetDataResume: props => () => {
+            firebase.database().ref('resume/' + props.authStore.accessToken)
+            .once("value").then( snapshot => {
+                props.setResume(snapshot.val())
+            })
         }
     }),
     lifecycle({
         async componentDidMount(){
             await this.props.initGetJobPositionData()  
+            await this.props.initGetDataResume()
         }
     }),
     withHandlers({

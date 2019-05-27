@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
+    "export": "next export",
     "start": "next start"
   },
   "keywords": [],
@@ -21,10 +22,11 @@
     "color": "^2.0.1",
     "express": "^4.16.2",
     "firebase": "^5.9.4",
-    "gulp": "^4.0.0",
+    "gulp": "^4.0.2",
     "gulp-cli": "^2.0.1",
     "htmlescape": "^1.1.1",
     "idx": "^2.2.0",
+    "jimp": "^0.6.4",
     "lodash": "^4.17.4",
     "mobx": "^3.3.1",
     "mobx-react": "^4.3.4",
@@ -32,6 +34,7 @@
     "moment": "^2.19.2",
     "next": "^4.1.4",
     "node-sass": "^4.7.2",
+    "node-thumbnail": "^0.15.0",
     "normalize.css": "^7.0.0",
     "pdfmake": "^0.1.40",
     "postcss-easy-import": "^3.0.0",

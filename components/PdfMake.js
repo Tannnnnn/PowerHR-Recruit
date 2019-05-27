@@ -1,6 +1,8 @@
 import Images from '../static/vendor/Images/ImageDataUrl'
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
+import { ref , firebase } from '../firebase/index'
+
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 pdfMake.fonts = {
     Kanit: {
@@ -14,21 +16,41 @@ pdfMake.fonts = {
       bold: 'Roboto-Medium.ttf',
       italics: 'Roboto-Italic.ttf',
       bolditalics: 'Roboto-MediumItalic.ttf'
+    },
+    THSarabunNew: {
+        normal: 'THSarabunNew.ttf',
+        bold: 'THSarabunNew-Bold.ttf',
+        italics: 'THSarabunNew-Italic.ttf',
+        bolditalics: 'THSarabunNew-BoldItalic.ttf'
     }
 }
 
-export const PDF_GENERATOR = (localStorage , props , setTimeLocal) => {    
+const setTimeLocal = (localTime) =>{     
+    if (localTime !== undefined) {
+        const dateTime = localTime.split('-')           
+        const years = parseInt(dateTime[0])
+        const month = parseInt(dateTime[1]) 
+        const days  = parseInt(dateTime[2])                  
+        let localDate = new Date(Date.UTC(years , month-1 , days));
+        let options = { year: 'numeric', month: 'long', day: 'numeric' };
+        return localDate.toLocaleDateString('th-TH', options)
+    }
+    else{
+        return '-'
+    }
+}
+
+export const PDF_GENERATOR = (resume , props) => {        
     //set Data Status For PDF
-    const local_status = JSON.parse(localStorage.getItem('Personal_page')).status
     let married_fname = '-'
     let married_lname = '-'
     let married_child = '-'
     let married_company = '-'
-    if (local_status === 'สมรส') {
-        married_fname = JSON.parse(localStorage.getItem('Personal_page')).status_married_fname
-        married_lname = JSON.parse(localStorage.getItem('Personal_page')).status_married_lname
-        married_child = JSON.parse(localStorage.getItem('Personal_page')).status_married_child
-        married_company = JSON.parse(localStorage.getItem('Personal_page')).status_married_company
+    if (resume.status === 'สมรส') {
+        married_fname = resume.status_married_fname
+        married_lname = resume.status_married_lname
+        married_child = resume.status_married_child
+        married_company = resume.status_married_company
     }
     
     //Date Now
@@ -42,9 +64,9 @@ export const PDF_GENERATOR = (localStorage , props , setTimeLocal) => {
     //Create PDF
     var docDefinition = {
         info: {
-            title: `Cupcode Recruitment :  ${JSON.parse(localStorage.getItem('Personal_page')).position}`,
-            author: ` ${JSON.parse(localStorage.getItem('Personal_page')).position}`,
-            subject: `Recruitment  ${JSON.parse(localStorage.getItem('Personal_page')).position}`,
+            title: `Cupcode Recruitment :  ${props.detail.position_name}`,
+            author: ` ${props.detail.position_name}`,
+            subject: `Recruitment  ${props.detail.position_name}`,
             keywords: 'Cupcode Recruitment',
         },
         content: [
@@ -89,12 +111,12 @@ export const PDF_GENERATOR = (localStorage , props , setTimeLocal) => {
                 alignment: 'center'
             },
             {
-                text : `ตำแหน่งงานที่สมัคร.......... ${JSON.parse(localStorage.getItem('Personal_page')).position}.......... เงินเดือนที่ต้องการ..........${JSON.parse(localStorage.getItem('Personal_page')).salary}..........บาท`,
+                text : `ตำแหน่งงานที่สมัคร.......... ${props.detail.position_name}.......... เงินเดือนที่ต้องการ..........${props.salary}..........บาท`,
                 margin: [ -20 , 15 , 0 , 0],
                 fontSize: 12,
             },
             {
-                image : `${JSON.parse(localStorage.getItem('Personal_page')).imageBase64}`,
+                image : `${resume.imageBase64}`,
                 width: 85,
                 height: 100,
                 margin: [ 450 , -53 , 0 , 0 ],
@@ -106,57 +128,57 @@ export const PDF_GENERATOR = (localStorage , props , setTimeLocal) => {
                 color : '#ff5722'
             },
             {
-                text : `1.  ชื่อ (ภาษาไทย)........${JSON.parse(localStorage.getItem('Personal_page')).fname_thai} ${JSON.parse(localStorage.getItem('Personal_page')).lname_thai}........  name (English)........${JSON.parse(localStorage.getItem('Personal_page')).fname_eng} ${JSON.parse(localStorage.getItem('Personal_page')).lname_eng}........  เพศ........${JSON.parse(localStorage.getItem('Personal_page')).sex}........`,
+                text : `1.  ชื่อ (ภาษาไทย)........${resume.firstname} ${resume.lastname}........  เพศ........${resume.sex}........`,
                 margin: [ -10 , 5 , 0 , 0],
                 style : 'content'
             }, 
             {
-                text : `รหัสบัตรประชาชน..........${JSON.parse(localStorage.getItem('Personal_page')).idcard}..........  อีเมล..........${JSON.parse(localStorage.getItem('Personal_page')).email}..........  Facebook..........${JSON.parse(localStorage.getItem('Personal_page')).facebook}..........`,
+                text : `รหัสบัตรประชาชน..........${resume.idcard}..........  อีเมล..........${resume.email}..........  Facebook..........${resume.facebook}..........`,
                 margin: [ 3 , 5 , 0 , 0],
                 style : 'content'
             },
             {
-                text : `2.  วัน/เดือน/ปีเกิด........${setTimeLocal(JSON.parse(localStorage.getItem('Personal_page')).birthday)}........  อายุ........${JSON.parse(localStorage.getItem('Personal_page')).age}........ปี  น้ำหนัก........${JSON.parse(localStorage.getItem('Personal_page')).weight}........กก.  ส่วนสูง........${JSON.parse(localStorage.getItem('Personal_page')).height}........ซม.`,
+                text : `2.  วัน/เดือน/ปีเกิด........${setTimeLocal(resume.birthday)}........  อายุ........${resume.age}........ปี  น้ำหนัก........${resume.weight}........กก.  ส่วนสูง........${resume.height}........ซม.`,
                 margin: [ -10 , 10 , 0 , 0],
                 style : 'content'
             },
             {
-                text : `เชื้อชาติ........${JSON.parse(localStorage.getItem('Personal_page')).ethnicity}........  สัญชาติ........${JSON.parse(localStorage.getItem('Personal_page')).nationality}........  ศาสนา........${JSON.parse(localStorage.getItem('Personal_page')).religion}........`,
+                text : `เชื้อชาติ........${resume.ethnicity}........  สัญชาติ........${resume.nationality}........  ศาสนา........${resume.religion}........`,
                 margin: [ 4 , 5 , 0 , 0],
                 style : 'content'
             },
             {
-                text : `3.  ที่อยู่ตามทะเบียนบ้าน  เลขที่........${JSON.parse(localStorage.getItem('Address_page')).primary_hno}........  หมู่ที่........${JSON.parse(localStorage.getItem('Address_page')).primary_vilno}........  ซอย........${JSON.parse(localStorage.getItem('Address_page')).primary_alley}........  ถนน........${JSON.parse(localStorage.getItem('Address_page')).primary_road}........`,
+                text : `3.  ที่อยู่ตามทะเบียนบ้าน  เลขที่........${resume.primary_hno}........  หมู่ที่........${resume.primary_vilno}........  ซอย........${resume.primary_alley}........  ถนน........${resume.primary_road}........`,
                 margin: [ -10 , 10 , 0 , 0],
                 style : 'content'
             },
             {
-                text : `ตำบล/แขวง........${JSON.parse(localStorage.getItem('Address_page')).primary_area}........  อำเภอ/เขต........${JSON.parse(localStorage.getItem('Address_page')).primary_district}........  จังหวัด........${JSON.parse(localStorage.getItem('Address_page')).primary_province}........  รหัสไปรษณีย์........${JSON.parse(localStorage.getItem('Address_page')).primary_zipcode}........  \nโทรศัพท์บ้าน........${JSON.parse(localStorage.getItem('Address_page')).primary_tel}........  มือถือ........${JSON.parse(localStorage.getItem('Address_page')).primary_phone}........`,
+                text : `ตำบล/แขวง........${resume.primary_area}........  อำเภอ/เขต........${resume.primary_district}........  จังหวัด........${resume.primary_province}........  รหัสไปรษณีย์........${resume.primary_zipcode}........  \nโทรศัพท์บ้าน........${resume.primary_tel}........  มือถือ........${resume.primary_phone}........`,
                 margin: [ 4 , 0 , 0 , 0],
                 style : 'content'
             },
             {
-                text : `ที่อยู่ปัจจุบันที่ติดต่อได้  เลขที่........${JSON.parse(localStorage.getItem('Address_page')).present_hno}........  หมู่ที่........${JSON.parse(localStorage.getItem('Address_page')).present_vilno}........  ซอย........${JSON.parse(localStorage.getItem('Address_page')).present_alley}........  ถนน........${JSON.parse(localStorage.getItem('Address_page')).present_road}........`,
+                text : `ที่อยู่ปัจจุบันที่ติดต่อได้  เลขที่........${resume.present_hno}........  หมู่ที่........${resume.present_vilno}........  ซอย........${resume.present_alley}........  ถนน........${resume.present_road}........`,
                 margin: [ 4 , 5 , 0 , 0],
                 style : 'content'
             },
             {
-                text : `ตำบล/แขวง........${JSON.parse(localStorage.getItem('Address_page')).present_area}........  อำเภอ/เขต........${JSON.parse(localStorage.getItem('Address_page')).present_district}........  จังหวัด........${JSON.parse(localStorage.getItem('Address_page')).present_province}........  รหัสไปรษณีย์........${JSON.parse(localStorage.getItem('Address_page')).present_zipcode}........\nโทรศัพท์บ้าน........${JSON.parse(localStorage.getItem('Address_page')).present_tel}........  มือถือ........${JSON.parse(localStorage.getItem('Address_page')).present_phone}........`,
+                text : `ตำบล/แขวง........${resume.present_area}........  อำเภอ/เขต........${resume.present_district}........  จังหวัด........${resume.present_province}........  รหัสไปรษณีย์........${resume.present_zipcode}........\nโทรศัพท์บ้าน........${resume.present_tel}........  มือถือ........${resume.present_phone}........`,
                 margin: [ 4 , 0 , 0 , 0],
                 style : 'content'
             },
             {
-                text : `4.  ชื่อบิดา........${JSON.parse(localStorage.getItem('Personal_page')).dad_name}........  อาชีพ........${JSON.parse(localStorage.getItem('Personal_page')).dad_career}........  ชื่อมารดา........${JSON.parse(localStorage.getItem('Personal_page')).mom_name}........  อาชีพ........${JSON.parse(localStorage.getItem('Personal_page')).mom_career}........`,
+                text : `4.  ชื่อบิดา........${resume.dad_name}........  อาชีพ........${resume.dad_career}........  ชื่อมารดา........${resume.mom_name}........  อาชีพ........${resume.mom_career}........`,
                 margin: [ -10 , 10 , 0 , 0],
                 style : 'content'
             },
             {
-                text : `จำนวนพี่น้อง........${JSON.parse(localStorage.getItem('Personal_page')).brethren}........คน  คุณเป็นลูกคนที่........${JSON.parse(localStorage.getItem('Personal_page')).sequence}........`,
+                text : `จำนวนพี่น้อง........${resume.brethren}........คน  คุณเป็นลูกคนที่........${resume.sequence}........`,
                 margin: [ 4 , 5 , 0 , 0],
                 style : 'content'
             },
             {
-                text : `5.  สภานภาพการสมรส........${local_status}........  ชื่อคู่สมรส........${married_fname}........  นามสกุลเดิม........${married_lname}........  จำนวนบุตร........${married_child}........คน`,
+                text : `5.  สภานภาพการสมรส........${resume.status}........  ชื่อคู่สมรส........${married_fname}........  นามสกุลเดิม........${married_lname}........  จำนวนบุตร........${married_child}........คน`,
                 margin: [ -10 , 10 , 0 , 0],
                 style : 'content'
             },
@@ -166,7 +188,7 @@ export const PDF_GENERATOR = (localStorage , props , setTimeLocal) => {
                 style : 'content'
             },
             {
-                text : `6.  พันธะเกี่ยวกับการรับราชการทหาร..........${JSON.parse(localStorage.getItem('Personal_page')).soldier}..........`,
+                text : `6.  พันธะเกี่ยวกับการรับราชการทหาร..........${resume.soldier}..........`,
                 margin: [ -10 , 10 , 0 , 0],
                 style : 'content'
             },
@@ -180,27 +202,27 @@ export const PDF_GENERATOR = (localStorage , props , setTimeLocal) => {
                     widths: [ 90 , '*' , 60 , 40 , '*' , 65 ],
                     body: [
                         [{text : 'ระดับการศึกษา' , alignment: 'center'}, {text : 'ชื่อสถานศึกษา' , alignment: 'center'} , {text : 'ประเทศ' , alignment: 'center'} , {text : 'เกรดเฉลี่ย' , alignment: 'center'} , {text :  'สาขาวิชา' , alignment: 'center'} , {text : 'ปีที่สำเร็จการศึกษา' , alignment: 'center'}],
-                        ['มัธยมศึกษาตอนปลาย/ปวช.' , `${JSON.parse(localStorage.getItem('School_page')).highSchool_name}` , `${JSON.parse(localStorage.getItem('School_page')).highSchool_country}` , `${JSON.parse(localStorage.getItem('School_page')).highSchool_grade}` , `${JSON.parse(localStorage.getItem('School_page')).highSchool_major}` , `${JSON.parse(localStorage.getItem('School_page')).highSchool_congrate}`],
-                        ['ปวส./ปวท./อนุปริญญา' , `${JSON.parse(localStorage.getItem('School_page')).diplomaSchool_name}` , `${JSON.parse(localStorage.getItem('School_page')).diplomaSchool_country}` , `${JSON.parse(localStorage.getItem('School_page')).diplomaSchool_grade}` , `${JSON.parse(localStorage.getItem('School_page')).diplomaSchool_major}` , `${JSON.parse(localStorage.getItem('School_page')).diplomaSchool_congrate}`],
-                        ['ปริญญาตรี' , `${JSON.parse(localStorage.getItem('School_page')).bechelorSchool_name}` , `${JSON.parse(localStorage.getItem('School_page')).bechelorSchool_country}` , `${JSON.parse(localStorage.getItem('School_page')).bechelorSchool_grade}` , `${JSON.parse(localStorage.getItem('School_page')).bechelorSchool_major}` , `${JSON.parse(localStorage.getItem('School_page')).bechelorSchool_congrate}`],
-                        ['อื่นๆ' , `${JSON.parse(localStorage.getItem('School_page')).otherSchool_name}` , `${JSON.parse(localStorage.getItem('School_page')).otherSchool_country}` , `${JSON.parse(localStorage.getItem('School_page')).otherSchool_grade}` , `${JSON.parse(localStorage.getItem('School_page')).otherSchool_major}` , `${JSON.parse(localStorage.getItem('School_page')).otherSchool_congrate}`]
+                        ['มัธยมศึกษาตอนปลาย/ปวช.' , `${resume.highSchool_name}` , `${resume.highSchool_country}` , `${resume.highSchool_grade}` , `${resume.highSchool_major}` , `${resume.highSchool_congrate}`],
+                        ['ปวส./ปวท./อนุปริญญา' , `${resume.diplomaSchool_name}` , `${resume.diplomaSchool_country}` , `${resume.diplomaSchool_grade}` , `${resume.diplomaSchool_major}` , `${resume.diplomaSchool_congrate}`],
+                        ['ปริญญาตรี' , `${resume.bechelorSchool_name}` , `${resume.bechelorSchool_country}` , `${resume.bechelorSchool_grade}` , `${resume.bechelorSchool_major}` , `${resume.bechelorSchool_congrate}`],
+                        ['อื่นๆ' , `${resume.otherSchool_name}` , `${resume.otherSchool_country}` , `${resume.otherSchool_grade}` , `${resume.otherSchool_major}` , `${resume.otherSchool_congrate}`]
                     ],
                 },
                 margin: [ -10 , 10 , 0 , 0],
                 fontSize: 8,
             },
             {
-                text : `8.  โรคประจำตัว..........${(JSON.parse(localStorage.getItem('Personal_page')).congenitalDisease === 'มี') ? '' : 'ไม่มี'}${JSON.parse(localStorage.getItem('Personal_page')).congenitalDisease_name}..........`,
+                text : `8.  โรคประจำตัว..........${(resume.congenitalDisease === 'มี') ? '' : 'ไม่มี'}${resume.congenitalDisease_name}..........`,
                 margin: [ -10 , 10 , 0 , 0],
                 style : 'content'
             },
             {
-                text : `9.  บุคคลที่ติดต่อกรณีเร่งด่วน..........${JSON.parse(localStorage.getItem('Personal_page')).urgent_contact}..........  ความสัมพันธ์..........${JSON.parse(localStorage.getItem('Personal_page')).urgent_relation}..........  โทรศัพท์..........${JSON.parse(localStorage.getItem('Personal_page')).urgent_phone}..........`,
+                text : `9.  บุคคลที่ติดต่อกรณีเร่งด่วน..........${resume.urgent_contact}..........  ความสัมพันธ์..........${resume.urgent_relation}..........  โทรศัพท์..........${resume.urgent_phone}..........`,
                 margin: [ -10 , 10 , 0 , 0],
                 style : 'content'
             },
             {
-                text : `10. ทราบการรับสมัครจากช่องทางใด..........${JSON.parse(localStorage.getItem('Personal_page')).urgent_apply}..........`,
+                text : `10. ทราบการรับสมัครจากช่องทางใด..........${resume.urgent_apply}..........`,
                 margin: [ -10 , 10 , 0 , 0],
                 style : 'content'
             },
@@ -210,12 +232,12 @@ export const PDF_GENERATOR = (localStorage , props , setTimeLocal) => {
                 style : 'content'
             },
             {
-                text : `ชื่อ - นามสกุล..........${JSON.parse(localStorage.getItem('Personal_page')).refer_name}..........  อาชีพ..........${JSON.parse(localStorage.getItem('Personal_page')).refer_career}..........  โทรศัพท์..........${JSON.parse(localStorage.getItem('Personal_page')).refer_phone}..........`,
+                text : `ชื่อ - นามสกุล..........${resume.refer_name}..........  อาชีพ..........${resume.refer_career}..........  โทรศัพท์..........${resume.refer_phone}..........`,
                 margin: [ 4 , 5 , 0 , 0],
                 style : 'content'
             },
             {
-                text : `ที่อยู่..........${JSON.parse(localStorage.getItem('Personal_page')).refer_address}..........`,
+                text : `ที่อยู่..........${resume.refer_address}..........`,
                 margin: [ 4 , 5 , 0 , 0],
                 style : 'content',
                 pageBreak: 'after'
@@ -269,7 +291,7 @@ export const PDF_GENERATOR = (localStorage , props , setTimeLocal) => {
                 style : 'content'
             },
             {
-                text : `1 บริษัทที่ทำงานในปัจจุบัน..........${props.current_work}..........  ตำแหน่ง..........${props.current_position}..........`,
+                text : `1 บริษัทที่ทำงานในปัจจุบัน..........${resume.current_work}..........  ตำแหน่ง..........${resume.current_position}..........`,
                 margin: [ 5 , 5 , 0 , 0],
                 style : 'content'
             },
@@ -279,42 +301,42 @@ export const PDF_GENERATOR = (localStorage , props , setTimeLocal) => {
                 style : 'content'
             },
             {
-                text : `${props.current_description}`,
+                text : `${resume.current_description}`,
                 margin: [ 30 , 0 , 0 , 0],
                 style : 'content'
             },
             {
-                text : `ระยะเวลาตั้งแต่..........${setTimeLocal(props.current_startwork)}..........ถึง..........${setTimeLocal(props.current_endwork)}..........  เงินเดือนสุดท้ายที่ได้รับ..........${props.current_final_salary}..........`,
+                text : `ระยะเวลาตั้งแต่..........${setTimeLocal(resume.current_startwork)}..........ถึง..........${setTimeLocal(resume.current_endwork)}..........  เงินเดือนสุดท้ายที่ได้รับ..........${resume.current_final_salary}..........`,
                 margin: [ 14 , 0 , 0 , 0],
                 style : 'content'
             },
             {
-                text : `รายได้อื่นๆจากบริษัทนอกเหนือจากเงินเดือนพื้นฐาน..........${props.current_other_income}..........  รวมรายได้สุทธิต่อเดือน..........${props.current_net_income}..........`,
+                text : `รายได้อื่นๆจากบริษัทนอกเหนือจากเงินเดือนพื้นฐาน..........${resume.current_other_income}..........  รวมรายได้สุทธิต่อเดือน..........${resume.current_net_income}..........`,
                 margin: [ 14 , 0 , 0 , 0],
                 style : 'content'
             },
             {
-                text : `สวัสดิการอื่นๆของบริษัท..........${props.current_welfare}..........  สาเหตุที่ลาออก..........${props.current_resign}..........`,
+                text : `สวัสดิการอื่นๆของบริษัท..........${resume.current_welfare}..........  สาเหตุที่ลาออก..........${resume.current_resign}..........`,
                 margin: [ 14 , 0 , 0 , 0],
                 style : 'content'
             },
             {
-                text : `2 บริษัท..........${props.old_work}..........  ตำแหน่ง..........${props.old_position}..........  เงินเดือนสุดท้ายที่ได้รับ..........${props.old_final_salary}..........`,
+                text : `2 บริษัท..........${resume.old_work}..........  ตำแหน่ง..........${resume.old_position}..........  เงินเดือนสุดท้ายที่ได้รับ..........${resume.old_final_salary}..........`,
                 margin: [ 5 , 5 , 0 , 0],
                 style : 'content'
             },
             {
-                text : `ระยะเวลาตั้งแต่..........${setTimeLocal(props.old_startwork)}..........  ถึง..........${setTimeLocal(props.old_endwork)}..........\nสาเหตุที่ลาออก..........${props.old_resign}..........`,
+                text : `ระยะเวลาตั้งแต่..........${setTimeLocal(resume.old_startwork)}..........  ถึง..........${setTimeLocal(resume.old_endwork)}..........\nสาเหตุที่ลาออก..........${resume.old_resign}..........`,
                 margin: [ 14 , 0 , 0 , 0],
                 style : 'content'
             },
             {
-                text : `3 บริษัท..........${props.older_work}..........  ตำแหน่ง..........${props.older_position}..........  เงินเดือนสุดท้ายที่ได้รับ..........${props.older_final_salary}..........`,
+                text : `3 บริษัท..........${resume.older_work}..........  ตำแหน่ง..........${resume.older_position}..........  เงินเดือนสุดท้ายที่ได้รับ..........${resume.older_final_salary}..........`,
                 margin: [ 5 , 5 , 0 , 0],
                 style : 'content'
             },
             {
-                text : `ระยะเวลาตั้งแต่..........${setTimeLocal(props.older_startwork)}..........ถึง..........${setTimeLocal(props.older_endwork)}..........\nสาเหตุที่ลาออก..........${props.older_resign}..........`,
+                text : `ระยะเวลาตั้งแต่..........${setTimeLocal(resume.older_startwork)}..........ถึง..........${setTimeLocal(resume.older_endwork)}..........\nสาเหตุที่ลาออก..........${resume.older_resign}..........`,
                 margin: [ 14 , 0 , 0 , 0],
                 style : 'content'
             },
@@ -329,12 +351,12 @@ export const PDF_GENERATOR = (localStorage , props , setTimeLocal) => {
                 style : 'content'
             },
             {
-                text : `ฟัง..........${JSON.parse(localStorage.getItem('Ability_page')).english}..........  พูด..........${JSON.parse(localStorage.getItem('Ability_page')).english_speak}..........  อ่าน..........${JSON.parse(localStorage.getItem('Ability_page')).english_read}..........  เขียน..........${JSON.parse(localStorage.getItem('Ability_page')).english_writh}..........`,
+                text : `ฟัง..........${resume.english}..........  พูด..........${resume.english_speak}..........  อ่าน..........${resume.english_read}..........  เขียน..........${resume.english_writh}..........`,
                 margin: [ 15 , 0 , 0 , 0],
                 style : 'content'
             },
             {
-                text : `2. พิมพ์ดีดภาษาไทย..........${JSON.parse(localStorage.getItem('Ability_page')).thaiprint}..........คำ/นาที    พิมพ์ดีดภาษาอังกฤษ..........${JSON.parse(localStorage.getItem('Ability_page')).engprint}..........คำ/นาที`,
+                text : `2. พิมพ์ดีดภาษาไทย..........${resume.thaiprint}..........คำ/นาที    พิมพ์ดีดภาษาอังกฤษ..........${resume.engprint}..........คำ/นาที`,
                 margin: [ 5 , 0 , 0 , 0],
                 style : 'content'
             },
@@ -344,12 +366,12 @@ export const PDF_GENERATOR = (localStorage , props , setTimeLocal) => {
                 style : 'content'
             },
             {
-                text : `ใบอนุญาติขับขี่รถจักรยายนต์..........${JSON.parse(localStorage.getItem('Ability_page')).motorcycles}..........    ใบอนุญาติขับขี่รถยนต์..........${JSON.parse(localStorage.getItem('Ability_page')).car}..........`,
+                text : `ใบอนุญาติขับขี่รถจักรยายนต์..........${resume.motorcycles}..........    ใบอนุญาติขับขี่รถยนต์..........${resume.car}..........`,
                 margin: [ 15 , 0 , 0 , 0],
                 style : 'content'
             },
             {
-                text : `4. สามารถออกปฏิบัติงานนอกพื้นที่..........${JSON.parse(localStorage.getItem('Ability_page')).outer}..........`,
+                text : `4. สามารถออกปฏิบัติงานนอกพื้นที่..........${resume.outer}..........`,
                 margin: [ 5 , 0 , 0 , 0],
                 style : 'content'
             },
@@ -359,7 +381,7 @@ export const PDF_GENERATOR = (localStorage , props , setTimeLocal) => {
                 style : 'content'
             },
             {
-                text : `${JSON.parse(localStorage.getItem('Ability_page')).computerSkill}`,
+                text : `${resume.computerSkill}`,
                 margin: [ 15 , 0 , 0 , 0],
                 style : 'content',
             },
@@ -388,7 +410,7 @@ export const PDF_GENERATOR = (localStorage , props , setTimeLocal) => {
                 alignment : 'right'
             },
             {
-                text : `( ${JSON.parse(localStorage.getItem('Personal_page')).fname_thai} ${JSON.parse(localStorage.getItem('Personal_page')).lname_thai} )`,
+                text : `( ${resume.firstname} ${resume.lastname} )`,
                 margin: [ 377 , 5 , 0 , 0],
                 style : 'content',
             },
@@ -410,7 +432,6 @@ export const PDF_GENERATOR = (localStorage , props , setTimeLocal) => {
         defaultStyle:{
             font : 'Kanit',
         }
-    };
-    return pdfMake.createPdf(docDefinition).open()     
-    
+    };   
+    return pdfMake.createPdf(docDefinition)
 }
