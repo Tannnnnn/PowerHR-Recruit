@@ -19,16 +19,19 @@ class AuthStore {
   }
 
   @action createUser(data , idcard){
-    const result = {
-      firstname : data.firstName,
-      lastname : data.lastName,
-      email : data.email,
-      password : data.password,
-      idcard : idcard
-    }
     auth
     .createUserWithEmailAndPassword(data.email, data.password)
     .then(response => {
+      const result = {
+        firstname : data.firstName,
+        lastname : data.lastName,
+        email : data.email,
+        password : data.password,
+        idcard : idcard,
+        role : 'user',
+        uid : response.user.uid,
+        blacklist : false
+      }
       firebase.database().ref('users/' + response.user.uid).set(result)
       storejs.set('currentUser' , response.user)
       storejs.set('idcard', idcard)

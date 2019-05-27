@@ -142,39 +142,43 @@ export default enhance( (props)=>
             {
                 props.position
                 ? props.position.map( (data,i) => {
-                    return(
-                        <CardName key={i}>
-                            <Grid columns={3}>
-                                <MgRow>
-                                    <Grid.Column>
-                                        <TextTopic>ตำแหน่ง :&nbsp; 
-                                            <TextContant>
-                                            {
-                                                props.position_name
-                                                ?   props.position_name.map( result => { return result.position_id === data.position_id ? result.position_name : null})
-                                                :   null
-                                            }
-                                            </TextContant>
-                                        </TextTopic>
-                                    </Grid.Column>
-                                    <Grid.Column>
-                                        <TextTopic>วันที่สมัคร : <TextContant>{props.handleDateToThai(data.apply_date)}</TextContant></TextTopic>
-                                    </Grid.Column>
-                                    <Grid.Column>
-                                        <TextTopic>สถานะ :  
-                                            {
-                                                data.status === 0
-                                                    ? <TextContant> รอการพิจารณา</TextContant>
-                                                    : data.status === 1
-                                                        ? <TextSuccess> ผ่านการพิจารณา </TextSuccess>
-                                                        : <TextFail> ไม่ผ่านการพิจารณา </TextFail>
-                                            }
-                                        </TextTopic>
-                                    </Grid.Column>
-                                </MgRow>
-                            </Grid>
-                        </CardName>
-                    )
+                    console.log(i);
+                    
+                    return data.status >= 3 || data.status === 1
+                    ?   (
+                            <CardName key={i}>
+                                <Grid columns={3}>
+                                    <MgRow>
+                                        <Grid.Column>
+                                            <TextTopic>ตำแหน่ง :&nbsp; 
+                                                <TextContant>
+                                                {
+                                                    props.position_name
+                                                    ?   props.position_name.map( result => { return result.position_id === data.position_id ? result.position_name : null})
+                                                    :   null
+                                                }
+                                                </TextContant>
+                                            </TextTopic>
+                                        </Grid.Column>
+                                        <Grid.Column>
+                                            <TextTopic>วันที่สมัคร : <TextContant>{props.handleDateToThai(data.apply_date)}</TextContant></TextTopic>
+                                        </Grid.Column>
+                                        <Grid.Column>
+                                            <TextTopic>สถานะ :  
+                                                {
+                                                    data.status === 1
+                                                    ? <TextFail> ไม่ผ่านการพิจารณา</TextFail>
+                                                    : data.status === 3 
+                                                        ? <TextSuccess> ผ่านการสัมภาษณ์</TextSuccess>
+                                                        : <TextFail> ไม่ผ่านการสัมภาษณ์</TextFail>
+                                                }
+                                            </TextTopic>
+                                        </Grid.Column>
+                                    </MgRow>
+                                </Grid>
+                            </CardName>
+                        )
+                    :   i === 0 ? <center><br/><TextTopic>ไม่มีข้อมูลการสมัครงาน</TextTopic><br/></center> : null
                 })
               : <center><br/><TextTopic>ไม่มีข้อมูลการสมัครงาน</TextTopic><br/></center>
             }

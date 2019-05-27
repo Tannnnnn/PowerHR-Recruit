@@ -161,13 +161,18 @@ export default enhance( (props)=>
                                         <TextTopic>วันที่สมัคร : <TextContant>{props.handleDateToThai(data.apply_date)}</TextContant></TextTopic>
                                     </Grid.Column>
                                     <Grid.Column>
+                                        {console.log(props.status)}
                                         <TextTopic>สถานะ :  
                                             {
-                                                data.status === 0
-                                                    ? <TextContant> รอการพิจารณา</TextContant>
-                                                    : data.status === 1
-                                                        ? <TextSuccess> ผ่านการพิจารณา </TextSuccess>
-                                                        : <TextFail> ไม่ผ่านการพิจารณา </TextFail>
+                                                data.status === 1
+                                                ? <TextFail> ไม่ผ่านการพิจารณา</TextFail>
+                                                : data.status === 2
+                                                    ? <TextContant> เรียกสัมภาษณ์</TextContant>
+                                                    : data.status === 3 
+                                                        ? <TextSuccess> ผ่านการสัมภาษณ์</TextSuccess>
+                                                        : data.status === 4 
+                                                            ? <TextFail> ไม่ผ่านการสัมภาษณ์</TextFail>
+                                                            : <TextContant> รอการพิจารณา</TextContant>
                                             }
                                         </TextTopic>
                                     </Grid.Column>
