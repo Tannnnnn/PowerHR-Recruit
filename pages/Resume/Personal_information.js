@@ -242,60 +242,62 @@ const enhance = compose(
     withLayout,
     withHandlers({
         initPersonalLocalStorege: props => () => {
-            if (localStorage.Personal_page) {
-                props.setSex(JSON.parse(localStorage.getItem('Personal_page')).sex)
-                props.setSoldier(JSON.parse(localStorage.getItem('Personal_page')).soldier)
-                props.setFname_thai(JSON.parse(localStorage.getItem('Personal_page')).fname_thai)
-                props.setLname_thai(JSON.parse(localStorage.getItem('Personal_page')).lname_thai)
-                props.setEmail(JSON.parse(localStorage.getItem('Personal_page')).email)
-                props.setFacebook(JSON.parse(localStorage.getItem('Personal_page')).facebook)
-                props.setIdcard(JSON.parse(localStorage.getItem('Personal_page')).idcard)
-                props.setTel(JSON.parse(localStorage.getItem('Personal_page')).tel)
-                props.setBirthday(JSON.parse(localStorage.getItem('Personal_page')).birthday)
-                props.setAge(JSON.parse(localStorage.getItem('Personal_page')).age)
-                props.setWeight(JSON.parse(localStorage.getItem('Personal_page')).weight)
-                props.setHeight(JSON.parse(localStorage.getItem('Personal_page')).height)
-                props.setEthnicity(JSON.parse(localStorage.getItem('Personal_page')).ethnicity)
-                props.setNationality(JSON.parse(localStorage.getItem('Personal_page')).nationality)
-                props.setReligion(JSON.parse(localStorage.getItem('Personal_page')).religion)
-                props.setDad_name(JSON.parse(localStorage.getItem('Personal_page')).dad_name)
-                props.setDad_career(JSON.parse(localStorage.getItem('Personal_page')).dad_career)
-                props.setMom_name(JSON.parse(localStorage.getItem('Personal_page')).mom_name)
-                props.setMom_career(JSON.parse(localStorage.getItem('Personal_page')).mom_career)
-                props.setBrethren(JSON.parse(localStorage.getItem('Personal_page')).brethren)
-                props.setSequence(JSON.parse(localStorage.getItem('Personal_page')).sequence)
-                props.setUrgent_contact(JSON.parse(localStorage.getItem('Personal_page')).urgent_contact)
-                props.setUrgent_relation(JSON.parse(localStorage.getItem('Personal_page')).urgent_relation)
-                props.setUrgent_phone(JSON.parse(localStorage.getItem('Personal_page')).urgent_phone)
-                props.setUrgent_apply(JSON.parse(localStorage.getItem('Personal_page')).urgent_apply)
-                props.setRefer_name(JSON.parse(localStorage.getItem('Personal_page')).refer_name)
-                props.setRefer_address(JSON.parse(localStorage.getItem('Personal_page')).refer_address)
-                props.setRefer_phone(JSON.parse(localStorage.getItem('Personal_page')).refer_phone)
-                props.setRefer_career(JSON.parse(localStorage.getItem('Personal_page')).refer_career)
-                props.setImageBase64(JSON.parse(localStorage.getItem('Personal_page')).imageBase64)
+            firebase.database().ref('resume/' + props.authStore.accessToken)
+            .once("value").then( snapshot => {
+                let resume = snapshot.val()
+                props.setSex(resume.sex)
+                props.setSoldier(resume.soldier)
+                props.setFname_thai(resume.firstname)
+                props.setLname_thai(resume.lastname)
+                props.setEmail(resume.email)
+                props.setFacebook(resume.facebook)
+                props.setIdcard(resume.idcard)
+                props.setTel(resume.tel)
+                props.setBirthday(resume.birthday)
+                props.setAge(resume.age)
+                props.setWeight(resume.weight)
+                props.setHeight(resume.height)
+                props.setEthnicity(resume.ethnicity)
+                props.setNationality(resume.nationality)
+                props.setReligion(resume.religion)
+                props.setDad_name(resume.dad_name)
+                props.setDad_career(resume.dad_career)
+                props.setMom_name(resume.mom_name)
+                props.setMom_career(resume.mom_career)
+                props.setBrethren(resume.brethren)
+                props.setSequence(resume.sequence)
+                props.setUrgent_contact(resume.urgent_contact)
+                props.setUrgent_relation(resume.urgent_relation)
+                props.setUrgent_phone(resume.urgent_phone)
+                props.setUrgent_apply(resume.urgent_apply)
+                props.setRefer_name(resume.refer_name)
+                props.setRefer_address(resume.refer_address)
+                props.setRefer_phone(resume.refer_phone)
+                props.setRefer_career(resume.refer_career)
+                props.setImageBase64(resume.imageBase64)
 
-                const local_status = JSON.parse(localStorage.getItem('Personal_page')).status
+                const local_status = resume.status
                 props.setStatus(local_status)    
                 if (local_status === 'สมรส') {
                     props.setCheck_status(true)
                     setState({
-                        status_married_fname: JSON.parse(localStorage.getItem('Personal_page')).status_married_fname,
-                        status_married_lname: JSON.parse(localStorage.getItem('Personal_page')).status_married_lname,
-                        status_married_child: JSON.parse(localStorage.getItem('Personal_page')).status_married_child,
-                        status_married_company: JSON.parse(localStorage.getItem('Personal_page')).status_married_company,
+                        status_married_fname: resume.status_married_fname,
+                        status_married_lname: resume.status_married_lname,
+                        status_married_child: resume.status_married_child,
+                        status_married_company: resume.status_married_company,
                     })
                 }        
 
-                const local_congenitalDisease = JSON.parse(localStorage.getItem('Personal_page')).congenitalDisease
+                const local_congenitalDisease = resume.congenitalDisease
                 props.SetCongenitalDisease(local_congenitalDisease)
                 if (local_congenitalDisease === 'มี') {
                     props.setCheck_status_congenitalDisease(true)
-                    props.SetCongenitalDisease_name(JSON.parse(localStorage.getItem('Personal_page')).congenitalDisease_name)
+                    props.SetCongenitalDisease_name(resume.congenitalDisease_name)
                 }
                 else{
                     props.SetCongenitalDisease_name('')
                 }
-            }
+            })
         }
     }),
     lifecycle({
@@ -313,9 +315,6 @@ const enhance = compose(
             let result3 = [result2.slice(0,12), '-', result2.slice(12)].join('');
             let result4 = [result3.slice(0,15), '-', result3.slice(15)].join('');
             this.props.setIdcard(result4)
-            // const url = `http://localhost:data.idcard4000/job_position/${this.props.url.query.id}`
-            // const res =  await axios.get(url)            
-            // this.props.setPosition_name(res.data[0].position_name)
             
         },
     }),
@@ -387,47 +386,7 @@ const enhance = compose(
                 )
             }
         },
-        saveThisPage: props => () => event => {
-            localStorage.setItem('Personal_page', JSON.stringify({
-                'fname_thai' : props.fname_thai ,
-                'lname_thai' : props.lname_thai ,
-                'email' : props.email ,
-                'facebook' : props.facebook ,
-                'idcard' : props.idcard ,
-                'tel' : props.tel ,
-                'birthday' : props.birthday ,
-                'age' : props.age ,
-                'sex' : props.sex ,
-                'weight' : props.weight ,
-                'height' : props.height ,
-                'ethnicity' : props.ethnicity ,
-                'nationality' : props.nationality ,
-                'religion' : props.religion ,
-                'dad_name' : props.dad_name ,
-                'dad_career' : props.dad_career ,
-                'mom_name' : props.mom_name ,
-                'mom_career' : props.mom_career ,
-                'brethren' : props.brethren ,
-                'sequence' : props.sequence ,
-                'status' : props.status ,
-                'status_married_fname' : props.status_married_fname ,
-                'status_married_lname' : props.status_married_lname ,
-                'status_married_child' : props.status_married_child ,
-                'status_married_company' : props.status_married_company ,
-                'soldier' : props.soldier ,
-                'congenitalDisease' : props.congenitalDisease ,
-                'congenitalDisease_name' : props.congenitalDisease_name ,
-                'urgent_contact' : props.urgent_contact ,
-                'urgent_relation' : props.urgent_relation ,
-                'urgent_phone' : props.urgent_phone ,
-                'urgent_apply' : props.urgent_apply ,
-                'refer_name' : props.refer_name ,
-                'refer_address' : props.refer_address ,
-                'refer_phone' : props.refer_phone ,
-                'refer_career' : props.refer_career ,
-                'imageBase64' : props.imageBase64,
-            }))            
-            // const checkInputData = Object.getOwnPropertyNames(JSON.parse(localStorage.getItem('Personal_page')));
+        saveThisPage: props => () => event => {          
             if (
                 props.congenitalDisease === 'มี' && 
                 props.congenitalDisease_name === '' ||

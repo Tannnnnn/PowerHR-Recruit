@@ -85,40 +85,38 @@ const enhance = compose(
     withState('otherSchool_major','setOtherSchool_major'),
     withState('otherSchool_grade','setOtherSchool_grade'),
     withState('otherSchool_congrate','setOtherSchool_congrate'),
-    withState('position_name' , 'setPosition_name' , ''),
     withProps({
         pageTitle: 'School information'
     }),
     withHandlers({
         initSchoolLocalStorege: props => () => {
-            if (localStorage.School_page) {
-                props.setHighSchool_name(JSON.parse(localStorage.getItem('School_page')).highSchool_name)            
-                props.setHighSchool_country(JSON.parse(localStorage.getItem('School_page')).highSchool_country)            
-                props.setHighSchool_major(JSON.parse(localStorage.getItem('School_page')).highSchool_major)            
-                props.setHighSchool_grade(JSON.parse(localStorage.getItem('School_page')).highSchool_grade)            
-                props.setHighSchool_congrate(JSON.parse(localStorage.getItem('School_page')).highSchool_congrate) 
+            firebase.database().ref('resume/' + props.authStore.accessToken)
+            .once("value").then( snapshot => {
+                let resume = snapshot.val()
+                props.setHighSchool_name(resume.highSchool_name)            
+                props.setHighSchool_country(resume.highSchool_country)            
+                props.setHighSchool_major(resume.highSchool_major)            
+                props.setHighSchool_grade(resume.highSchool_grade)            
+                props.setHighSchool_congrate(resume.highSchool_congrate) 
 
-                props.setDiplomaSchool_name(JSON.parse(localStorage.getItem('School_page')).diplomaSchool_name)            
-                props.setDiplomaSchool_country(JSON.parse(localStorage.getItem('School_page')).diplomaSchool_country)            
-                props.setDiplomaSchool_major(JSON.parse(localStorage.getItem('School_page')).diplomaSchool_major)            
-                props.setDiplomaSchool_grade(JSON.parse(localStorage.getItem('School_page')).diplomaSchool_grade)            
-                props.setDiplomaSchool_congrate(JSON.parse(localStorage.getItem('School_page')).diplomaSchool_congrate) 
+                props.setDiplomaSchool_name(resume.diplomaSchool_name)            
+                props.setDiplomaSchool_country(resume.diplomaSchool_country)            
+                props.setDiplomaSchool_major(resume.diplomaSchool_major)            
+                props.setDiplomaSchool_grade(resume.diplomaSchool_grade)            
+                props.setDiplomaSchool_congrate(resume.diplomaSchool_congrate) 
 
-                props.setBechelorSchool_name(JSON.parse(localStorage.getItem('School_page')).bechelorSchool_name)            
-                props.setBechelorSchool_country(JSON.parse(localStorage.getItem('School_page')).bechelorSchool_country)            
-                props.setBechelorSchool_major(JSON.parse(localStorage.getItem('School_page')).bechelorSchool_major)            
-                props.setBechelorSchool_grade(JSON.parse(localStorage.getItem('School_page')).bechelorSchool_grade)            
-                props.setBechelorSchool_congrate(JSON.parse(localStorage.getItem('School_page')).bechelorSchool_congrate)  
+                props.setBechelorSchool_name(resume.bechelorSchool_name)            
+                props.setBechelorSchool_country(resume.bechelorSchool_country)            
+                props.setBechelorSchool_major(resume.bechelorSchool_major)            
+                props.setBechelorSchool_grade(resume.bechelorSchool_grade)            
+                props.setBechelorSchool_congrate(resume.bechelorSchool_congrate)  
 
-                props.setOtherSchool_name(JSON.parse(localStorage.getItem('School_page')).otherSchool_name)            
-                props.setOtherSchool_country(JSON.parse(localStorage.getItem('School_page')).otherSchool_country)            
-                props.setOtherSchool_major(JSON.parse(localStorage.getItem('School_page')).otherSchool_major)            
-                props.setOtherSchool_grade(JSON.parse(localStorage.getItem('School_page')).otherSchool_grade)            
-                props.setOtherSchool_congrate(JSON.parse(localStorage.getItem('School_page')).otherSchool_congrate)
-            }
-            if (localStorage) {
-                props.setPosition_name(JSON.parse(localStorage.getItem('Personal_page')).position)
-            }
+                props.setOtherSchool_name(resume.otherSchool_name)            
+                props.setOtherSchool_country(resume.otherSchool_country)            
+                props.setOtherSchool_major(resume.otherSchool_major)            
+                props.setOtherSchool_grade(resume.otherSchool_grade)            
+                props.setOtherSchool_congrate(resume.otherSchool_congrate)
+            })
         }
     }),
     lifecycle({
@@ -338,29 +336,7 @@ const enhance = compose(
         },
 
         saveThisPageNext: props => () => event => {
-            const uid = props.authStore.currentUser.uid                 
-            localStorage.setItem('School_page', JSON.stringify({
-                'highSchool_name' : props.highSchool_name !== undefined ? props.highSchool_name : '-',
-                'highSchool_country' : props.highSchool_country !== undefined ? props.highSchool_country : '-',
-                'highSchool_major' : props.highSchool_major !== undefined ? props.highSchool_major : '-',
-                'highSchool_grade' : props.highSchool_grade !== undefined ? props.highSchool_grade : '-',
-                'highSchool_congrate' : props.highSchool_congrate !== undefined ? props.highSchool_congrate : '-',
-                'diplomaSchool_name' : props.diplomaSchool_name !== undefined ? props.diplomaSchool_name : '-',
-                'diplomaSchool_country' : props.diplomaSchool_country !== undefined ? props.diplomaSchool_country : '-',
-                'diplomaSchool_major' : props.diplomaSchool_major !== undefined ? props.diplomaSchool_major : '-',
-                'diplomaSchool_grade' : props.diplomaSchool_grade !== undefined ? props.diplomaSchool_grade : '-',
-                'diplomaSchool_congrate' : props.diplomaSchool_congrate !== undefined ? props.diplomaSchool_congrate : '-',
-                'bechelorSchool_name' : props.bechelorSchool_name !== undefined ? props.bechelorSchool_name : '-',
-                'bechelorSchool_country' : props.bechelorSchool_country !== undefined ? props.bechelorSchool_country : '-',
-                'bechelorSchool_major' : props.bechelorSchool_major !== undefined ? props.bechelorSchool_major : '-',
-                'bechelorSchool_grade' : props.bechelorSchool_grade !== undefined ? props.bechelorSchool_grade : '-',
-                'bechelorSchool_congrate' : props.bechelorSchool_congrate !== undefined ? props.bechelorSchool_congrate : '-',
-                'otherSchool_name' : props.otherSchool_name !== undefined ? props.otherSchool_name : '-',
-                'otherSchool_country' : props.otherSchool_country !== undefined ? props.otherSchool_country : '-',
-                'otherSchool_major' : props.otherSchool_major !== undefined ? props.otherSchool_major : '-',
-                'otherSchool_grade' : props.otherSchool_grade !== undefined ? props.otherSchool_grade : '-',
-                'otherSchool_congrate' : props.otherSchool_congrate !== undefined ? props.otherSchool_congrate : '-', 
-            }))    
+            const uid = props.authStore.currentUser.uid   
             firebase.database().ref('resume/' + uid).update({
                 highSchool_name : props.highSchool_name !== undefined ? props.highSchool_name : '-',
                 highSchool_country : props.highSchool_country !== undefined ? props.highSchool_country : '-',
@@ -393,28 +369,28 @@ const enhance = compose(
             // }
         },
         saveThisPagePrev: props => () => event => {
-            localStorage.setItem('School_page', JSON.stringify({
-                'highSchool_name' : props.highSchool_name ,
-                'highSchool_country' : props.highSchool_country,
-                'highSchool_major' : props.highSchool_major,
-                'highSchool_grade' : props.highSchool_grade,
-                'highSchool_congrate' : props.highSchool_congrate,
-                'diplomaSchool_name' : props.diplomaSchool_name,
-                'diplomaSchool_country' : props.diplomaSchool_country,
-                'diplomaSchool_major' : props.diplomaSchool_major,
-                'diplomaSchool_grade' : props.diplomaSchool_grade,
-                'diplomaSchool_congrate' : props.diplomaSchool_congrate,
-                'bechelorSchool_name' : props.bechelorSchool_name,
-                'bechelorSchool_country' : props.bechelorSchool_country,
-                'bechelorSchool_major' : props.bechelorSchool_major,
-                'bechelorSchool_grade' : props.bechelorSchool_grade,
-                'bechelorSchool_congrate' : props.bechelorSchool_congrate,
-                'otherSchool_name' : props.otherSchool_name,
-                'otherSchool_country' : props.otherSchool_country,
-                'otherSchool_major' : props.otherSchool_major,
-                'otherSchool_grade' : props.otherSchool_grade,
-                'otherSchool_congrate' : props.otherSchool_congrate,
-            }))    
+            firebase.database().ref('resume/' + uid).update({
+                highSchool_name : props.highSchool_name !== undefined ? props.highSchool_name : '-',
+                highSchool_country : props.highSchool_country !== undefined ? props.highSchool_country : '-',
+                highSchool_major : props.highSchool_major !== undefined ? props.highSchool_major : '-',
+                highSchool_grade : props.highSchool_grade !== undefined ? props.highSchool_grade : '-',
+                highSchool_congrate : props.highSchool_congrate !== undefined ? props.highSchool_congrate : '-',
+                diplomaSchool_name : props.diplomaSchool_name !== undefined ? props.diplomaSchool_name : '-',
+                diplomaSchool_country : props.diplomaSchool_country !== undefined ? props.diplomaSchool_country : '-',
+                diplomaSchool_major : props.diplomaSchool_major !== undefined ? props.diplomaSchool_major : '-',
+                diplomaSchool_grade : props.diplomaSchool_grade !== undefined ? props.diplomaSchool_grade : '-',
+                diplomaSchool_congrate : props.diplomaSchool_congrate !== undefined ? props.diplomaSchool_congrate : '-',
+                bechelorSchool_name : props.bechelorSchool_name !== undefined ? props.bechelorSchool_name : '-',
+                bechelorSchool_country : props.bechelorSchool_country !== undefined ? props.bechelorSchool_country : '-',
+                bechelorSchool_major : props.bechelorSchool_major !== undefined ? props.bechelorSchool_major : '-',
+                bechelorSchool_grade : props.bechelorSchool_grade !== undefined ? props.bechelorSchool_grade : '-',
+                bechelorSchool_congrate : props.bechelorSchool_congrate !== undefined ? props.bechelorSchool_congrate : '-',
+                otherSchool_name : props.otherSchool_name !== undefined ? props.otherSchool_name : '-',
+                otherSchool_country : props.otherSchool_country !== undefined ? props.otherSchool_country : '-',
+                otherSchool_major : props.otherSchool_major !== undefined ? props.otherSchool_major : '-',
+                otherSchool_grade : props.otherSchool_grade !== undefined ? props.otherSchool_grade : '-',
+                otherSchool_congrate : props.otherSchool_congrate !== undefined ? props.otherSchool_congrate : '-',
+            })   
             Router.push({ pathname : '/Resume/Address_information'})
         },
     }),

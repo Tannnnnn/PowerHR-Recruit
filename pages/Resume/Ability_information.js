@@ -102,27 +102,25 @@ const enhance = compose(
     withState('engprint','setEngprint'),
     withState('computerSkill','setComputerSkill'),
     withState('positionEng','setPositionEng'),
-    withState('position_name' , 'setPosition_name' , ''),
     withProps({
         pageTitle: 'Ability information'
     }),
     withHandlers({
         initAbilityLocalStorege: props => () => {
-            if (localStorage.Ability_page) {
-                props.setMotorcycles(JSON.parse(localStorage.getItem('Ability_page')).motorcycles)            
-                props.setCar(JSON.parse(localStorage.getItem('Ability_page')).car)            
-                props.setOuter(JSON.parse(localStorage.getItem('Ability_page')).outer)            
-                props.setEnglish(JSON.parse(localStorage.getItem('Ability_page')).english)            
-                props.setEnglish_speak(JSON.parse(localStorage.getItem('Ability_page')).english_speak)            
-                props.setEnglish_read(JSON.parse(localStorage.getItem('Ability_page')).english_read)            
-                props.setEnglish_writh(JSON.parse(localStorage.getItem('Ability_page')).english_writh)            
-                props.setThaiprint(JSON.parse(localStorage.getItem('Ability_page')).thaiprint)            
-                props.setEngprint(JSON.parse(localStorage.getItem('Ability_page')).engprint)            
-                props.setComputerSkill(JSON.parse(localStorage.getItem('Ability_page')).computerSkill) 
-            }
-            if (localStorage) {
-                props.setPosition_name(JSON.parse(localStorage.getItem('Personal_page')).position)
-            }
+            firebase.database().ref('resume/' + props.authStore.accessToken)
+            .once("value").then( snapshot => {
+                let resume = snapshot.val()
+                props.setMotorcycles(resume.motorcycles)            
+                props.setCar(resume.car)            
+                props.setOuter(resume.outer)            
+                props.setEnglish(resume.english)            
+                props.setEnglish_speak(resume.english_speak)            
+                props.setEnglish_read(resume.english_read)            
+                props.setEnglish_writh(resume.english_writh)            
+                props.setThaiprint(resume.thaiprint)            
+                props.setEngprint(resume.engprint)            
+                props.setComputerSkill(resume.computerSkill) 
+            })
         }
     }),
     lifecycle({
@@ -206,19 +204,7 @@ const enhance = compose(
         },
 
         saveThisPageNext: props => () => event => {
-            const uid = props.authStore.currentUser.uid                 
-            localStorage.setItem('Ability_page', JSON.stringify({
-                'motorcycles' : props.motorcycles ,
-                'car' : props.car,
-                'outer' : props.outer,
-                'english' : props.english,
-                'english_speak' : props.english_speak,
-                'english_read' : props.english_read,
-                'english_writh' : props.english_writh,
-                'thaiprint' : props.thaiprint,
-                'engprint' : props.engprint,
-                'computerSkill' : props.computerSkill,
-            }))    
+            const uid = props.authStore.currentUser.uid                  
             firebase.database().ref('resume/' + uid).update({
                 motorcycles : props.motorcycles ,
                 car : props.car,
@@ -241,18 +227,18 @@ const enhance = compose(
             // }
         },
         saveThisPagePrev: props => () => event => {
-            localStorage.setItem('Ability_page', JSON.stringify({
-                'motorcycles' : props.motorcycles ,
-                'car' : props.car,
-                'outer' : props.outer,
-                'english' : props.english,
-                'english_speak' : props.english_speak,
-                'english_read' : props.english_read,
-                'english_writh' : props.english_writh,
-                'thaiprint' : props.thaiprint,
-                'engprint' : props.engprint,
-                'computerSkill' : props.computerSkill,
-            }))
+            firebase.database().ref('resume/' + uid).update({
+                motorcycles : props.motorcycles ,
+                car : props.car,
+                outer : props.outer,
+                english : props.english,
+                english_speak : props.english_speak,
+                english_read : props.english_read,
+                english_writh : props.english_writh,
+                thaiprint : props.thaiprint,
+                engprint : props.engprint,
+                computerSkill : props.computerSkill,
+            })
             Router.push({ pathname : '/Resume/School_information' })
         },
     }),

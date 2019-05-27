@@ -108,38 +108,36 @@ const enhance = compose(
     withState('present_zipcode' , 'setPresent_zipcode'),
     withState('present_tel' , 'setPresent_tel'),
     withState('present_phone' , 'setPresent_phone'),
-    withState('position_name' , 'setPosition_name' , ''),
     withProps({
         pageTitle: 'Address information'
     }),
     withHandlers({
         initAddressLocalStorege: props => () => {
-            if (localStorage.Address_page) {
-                props.setPrimary_hno(JSON.parse(localStorage.getItem('Address_page')).primary_hno)
-                props.setPrimary_vilno(JSON.parse(localStorage.getItem('Address_page')).primary_vilno)
-                props.setPrimary_alley(JSON.parse(localStorage.getItem('Address_page')).primary_alley)
-                props.setPrimary_road(JSON.parse(localStorage.getItem('Address_page')).primary_road)
-                props.setPrimary_area(JSON.parse(localStorage.getItem('Address_page')).primary_area)
-                props.setPrimary_district(JSON.parse(localStorage.getItem('Address_page')).primary_district)
-                props.setPrimary_province(JSON.parse(localStorage.getItem('Address_page')).primary_province)
-                props.setPrimary_zipcode(JSON.parse(localStorage.getItem('Address_page')).primary_zipcode)
-                props.setPrimary_tel(JSON.parse(localStorage.getItem('Address_page')).primary_tel)
-                props.setPrimary_phone(JSON.parse(localStorage.getItem('Address_page')).primary_phone)
-                props.setCheckAddress(JSON.parse(localStorage.getItem('Address_page')).checkAddress)
-                props.setPresent_hno(JSON.parse(localStorage.getItem('Address_page')).present_hno)
-                props.setPresent_vilno(JSON.parse(localStorage.getItem('Address_page')).present_vilno)
-                props.setPresent_alley(JSON.parse(localStorage.getItem('Address_page')).present_alley)  
-                props.setPresent_road(JSON.parse(localStorage.getItem('Address_page')).present_road)      
-                props.setPresent_area(JSON.parse(localStorage.getItem('Address_page')).present_area)      
-                props.setPresent_district(JSON.parse(localStorage.getItem('Address_page')).present_district)     
-                props.setPresent_province(JSON.parse(localStorage.getItem('Address_page')).present_province)      
-                props.setPresent_zipcode(JSON.parse(localStorage.getItem('Address_page')).present_zipcode)      
-                props.setPresent_tel(JSON.parse(localStorage.getItem('Address_page')).present_tel)      
-                props.setPresent_phone(JSON.parse(localStorage.getItem('Address_page')).present_phone)       
-            }
-            if (localStorage) {
-                props.setPosition_name(JSON.parse(localStorage.getItem('Personal_page')).position)
-            }
+            firebase.database().ref('resume/' + props.authStore.accessToken)
+            .once("value").then( snapshot => {
+                let resume = snapshot.val()
+                props.setPrimary_hno(resume.primary_hno)
+                props.setPrimary_vilno(resume.primary_vilno)
+                props.setPrimary_alley(resume.primary_alley)
+                props.setPrimary_road(resume.primary_road)
+                props.setPrimary_area(resume.primary_area)
+                props.setPrimary_district(resume.primary_district)
+                props.setPrimary_province(resume.primary_province)
+                props.setPrimary_zipcode(resume.primary_zipcode)
+                props.setPrimary_tel(resume.primary_tel)
+                props.setPrimary_phone(resume.primary_phone)
+                props.setCheckAddress(resume.checkAddress)
+                props.setPresent_hno(resume.present_hno)
+                props.setPresent_vilno(resume.present_vilno)
+                props.setPresent_alley(resume.present_alley)  
+                props.setPresent_road(resume.present_road)      
+                props.setPresent_area(resume.present_area)      
+                props.setPresent_district(resume.present_district)     
+                props.setPresent_province(resume.present_province)      
+                props.setPresent_zipcode(resume.present_zipcode)      
+                props.setPresent_tel(resume.present_tel)      
+                props.setPresent_phone(resume.present_phone)
+            })
         }
     }),
     lifecycle({
@@ -397,29 +395,6 @@ const enhance = compose(
 
         saveThisPageNext: props => () => event => {
             const uid = props.authStore.currentUser.uid                 
-            localStorage.setItem('Address_page', JSON.stringify({
-                'primary_hno' : props.primary_hno ,
-                'primary_vilno' : props.primary_vilno,
-                'primary_alley' : props.primary_alley,
-                'primary_road' : props.primary_road,
-                'primary_area' : props.primary_area,
-                'primary_district' : props.primary_district,
-                'primary_province' : props.primary_province,
-                'primary_zipcode' : props.primary_zipcode,
-                'primary_tel' : props.primary_tel,
-                'primary_phone' : props.primary_phone,
-                'checkAddress' : props.checkAddress,
-                'present_hno' : props.present_hno,
-                'present_vilno' : props.present_vilno,
-                'present_alley' : props.present_alley,
-                'present_road' : props.present_road,
-                'present_area' : props.present_area,
-                'present_district' : props.present_district,
-                'present_province' : props.present_province,
-                'present_zipcode' : props.present_zipcode,
-                'present_tel' : props.present_tel,
-                'present_phone' : props.present_phone
-            }))
             firebase.database().ref('resume/' + uid).update({
                 primary_hno : props.primary_hno ,
                 primary_vilno : props.primary_vilno,
@@ -440,7 +415,8 @@ const enhance = compose(
                 present_province : props.present_province,
                 present_zipcode : props.present_zipcode,
                 present_tel : props.present_tel,
-                present_phone : props.present_phone
+                present_phone : props.present_phone,
+                checkAddress : props.checkAddress
             })
             Router.push({ pathname : '/Resume/School_information' })
             // const checkInputData = Object.getOwnPropertyNames(JSON.parse(localStorage.getItem('Address_page')));            
@@ -456,29 +432,30 @@ const enhance = compose(
             // }
         },
         saveThisPagePrev: props => () => event => {
-            localStorage.setItem('Address_page', JSON.stringify({
-                'primary_hno' : props.primary_hno ,
-                'primary_vilno' : props.primary_vilno,
-                'primary_alley' : props.primary_alley,
-                'primary_road' : props.primary_road,
-                'primary_area' : props.primary_area,
-                'primary_district' : props.primary_district,
-                'primary_province' : props.primary_province,
-                'primary_zipcode' : props.primary_zipcode,
-                'primary_tel' : props.primary_tel,
-                'primary_phone' : props.primary_phone,
-                'checkAddress' : props.checkAddress,
-                'present_hno' : props.present_hno,
-                'present_vilno' : props.present_vilno,
-                'present_alley' : props.present_alley,
-                'present_road' : props.present_road,
-                'present_area' : props.present_area,
-                'present_district' : props.present_district,
-                'present_province' : props.present_province,
-                'present_zipcode' : props.present_zipcode,
-                'present_tel' : props.present_tel,
-                'present_phone' : props.present_phone
-            }))    
+            const uid = props.authStore.currentUser.uid                 
+            firebase.database().ref('resume/' + uid).update({
+                primary_hno : props.primary_hno ,
+                primary_vilno : props.primary_vilno,
+                primary_alley : props.primary_alley,
+                primary_road : props.primary_road,
+                primary_area : props.primary_area,
+                primary_district : props.primary_district,
+                primary_province : props.primary_province,
+                primary_zipcode : props.primary_zipcode,
+                primary_tel : props.primary_tel,
+                primary_phone : props.primary_phone,
+                present_hno : props.present_hno,
+                present_vilno : props.present_vilno,
+                present_alley : props.present_alley,
+                present_road : props.present_road,
+                present_area : props.present_area,
+                present_district : props.present_district,
+                present_province : props.present_province,
+                present_zipcode : props.present_zipcode,
+                present_tel : props.present_tel,
+                present_phone : props.present_phone,
+                checkAddress : props.checkAddress
+            })  
             Router.push({ pathname : '/Resume/Personal_information' })
         },
     }),

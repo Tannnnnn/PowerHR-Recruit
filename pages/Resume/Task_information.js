@@ -6,28 +6,9 @@ import { Container , Icon , Divider , Grid , Checkbox , Button , Header , Label 
 import theme from '../../theme/default'
 import { input2GrideOnKeyUp , inputOnkeyup , input2GrideGrideMG , input2Gride , InputTextArea , InputTextAreaMini } from '../../components/Input'
 import { StepApplyJobTask } from '../../components/Step'
-import { PDF_GENERATOR } from '../../components/PdfMake'
 import Router from 'next/router'
-import pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
 import { firebase } from '../../firebase/index'
 import { inject } from 'mobx-react'
-
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
-pdfMake.fonts = {
-    Kanit: {
-      normal: 'Kanit-Light.ttf',
-      bold: 'Kanit-Bold.ttf',
-      italics: 'Kanit-Italic.ttf',
-      bolditalics: 'Kanit-BoldItalic.ttf'
-    },
-    Roboto: {
-      normal: 'Roboto-Regular.ttf',
-      bold: 'Roboto-Medium.ttf',
-      italics: 'Roboto-Italic.ttf',
-      bolditalics: 'Roboto-MediumItalic.ttf'
-    }
-}
 
 const BoxHead = styled.div`
     margin-top: 3% !important;
@@ -164,41 +145,40 @@ const enhance = compose(
     withState('older_endwork' , 'setOlder_endwork'),
     withState('older_resign' , 'setOlder_resign'),
     withState('checkAccept' , 'setCheckAccept' , false),
-    withState('position_name' , 'setPosition_name' , ''),
 
     withProps({
         pageTitle: 'Task information'
     }),
     withHandlers({
         initTaskInfoLocalStorage: props => () => {
-            if (localStorage.Task_page) {
-                props.setCurrent_work(JSON.parse(localStorage.getItem('Task_page')).current_work)            
-                props.setCurrent_position(JSON.parse(localStorage.getItem('Task_page')).current_position)
-                props.setCurrent_description(JSON.parse(localStorage.getItem('Task_page')).current_description)
-                props.setCurrent_startwork(JSON.parse(localStorage.getItem('Task_page')).current_startwork)
-                props.setCurrent_endwork(JSON.parse(localStorage.getItem('Task_page')).current_endwork)
-                props.setCurrent_final_salary(JSON.parse(localStorage.getItem('Task_page')).current_final_salary)
-                props.setCurrent_other_income(JSON.parse(localStorage.getItem('Task_page')).current_other_income)
-                props.setCurrent_net_income(JSON.parse(localStorage.getItem('Task_page')).current_net_income)
-                props.setCurrent_welfare(JSON.parse(localStorage.getItem('Task_page')).current_welfare)
-                props.setCurrent_resign(JSON.parse(localStorage.getItem('Task_page')).current_resign)
-                props.setOld_work(JSON.parse(localStorage.getItem('Task_page')).old_work)
-                props.setOld_position(JSON.parse(localStorage.getItem('Task_page')).old_position)
-                props.setOld_final_salary(JSON.parse(localStorage.getItem('Task_page')).old_final_salary)
-                props.setOld_startwork(JSON.parse(localStorage.getItem('Task_page')).old_startwork)
-                props.setOld_endwork(JSON.parse(localStorage.getItem('Task_page')).old_endwork)
-                props.setOld_resign(JSON.parse(localStorage.getItem('Task_page')).old_resign)
-                props.setOlder_work(JSON.parse(localStorage.getItem('Task_page')).older_work)
-                props.setOlder_position(JSON.parse(localStorage.getItem('Task_page')).older_position)
-                props.setOlder_final_salary(JSON.parse(localStorage.getItem('Task_page')).older_final_salary)
-                props.setOlder_startwork(JSON.parse(localStorage.getItem('Task_page')).older_startwork)
-                props.setOlder_endwork(JSON.parse(localStorage.getItem('Task_page')).older_endwork)
-                props.setOlder_resign(JSON.parse(localStorage.getItem('Task_page')).older_resign)
-                props.setCheckAccept(JSON.parse(localStorage.getItem('Task_page')).checkAccept)
-            } 
-            if (localStorage) {
-                props.setPosition_name(JSON.parse(localStorage.getItem('Personal_page')).position)
-            }
+            firebase.database().ref('resume/' + props.authStore.accessToken)
+            .once("value").then( snapshot => {
+                let resume = snapshot.val()         
+                console.log(resume)       
+                props.setCurrent_work(resume.current_work)            
+                props.setCurrent_position(resume.current_position)
+                props.setCurrent_description(resume.current_description)
+                props.setCurrent_startwork(resume.current_startwork)
+                props.setCurrent_endwork(resume.current_endwork)
+                props.setCurrent_final_salary(resume.current_final_salary)
+                props.setCurrent_other_income(resume.current_other_income)
+                props.setCurrent_net_income(resume.current_net_income)
+                props.setCurrent_welfare(resume.current_welfare)
+                props.setCurrent_resign(resume.current_resign)
+                props.setOld_work(resume.old_work)
+                props.setOld_position(resume.old_position)
+                props.setOld_final_salary(resume.old_final_salary)
+                props.setOld_startwork(resume.old_startwork)
+                props.setOld_endwork(resume.old_endwork)
+                props.setOld_resign(resume.old_resign)
+                props.setOlder_work(resume.older_work)
+                props.setOlder_position(resume.older_position)
+                props.setOlder_final_salary(resume.older_final_salary)
+                props.setOlder_startwork(resume.older_startwork)
+                props.setOlder_endwork(resume.older_endwork)
+                props.setOlder_resign(resume.older_resign)
+                props.setCheckAccept(resume.checkAccept)
+            })
         }
     }),
     lifecycle({
@@ -379,65 +359,26 @@ const enhance = compose(
         handleOlderResign: props => () => event => {
             props.setOlder_resign(event.target.value)
         },
-        handleChangTimeToThai : props => (localTime) =>{     
-            if (localTime !== undefined) {
-                const dateTime = localTime.split('-')           
-                const years = parseInt(dateTime[0])
-                const month = parseInt(dateTime[1]) 
-                const days  = parseInt(dateTime[2])                  
-                let localDate = new Date(Date.UTC(years , month-1 , days));
-                let options = { year: 'numeric', month: 'long', day: 'numeric' };
-                return localDate.toLocaleDateString('th-TH', options)
-            }
-            else{
-                return '-'
-            }
-        },
-        saveThisPageNext: props => (setTimeLocal) => event => {    
+        saveThisPageNext: props => () => event => {    
             const uid = props.authStore.currentUser.uid                                    
-            localStorage.setItem('Task_page', JSON.stringify({
-                'current_work' : props.current_work ,
-                'current_position' : props.current_position,
-                'current_description' : props.current_description,
-                'current_startwork' : props.current_startwork,
-                'current_endwork' : props.current_endwork,
-                'current_final_salary' : props.current_final_salary,
-                'current_other_income' : props.current_other_income,
-                'current_net_income' : props.current_net_income,
-                'current_welfare' : props.current_welfare,
-                'current_resign' : props.current_resign,
-                'old_work' : props.old_work  !== undefined ? props.old_work : '-',
-                'old_position' : props.old_position !== undefined ? props.old_position : '-',
-                'old_final_salary' : props.old_final_salary !== undefined ? props.old_final_salary : '-',
-                'old_startwork' : props.old_startwork,
-                'old_endwork' : props.old_endwork,
-                'old_resign' : props.old_resign !== undefined ? props.old_resign : '-',
-                'older_work' : props.older_work !== undefined ? props.older_work : '-',
-                'older_position' : props.older_position !== undefined ? props.older_position : '-',
-                'older_final_salary' : props.older_final_salary !== undefined ? props.older_final_salary : '-',
-                'older_startwork' : props.older_startwork,
-                'older_endwork' : props.older_endwork,
-                'older_resign' : props.older_resign !== undefined ? props.older_resign : '-',
-                'checkAccept' : props.checkAccept !== undefined ? props.checkAccept : '-',
-            }))
             if (props.current_startwork !== undefined && props.current_endwork !== undefined) {
-                const c_endDate = new Date(props.current_startwork)
-                const c_startDate = new Date(props.current_endwork)
-                if (c_startDate.setHours(0,0,0,0) < c_endDate.setHours(0,0,0,0)) {
+                const c_startDate = new Date(props.current_startwork)
+                const c_endDate = new Date(props.current_endwork)
+                if (c_startDate.setHours(0,0,0,0) > c_endDate.setHours(0,0,0,0)) {
                     window.alert('คุณกรอกข้อมูลวันที่ไม่ถูกต้อง  \nกรุณากรอกข้อมูลใหม่อีกครั้ง !!!')
                 }
             }
             if (props.old_startwork !== undefined && props.old_endwork !== undefined) {
                 const old_startDate = new Date(props.old_startwork)
                 const old_endDate = new Date(props.old_endwork)
-                if (old_startDate.setHours(0,0,0,0) < old_endDate.setHours(0,0,0,0)) {
+                if (old_startDate.setHours(0,0,0,0) > old_endDate.setHours(0,0,0,0)) {
                     window.alert('คุณกรอกข้อมูลวันที่ไม่ถูกต้อง  \nกรุณากรอกข้อมูลใหม่อีกครั้ง !!!')
                 }
             }
             if (props.older_startwork !== undefined && props.older_endwork !== undefined) {
                 const older_startDate = new Date(props.older_startwork)
                 const older_endDate = new Date(props.older_endwork)
-                if (older_startDate.setHours(0,0,0,0) < older_endDate.setHours(0,0,0,0)) {
+                if (older_startDate.setHours(0,0,0,0) > older_endDate.setHours(0,0,0,0)) {
                     window.alert('คุณกรอกข้อมูลวันที่ไม่ถูกต้อง  \nกรุณากรอกข้อมูลใหม่อีกครั้ง !!!')
                 }
             }
@@ -470,38 +411,37 @@ const enhance = compose(
                     older_resign : props.older_resign !== undefined ? props.older_resign : '-',
                     checkAccept : props.checkAccept !== undefined ? props.checkAccept : '-',
                 })
-                // PDF_GENERATOR(localStorage,props,setTimeLocal)
-                setTimeout(() => {
-                    Router.push('/index')
-                }, 2000);  
+                // setTimeout(() => {
+                //     Router.push('/')
+                // }, 1000);  
             }    
         },
         saveThisPagePrev: props => () => event => {
-            localStorage.setItem('Task_page', JSON.stringify({
-                'current_work' : props.current_work ,
-                'current_position' : props.current_position,
-                'current_description' : props.current_description,
-                'current_startwork' : props.current_startwork,
-                'current_endwork' : props.current_endwork,
-                'current_final_salary' : props.current_final_salary,
-                'current_other_income' : props.current_other_income,
-                'current_net_income' : props.current_net_income,
-                'current_welfare' : props.current_welfare,
-                'current_resign' : props.current_resign,
-                'old_work' : props.old_work,
-                'old_position' : props.old_position,
-                'old_final_salary' : props.old_final_salary,
-                'old_startwork' : props.old_startwork,
-                'old_endwork' : props.old_endwork,
-                'old_resign' : props.old_resign,
-                'older_work' : props.older_work,
-                'older_position' : props.older_position,
-                'older_final_salary' : props.older_final_salary,
-                'older_startwork' : props.older_startwork,
-                'older_endwork' : props.older_endwork,
-                'older_resign' : props.older_resign,
-                'checkAccept' : props.checkAccept,
-            }))
+            firebase.database().ref('resume/' + uid).update({
+                current_work : props.current_work ,
+                current_position : props.current_position,
+                current_description : props.current_description,
+                current_startwork : props.current_startwork,
+                current_endwork : props.current_endwork,
+                current_final_salary : props.current_final_salary,
+                current_other_income : props.current_other_income,
+                current_net_income : props.current_net_income,
+                current_welfare : props.current_welfare,
+                current_resign : props.current_resign,
+                old_work : props.old_work  !== undefined ? props.old_work : '-',
+                old_position : props.old_position !== undefined ? props.old_position : '-',
+                old_final_salary : props.old_final_salary !== undefined ? props.old_final_salary : '-',
+                old_startwork : props.old_startwork || null,
+                old_endwork : props.old_endwork || null,
+                old_resign : props.old_resign !== undefined ? props.old_resign : '-',
+                older_work : props.older_work !== undefined ? props.older_work : '-',
+                older_position : props.older_position !== undefined ? props.older_position : '-',
+                older_final_salary : props.older_final_salary !== undefined ? props.older_final_salary : '-',
+                older_startwork : props.older_startwork  || null,
+                older_endwork : props.older_endwork  || null,
+                older_resign : props.older_resign !== undefined ? props.older_resign : '-',
+                checkAccept : props.checkAccept !== undefined ? props.checkAccept : '-',
+            })
             Router.push({ pathname : '/Resume/Ability_information' })      
         },
         handleCheckAccept: props => () => event => {
@@ -645,24 +585,9 @@ export default enhance( (props)=>
                             <BtnBack basic color='orange' onClick={props.saveThisPagePrev()}>
                                 <Icon name='left arrow' /> ย้อนกลับ
                             </BtnBack>
-
                             &nbsp;
-                            {/* <Modal size='tiny' closeIcon>
-                                <Modal.Content image>
-                                    <Modal.Description>
-                                        <center>
-                                            <br/>
-                                            <Image size='medium' src='https://www.img.in.th/images/89c1a7fb5aeca8818567de71964a74f0.png' size='tiny' />
-                                            <TextModelTaskSuccess>สมัครงานเรียบร้อย</TextModelTaskSuccess>
-                                                <ButtonClick  onClick={props.saveThisPageNext(props.handleChangTimeToThai)}>ดาวน์โหลดเอกสารใบสมัคร</ButtonClick>
-                                            <br/><br/>
-                                        </center>
-                                        <p>*หมายเหตุ : ผู้ที่ผ่านการพิจารณาเบื้องต้นทางฝ่ายบุคคลจะติดต่อไปหาผู้สมัครโดยตรง</p>
-                                    </Modal.Description>
-                                </Modal.Content>
-                            </Modal> */}
                             <Button as='div' labelPosition='right'>
-                                <BtnSuccess onClick={props.saveThisPageNext(props.handleChangTimeToThai)}>
+                                <BtnSuccess onClick={props.saveThisPageNext()}>
                                     บันทึกข้อมูล
                                 </BtnSuccess>
                                 <Colorlabel as='a'>
