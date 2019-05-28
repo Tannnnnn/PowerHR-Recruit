@@ -369,6 +369,7 @@ const enhance = compose(
             // }
         },
         saveThisPagePrev: props => () => event => {
+            const uid = props.authStore.currentUser.uid
             firebase.database().ref('resume/' + uid).update({
                 highSchool_name : props.highSchool_name !== undefined ? props.highSchool_name : '-',
                 highSchool_country : props.highSchool_country !== undefined ? props.highSchool_country : '-',

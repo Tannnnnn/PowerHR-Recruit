@@ -358,8 +358,12 @@ const enhance = compose(
             buildFileSelector(fn).click();
         },
         onChangeInputFile: props => () => event => {
-            let profileImg = event.target.files[0]
-            let reader = new FileReader();
+            let profileImg = event.target.files[0]            
+            if (profileImg.type === '') {
+                alert('กรุณาเลือกเฉพาะไฟล์ที่เป็นรูปภาพเท่านั้น !')
+            }
+            else{
+                let reader = new FileReader();
                 reader.onloadend = function() {
                     var blob = new Blob([profileImg]); // create blob...
                     var src = URL.createObjectURL(blob)
@@ -369,7 +373,8 @@ const enhance = compose(
                         props.setImageBase64(cimage)
                     });
                 }
-            reader.readAsDataURL(profileImg);
+                reader.readAsDataURL(profileImg);
+            }
         },
         handleShowImage: props => () => {
             if (props.imageBase64 === undefined) {

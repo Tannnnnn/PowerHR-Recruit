@@ -180,21 +180,21 @@ export default enhance((props) =>
                             </Link>
                         </TextHeader>
                         <TextHeader as='h4' floated='left'>
-                            <Link href='../Interview/ListPositionInterview'>
+                            <Link href='/Interview/ListPositionInterview'>
                                 <MenuItem>
                                     ประกาศผล
                                 </MenuItem>
                             </Link>
                         </TextHeader>
                         <TextHeader as='h4' floated='left'>
-                            <Link href='../History/JobApplicationHistory'>
+                            <Link href='/History/JobApplicationHistory'>
                                 <MenuItem>
                                     ประวัติการสมัครงาน
                                 </MenuItem>
                             </Link>
                         </TextHeader>
                         <TextHeader as='h4' floated='left' >
-                            <Link href={{ pathname : '../Resume/Personal_information' }}>
+                            <Link href={{ pathname : '/Resume/Personal_information' }}>
                                 <MenuItem>
                                     ข้อมูลส่วนตัว
                                 </MenuItem>
