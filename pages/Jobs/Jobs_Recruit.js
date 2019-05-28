@@ -164,7 +164,7 @@ const enhance = compose(
                             <HeaderContentLeft floated='left'>
                               <LabelPosition>{data.position_name}</LabelPosition><br/><br/>
                               <LabelSalary>
-                                <Icon name='money bill alternate outline' />{data.rate}
+                                <Icon name='money bill alternate outline' />{data.rate === "ตามประสบการณ์" ? data.rate : data.rate + " บาท"}
                               </LabelSalary>
                             </HeaderContentLeft>
                         </SegmentContent>
@@ -231,7 +231,7 @@ export default enhance((props) =>
       <center>
         {props.handlePagination(props.handleChangePagination)}
       </center>
-    </Container><br/><br/>
+    </Container>
   </div>
 );
 export { default as Jobs_Recruit } from './Jobs_Recruit'

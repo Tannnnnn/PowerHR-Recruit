@@ -5,6 +5,7 @@ import { Jobs_Company } from './Jobs/Jobs_Company'
 import { Benefit } from './Jobs/Benefit'
 import { Jobs_Recruit } from './Jobs/Jobs_Recruit'
 import { inject, observer } from 'mobx-react'
+import {CarouselCompane} from '../components/Carousel'
 
 const enhance = compose(
     withLayout,
@@ -18,7 +19,7 @@ const enhance = compose(
             if (props.location) {
                 props.location === '/index' 
                 ? window.scrollTo({
-                    top: 1000,
+                    top: 0,
                     left: 0,
                     behavior: 'smooth'
                 }) 
@@ -36,9 +37,10 @@ const enhance = compose(
   
 export default enhance((props) => 
     <div>
+        {CarouselCompane ('CUPCODE CO., LTD.')}
         {props.handleScrollView()}
-        <Jobs_Company />
-        <Benefit />
         <Jobs_Recruit />
+        <Benefit />
+        <Jobs_Company /><br/><br/>
     </div>
 );

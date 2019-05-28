@@ -327,15 +327,15 @@ export default enhance( (props)=>
                             </TextTopics2>
                             <TextTopics2>
                                 <ColorText>สถานที่ปฏิบัติการ : </ColorText>
-                                <ColorTextSmall1> 1679/2 town in town 11 ladprao road, plabpla, wangthonglang Bangkok 10310</ColorTextSmall1> 
+                                <ColorTextSmall1> 65/184 อาคารชำนาญเพ็ญชาติ บิสเนส เซ็นเตอร์ ถนน พระราม 9 แขวง ห้วยขวาง เขต ห้วยขวาง กรุงเทพมหานคร 10310 </ColorTextSmall1> 
                             </TextTopics2>
                             <TextTopics2>
                                 <ColorText>อัตรา : </ColorText>
-                                <ColorTextSmall1> {props.detail.value} </ColorTextSmall1>
+                                <ColorTextSmall1> {props.detail.value} ตำแหน่ง </ColorTextSmall1>
                             </TextTopics2>
                             <TextTopics2>
                                 <ColorText>เงินเดือน : </ColorText>
-                                <ColorTextSmall1> <Icon name='money bill alternate outline' /> {props.detail.rate} </ColorTextSmall1>
+                                <ColorTextSmall1> <Icon name='money bill alternate outline' /> {props.detail.rate === "ตามประสบการณ์" ? props.detail.rate : props.detail.rate + " บาท"} </ColorTextSmall1>
                             </TextTopics2>
                         </BodyBox>
                     </Container>
