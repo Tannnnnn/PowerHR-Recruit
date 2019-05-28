@@ -3,15 +3,13 @@ import { withLayout , withApp } from '../../hoc'
 import { compose , withState , lifecycle , withHandlers , withProps } from 'recompose'
 import {CarouselCompane} from '../../components/Carousel'
 import styled from 'styled-components'
-import { Container , Divider , Grid , Button , Image , Label , Modal , Icon } from 'semantic-ui-react'
+import { Container , Divider , Grid , Button , Image , Label , Modal , Icon , Loader , Dimmer} from 'semantic-ui-react'
 import {Breadcrumb2Page} from '../../components/Breadcrumb'
 import {input2GrideGrideMG } from '../../components/Input'
 import { inject, observer } from 'mobx-react'
-import auth from '../../firebase'
 import { PDF_GENERATOR } from '../../components/PdfMake'
-import pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
 import { ref , firebase } from '../../firebase/index'
+import Router from 'next/router'
 
 const BodyBox = styled.div`
     background : #ffffff;
@@ -37,6 +35,7 @@ const TextTopics2 = styled.p`
 
 const ColorTextSmall1 = styled.small`
     font-size: 18px !important;
+    font-family : 'Kanit', sans-serif !important;
 `;
 const ColorText = styled.small`
     font-size: 18px !important;
@@ -115,7 +114,6 @@ const ButtonCancle = styled(Button)`
     font-weight: 500 !important;
     border: 1px solid #cccccc !important;
 `;
-
 const TextNoLogin = styled.p`
     font-size: 20px !important;
     font-family: 'Kanit', sans-serif !important;
@@ -123,17 +121,26 @@ const TextNoLogin = styled.p`
 const IconModal = styled(Icon)`
   font-size: 55px !important;
 `;
+const ButtonClick = styled(Button)`
+    font-family : 'Kanit', sans-serif !important;
+    font-size: 14px !important;
+`;
+
 const enhance = compose(
     withApp,
     inject('authStore' , 'jobStore'),
     withState('detail','setDetail',[]),
     withState('startdate','setStartdate'),
     withState('enddate','setEnddate'),
-    withState('salary','setSalary'),
+    withState('salary','setSalary' , (props) => {return props.jobStore.job_positions.rate.length <= 7 ? props.jobStore.job_positions.rate : undefined}),
+    withState('isSalary','setIsSalary' , (props) => {return props.jobStore.job_positions.rate.length <= 7 ? true : false}),
     withState('email','setEmail'),
     withState('password','setPassword'),
     withState('open' , 'setOpen' , false),
     withState('resume' , 'setResume'),
+    withState('isApply' , 'setIsApply' , false),
+    withState('isLoading' , 'setIsLoading' , false),
+    withState('isOpen' , 'setIsOpen' , false),
     withProps({
         pageTitle: 'Jobs Detail'
     }),
@@ -142,67 +149,6 @@ const enhance = compose(
         onChange: props => () => event => {
             const { name , value } = event.target
             name === 'email' ? props.setEmail(value) : props.setPassword(value)            
-        },
-        onSubmitLogin: props => () => event => { 
-            event.preventDefault()
-            const { email , password } = props   
-            auth.signInWithEmailAndPassword(email, password)
-            .then(response => {
-                props.authStore.login(response)
-                window.location.href = `/JobDetail/JobDetail?id=${this.props.url.query.id}`
-            })
-            .catch(error => {
-                const errorCode = error.code;
-                if (errorCode === 'auth/wrong-password') {
-                    alert('รหัสผ่านไม่ถูกต้อง');
-                } else {
-                    alert('อีเมลไม่ถูกต้อง หรือ ไม่มีอยู่ในระบบ');
-                }             
-            })
-        },
-        handleSubmitRegister: props => () => event => {
-            props.setOpen(false)
-            let pdfDocGenerator = PDF_GENERATOR(props.resume , props)
-            let uniqueID = firebase.database().ref().push().key
-            let pdfID = firebase.database().ref().push().key            
-            pdfDocGenerator.getDataUrl((dataUrl) => {
-                ref.child(pdfID).putString(dataUrl, 'data_url')
-                .then( () => {
-                    let getUrl = ref.child(pdfID)
-                    getUrl.getDownloadURL()
-                    .then(function(url) {
-                        let result = {
-                            apply_job_id : uniqueID,
-                            department_id : props.jobStore.job_positions.department_id,
-                            apply_date : firebase.database.ServerValue.TIMESTAMP,
-                            position_id : props.jobStore.job_positions.position_id,
-                            job_position_id : props.jobStore.job_positions.job_position_id,
-                            uid : props.authStore.accessToken,
-                            rate : props.salary,
-                            status : 0,
-                            resume_pdf : url
-                        }
-                        firebase.database().ref('apply_jobs/' + uniqueID).set(result)    
-                    })
-                    .catch(function(error) {
-                        switch (error.code) {
-                            case 'storage/object-not-found':
-                            break;
-                        
-                            case 'storage/unauthorized':
-                            break;
-                        
-                            case 'storage/canceled':
-                            break;
-                                    
-                            case 'storage/unknown':
-                            break;
-                        }
-                    });
-                    
-                })
-                .catch( err => console.log(err))
-            });
         },
         initGetJobPositionData: props => () => {
             let result = props.jobStore.job_positions
@@ -230,12 +176,79 @@ const enhance = compose(
             .once("value").then( snapshot => {
                 props.setResume(snapshot.val())
             })
+        },
+        handleSubmitRegister: props => () => event => {
+            props.setOpen(false)
+            props.setIsLoading(true)
+            props.setIsOpen(true)
+            let pdfDocGenerator = PDF_GENERATOR(props.resume , props)
+            let uniqueID = firebase.database().ref().push().key
+            let pdfID = firebase.database().ref().push().key            
+            pdfDocGenerator.getDataUrl((dataUrl) => {
+                ref.child(pdfID).putString(dataUrl, 'data_url')
+                .then( () => {
+                    let getUrl = ref.child(pdfID)
+                    getUrl.getDownloadURL()
+                    .then(function(url) {
+                        let result = {
+                            apply_job_id : uniqueID,
+                            department_id : props.jobStore.job_positions.department_id,
+                            apply_date : firebase.database.ServerValue.TIMESTAMP,
+                            position_id : props.jobStore.job_positions.position_id,
+                            job_position_id : props.jobStore.job_positions.job_position_id,
+                            uid : props.authStore.accessToken,
+                            rate : props.salary,
+                            status : 0,
+                            resume_pdf : url
+                        }
+                        firebase.database().ref('apply_jobs/' + uniqueID).set(result , (err) => {
+                            err 
+                            ?   null 
+                            :   props.setIsLoading(false) 
+                                props.setIsOpen(true)
+                        })    
+                    })
+                    .catch(function(error) {
+                        switch (error.code) {
+                            case 'storage/object-not-found':
+                            break;
+                        
+                            case 'storage/unauthorized':
+                            break;
+                        
+                            case 'storage/canceled':
+                            break;
+                                    
+                            case 'storage/unknown':
+                            break;
+                        }
+                    });
+                    
+                })
+                .catch( err => console.log(err))
+            });
+        },
+        handleApplyJobsData: props => () => {
+            let jobID = props.jobStore.job_positions.job_position_id
+            firebase.database()
+            .ref('apply_jobs')
+            .orderByChild("uid")
+            .equalTo(props.authStore.accessToken)
+            .once("value").then( snapshot => { 
+                let result = Object.values(snapshot.val())           
+                result 
+                    ? result.map( data => {
+                        data.job_position_id === jobID ? props.setIsApply(true) : null
+                    })     
+                    : props.setIsApply(false)
+            })
         }
     }),
     lifecycle({
         async componentDidMount(){
             await this.props.initGetJobPositionData()  
             await this.props.initGetDataResume()
+            await this.props.handleApplyJobsData()            
         }
     }),
     withHandlers({
@@ -244,7 +257,7 @@ const enhance = compose(
                 <Modal 
                     size={'tiny'} 
                     trigger={
-                        <MarginBTN as='div' labelPosition='right' onClick={() => props.setOpen(true)}>
+                        <MarginBTN as='div' labelPosition='right' onClick={() => props.setOpen(true)} disabled={props.isApply}>
                             <ColorBTN>
                                 สมัครงาน
                             </ColorBTN>
@@ -264,14 +277,12 @@ const enhance = compose(
                                     <TextTask>สมัครงาน</TextTask>
                                 </BgHandTask>
                             </center>
-                            <from>
                                 <TextPosition>ตำแหน่งงานที่สมัคร : {name}</TextPosition>
-                                {input2GrideGrideMG('เงินเดือนที่ต้องการ :','กรุณากรอกเงินเดือนที่ต้องการ' , (event) => props.setSalary(event.target.value) , 'text' , '')}
+                                {input2GrideGrideMG('เงินเดือนที่ต้องการ :','กรุณากรอกเงินเดือนที่ต้องการ' , (event) => props.setSalary(event.target.value) , 'text' , props.salary)}
                                 <center>
                                     <ButtonCancle onClick={() => props.setOpen(false) }>ยกเลิก</ButtonCancle>
                                     <ButtonOK onClick={props.handleSubmitRegister()} disabled={props.salary ? false : true}>ยืนยันสมัครงาน</ButtonOK>
                                 </center>
-                            </from>
                         </Modal.Description>
                     </Modal.Content>
                     :<Modal.Content>
@@ -341,6 +352,33 @@ export default enhance( (props)=>
                     </Container>
                 : null
         }       
+        {
+            props.isLoading
+            ?   <Modal basic size='small' open={props.isLoading}>
+                    <Loader size='large'>กำลังดำเนินการ กรุณารอสักครู่...</Loader>
+                </Modal>
+            :   <Modal size={'tiny'} open={props.isOpen}>
+                    <Modal.Header>
+                        <center>
+                            <Icon name='check' size='big' color={"orange"}/>
+                        </center>
+                    </Modal.Header>
+                    <Modal.Content>
+                        <center>
+                            <ColorTextSmall1>สมัครงานเรียบร้อย</ColorTextSmall1>
+                        </center>
+                    </Modal.Content>
+                    <Modal.Actions>
+                        <center>
+                            <ButtonClick
+                                color={"orange"}
+                                onClick={() => {return Router.push('/Interview/ListPositionInterview')}} 
+                                content='ตกลง' 
+                            />
+                        </center>
+                    </Modal.Actions>
+                </Modal>
+        }
         <Divider hidden />
     </div>
 )

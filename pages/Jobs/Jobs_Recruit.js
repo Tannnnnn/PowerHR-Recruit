@@ -124,14 +124,15 @@ const enhance = compose(
       firebase.database().ref("job_positions_log")
       .once("value").then( snapshot => {
         let data = Object.values(snapshot.val())
-        let result = data.map((data) => {   
+        let result = []
+        data.map((data) => {   
           const today = new Date() 
           const endDate = new Date(data.enddate)
           const startDate = new Date(data.startdate)
           if (today.setHours(0,0,0,0) >= startDate.setHours(0,0,0,0) && today.setHours(0,0,0,0) <= endDate) {
-            return data
+            return result.push(data)
           }
-        })
+        })        
         props.setRecruit(result)
       })
     }
@@ -144,7 +145,7 @@ const enhance = compose(
   withHandlers({
     handleShowData: props => (dateInThai) => {
       const { dataInPage , activePage , recruit } = props   
-      if ( recruit !== undefined) {
+      if ( recruit && recruit !== undefined && recruit.length !== 0) {
         const indexOfLast = activePage * dataInPage;
         const indexOfFirst = indexOfLast - dataInPage;
         const currentData = recruit.slice(indexOfFirst, indexOfLast);
@@ -224,12 +225,12 @@ export default enhance((props) =>
     <ContainerHeader>
         <SegmentHeader>ตำแหน่งงานที่เปิดรับสมัคร :</SegmentHeader>
         <ContainerContent>
-          {props.handleShowData(props.handleSetDateInThai)}
+          { props.recruit && props.handleShowData(props.handleSetDateInThai)}
         </ContainerContent>
     </ContainerHeader>
     <Container>
       <center>
-        {props.handlePagination(props.handleChangePagination)}
+        { props.recruit && props.handlePagination(props.handleChangePagination)}
       </center>
     </Container>
   </div>

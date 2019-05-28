@@ -1,8 +1,6 @@
-import { action, observable, toJS } from 'mobx'
+import { action, observable } from 'mobx'
 import storejs from 'store'
 import _ from 'lodash'
-import { auth , firebase } from '../firebase/index'
-import axios from 'axios'
 
 let store = null
 
