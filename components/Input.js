@@ -103,6 +103,17 @@ export const inputOnkeyup = (data , placeholder , fn , type , value , name, requ
     </div>
 )
 
+export const inputOnkeyupDisabled = (data , placeholder , fn , type , value , name, require) => (
+    <div>
+        <Form>
+            <WidthForm required={require}>
+                <SizeText1>{data}</SizeText1>
+                <SizeTextinput placeholder={placeholder} onKeyUp={fn} defaultValue={value} type={type} name={name} disabled/>
+            </WidthForm>
+        </Form>
+    </div>
+)
+
 export const inputIdcard = (data , placeholder , fn , type , value , name, require) => (
     <div>
         <Form>
@@ -129,7 +140,6 @@ export const inputEmail = (data , placeholder , fn , type , value , name , requi
     <div>
         <Form>
             <WidthForm required={require}>
-                
                 <SizeText1>{data}</SizeText1>
                 <SizeTextinput placeholder={placeholder} onChange={fn} defaultValue={value} type={type} name={name} disabled/>
             </WidthForm>
@@ -181,11 +191,13 @@ export const input4GrideMG = (data , placeholder , fn , type , value , require )
     </div>
 )
 
-export const InputTextArea = (data , placeholder , fn , value) =>(
+export const InputTextArea = (data , placeholder , fn , value, require) =>(
     <div>
         <Form>
-            <SizeText1>{data}</SizeText1>
-            <FontTextArea autoHeight placeholder={placeholder} rows={4} onChange={fn} value={value}/>
+            <Form.Field required={require}>
+                <SizeText1>{data}</SizeText1>
+                <FontTextArea autoHeight placeholder={placeholder} rows={4} onChange={fn} value={value}/>
+            </Form.Field>
         </Form>
     </div>
 )

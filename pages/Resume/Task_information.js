@@ -4,7 +4,7 @@ import { compose, withProps , withState , withHandlers, lifecycle } from 'recomp
 import styled from 'styled-components'
 import { Container , Icon , Divider , Grid , Checkbox , Button , Header , Label , Modal , Image } from 'semantic-ui-react'
 import theme from '../../theme/default'
-import { input2GrideOnKeyUp , inputOnkeyup , input2GrideGrideMG , input2Gride , InputTextArea , InputTextAreaMini } from '../../components/Input'
+import { input2GrideOnKeyUp , inputOnkeyup , input2GrideGrideMG , input2Gride , InputTextArea , InputTextAreaMini , inputOnkeyupDisabled } from '../../components/Input'
 import { StepApplyJobTask } from '../../components/Step'
 import Router from 'next/router'
 import { firebase } from '../../firebase/index'
@@ -212,6 +212,10 @@ const enhance = compose(
                     }
                     else{
                         props.setCurrent_final_salary(event.target.value)
+                        let current_final_salary = parseInt(event.target.value)
+                        let current_other_income = parseInt(props.current_other_income)
+                        let sumMoney = parseInt(current_final_salary + current_other_income)
+                        props.setCurrent_net_income(!sumMoney ? '' : sumMoney)
                     }
                 }
                 else{
@@ -236,6 +240,10 @@ const enhance = compose(
                     }
                     else{
                         props.setCurrent_other_income(event.target.value)
+                        let current_final_salary = parseInt(props.current_final_salary)
+                        let current_other_income = parseInt(event.target.value)
+                        let sumMoney = parseInt(current_final_salary + current_other_income)
+                        props.setCurrent_net_income(!sumMoney ? '' : sumMoney)
                     }
                 }
                 else{
@@ -248,30 +256,30 @@ const enhance = compose(
                 }
             }
         },
-        handleCurrentNetIncome: props => () => event => {
-            let stack = props.current_net_income
-            if (parseInt(event.target.value) < 1) {
-                event.target.value = ''
-            }        
-            else{
-                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode > 47 && event.keyCode < 58) { 
-                    if (event.target.value.length > 7) {
-                        event.target.value = stack
-                    }
-                    else{
-                        props.setCurrent_net_income(event.target.value)
-                    }
-                }
-                else{
-                    if (event.keyCode === 9) {
-                        event.target.value = ''
-                    }
-                    else{
-                        event.target.value = stack
-                    }
-                }
-            }
-        },
+        // handleCurrentNetIncome: props => () => event => {
+        //     let stack = props.current_net_income
+        //     if (parseInt(event.target.value) < 1) {
+        //         event.target.value = ''
+        //     }        
+        //     else{
+        //         if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode > 47 && event.keyCode < 58) { 
+        //             if (event.target.value.length > 7) {
+        //                 event.target.value = stack
+        //             }
+        //             else{
+        //                 props.setCurrent_net_income(event.target.value)
+        //             }
+        //         }
+        //         else{
+        //             if (event.keyCode === 9) {
+        //                 event.target.value = ''
+        //             }
+        //             else{
+        //                 event.target.value = stack
+        //             }
+        //         }
+        //     }
+        // },
         handleCurrentWelfare: props => () => event => {
             props.setCurrent_welfare(event.target.value)
         },
@@ -400,8 +408,8 @@ const enhance = compose(
                     current_final_salary : props.current_final_salary,
                     current_other_income : props.current_other_income,
                     current_net_income : props.current_net_income,
-                    current_welfare : props.current_welfare,
-                    current_resign : props.current_resign,
+                    current_welfare : props.current_welfare ? props.current_welfare : '-',
+                    current_resign : props.current_resign ? props.current_resign : '-',
                     old_work : props.old_work  !== undefined ? props.old_work : '-',
                     old_position : props.old_position !== undefined ? props.old_position : '-',
                     old_final_salary : props.old_final_salary !== undefined ? props.old_final_salary : '-',
@@ -436,8 +444,8 @@ const enhance = compose(
                 current_final_salary : props.current_final_salary,
                 current_other_income : props.current_other_income,
                 current_net_income : props.current_net_income,
-                current_welfare : props.current_welfare,
-                current_resign : props.current_resign,
+                current_welfare : props.current_welfare ? props.current_welfare : '-',
+                current_resign : props.current_resign ? props.current_resign : '-',
                 old_work : props.old_work  !== undefined ? props.old_work : '-',
                 old_position : props.old_position !== undefined ? props.old_position : '-',
                 old_final_salary : props.old_final_salary !== undefined ? props.old_final_salary : '-',
@@ -485,35 +493,35 @@ export default enhance( (props)=>
                 <TextSort>เรียงลำดับจากปัจจุบันถึงอดีต</TextSort>
                 <Grid columns={2} padded='horizontally'>
                     <Grid.Column>
-                        <MgGridLeft>{input2GrideGrideMG('ที่ทำงานปัจจุบัน :','กรุณากรอกที่ทำงานปัจจุบัน' , props.handleCurrentWork() , 'text' , props.current_work)}</MgGridLeft>
+                        <MgGridLeft>{input2GrideGrideMG('ที่ทำงานปัจจุบัน :','กรุณากรอกที่ทำงานปัจจุบัน' , props.handleCurrentWork() , 'text' , props.current_work , '', true)}</MgGridLeft>
                     </Grid.Column>
                     <Grid.Column>
-                        {input2Gride('ตำแหน่ง :','กรุณากรอกตำแหน่ง' , props.handleCurrentPosition() , 'text' , props.current_position)}
+                        {input2Gride('ตำแหน่ง :','กรุณากรอกตำแหน่ง' , props.handleCurrentPosition() , 'text' , props.current_position , '' , true)}
                     </Grid.Column>
                 </Grid>
                 <MgTextArea>
-                    {InputTextArea('ลักษณะงานที่รับผิดชอบ :', 'กรุณากรอกลักษณะงานที่รับผิดชอบ' , props.handleCurrentDescription() , props.current_description)}
+                    {InputTextArea('ลักษณะงานที่รับผิดชอบ :', 'กรุณากรอกลักษณะงานที่รับผิดชอบ' , props.handleCurrentDescription() , props.current_description , true)}
                 </MgTextArea>
                 <br/>
                 <Grid columns={2} padded='horizontally'>
                     <Grid.Column>
-                        <MgGridLeft>{input2GrideGrideMG('ระยะเวลาเริ่มต้นการทำงาน :','เลือกระยะเวลาเริ่มต้นการทำงาน' , props.handleCurrentStartwork() , 'date' , props.current_startwork)}</MgGridLeft>
+                        <MgGridLeft>{input2GrideGrideMG('วันที่เริ่มการทำงาน :','เลือกวันที่เริ่มต้นการทำงาน' , props.handleCurrentStartwork() , 'date' , props.current_startwork , '' , true)}</MgGridLeft>
                     </Grid.Column>
                     <Grid.Column>
-                        {input2Gride('ระยะเวลาสิ้นสุดการทำงาน :','เลือกระยะเวลาสิ้นสุดการทำงาน' , props.handleCurrentEndwork() , 'date' , props.current_endwork)}
-                    </Grid.Column>
-                </Grid>
-                <Grid columns={2} padded='horizontally'>
-                    <Grid.Column>
-                        <MgGridLeft>{inputOnkeyup('เงินเดือนสุดท้ายที่ได้รับ (บาท) :','กรุณากรอกเงินเดือนสุดท้ายที่ได้รับ' , props.handleCurrentFinalSalary() , 'text' , props.current_final_salary)}</MgGridLeft>
-                    </Grid.Column>
-                    <Grid.Column>
-                        {input2GrideOnKeyUp('รายได้อื่นๆ ที่นอกเหนือจากเงินเดือนพื้นฐาน (บาท) :','กรุณากรอกรายได้อื่นๆ ที่นอกเหนือจากเงินเดือน' , props.handleCurrentOtherIncome() , 'text' , props.current_other_income)}
+                        {input2Gride('วันที่สิ้นสุดการทำงาน :','เลือกวันที่สิ้นสุดการทำงาน' , props.handleCurrentEndwork() , 'date' , props.current_endwork , '' , true)}
                     </Grid.Column>
                 </Grid>
                 <Grid columns={2} padded='horizontally'>
                     <Grid.Column>
-                        <MgGridLeft>{inputOnkeyup('รวมรายได้สุทธิต่อเดือน (บาท) :','กรุณากรอกรายได้สุทธิต่อเดือน' , props.handleCurrentNetIncome() , 'text' , props.current_net_income)}</MgGridLeft>
+                        <MgGridLeft>{inputOnkeyup('เงินเดือนสุดท้ายที่ได้รับ (บาท) :','กรุณากรอกเงินเดือนสุดท้ายที่ได้รับ' , props.handleCurrentFinalSalary() , 'text' , props.current_final_salary , '' , true)}</MgGridLeft>
+                    </Grid.Column>
+                    <Grid.Column>
+                        {input2GrideOnKeyUp('รายได้อื่นๆ ที่นอกเหนือจากเงินเดือนพื้นฐาน (บาท) :','กรุณากรอกรายได้อื่นๆ ที่นอกเหนือจากเงินเดือน' , props.handleCurrentOtherIncome() , 'text' , props.current_other_income , true)}
+                    </Grid.Column>
+                </Grid>
+                <Grid columns={2} padded='horizontally'>
+                    <Grid.Column>
+                        <MgGridLeft>{inputOnkeyupDisabled('รวมรายได้สุทธิต่อเดือน (บาท) :','กรุณากรอกรายได้สุทธิต่อเดือน' , null , 'text' , props.current_net_income)}</MgGridLeft>
                     </Grid.Column>
                     <Grid.Column>
                         {input2Gride('สวัสดิการอื่นๆ ของบริษัท :','กรุณากรอกสวัสดิการอื่นๆ ของบริษัท' , props.handleCurrentWelfare() , 'text' , props.current_welfare)}
