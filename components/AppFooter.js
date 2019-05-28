@@ -28,7 +28,7 @@ export default () => (
                     <LabelContact>Contact : oraphan@cupcodeteam.com</LabelContact><br/><br/>
                     <LabelAddress>
                         <Icon name="map marker alternate"/>
-                        1679/2 town in town 11 ladprao road, plabpla, wangthonglang Bangkok 10310
+                        65/184 อาคารชำนาญเพ็ญชาติ บิสเนส เซ็นเตอร์ ถนน พระราม 9 แขวง ห้วยขวาง เขต ห้วยขวาง กรุงเทพมหานคร 10310 
                     </LabelAddress>
                 </ContentFooter>
             </Container>

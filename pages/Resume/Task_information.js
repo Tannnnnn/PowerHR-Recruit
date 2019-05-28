@@ -109,14 +109,9 @@ const Colorlabel = styled(Label)`
     color : #fff !important;
 `;
 
-const TextModelTaskSuccess = styled.p`
-    font-size: 18px;
-    margin-top: 2%;
-`;
-
 const ButtonClick = styled(Button)`
     font-family : 'Kanit', sans-serif !important;
-    font-size: 18px !important;
+    font-size: 14px !important;
 `;
 
 const enhance = compose(
@@ -145,6 +140,9 @@ const enhance = compose(
     withState('older_endwork' , 'setOlder_endwork'),
     withState('older_resign' , 'setOlder_resign'),
     withState('checkAccept' , 'setCheckAccept' , false),
+    withState('openModal' , 'setOpenModal' , false),
+    withState('messageModal' , 'setMessageModal' , false),
+    withState('saveSuccess' , 'setSaveSuccess' , false),
 
     withProps({
         pageTitle: 'Task information'
@@ -154,7 +152,6 @@ const enhance = compose(
             firebase.database().ref('resume/' + props.authStore.accessToken)
             .once("value").then( snapshot => {
                 let resume = snapshot.val()         
-                console.log(resume)       
                 props.setCurrent_work(resume.current_work)            
                 props.setCurrent_position(resume.current_position)
                 props.setCurrent_description(resume.current_description)
@@ -365,25 +362,33 @@ const enhance = compose(
                 const c_startDate = new Date(props.current_startwork)
                 const c_endDate = new Date(props.current_endwork)
                 if (c_startDate.setHours(0,0,0,0) > c_endDate.setHours(0,0,0,0)) {
-                    window.alert('คุณกรอกข้อมูลวันที่ไม่ถูกต้อง  \nกรุณากรอกข้อมูลใหม่อีกครั้ง !!!')
+                    props.setMessageModal("คุณกรอกข้อมูลวันที่ไม่ถูกต้อง กรุณากรอกข้อมูลใหม่อีกครั้ง !!!")
+                    props.setOpenModal(true)
+                    props.saveSuccess(false)
                 }
             }
             if (props.old_startwork !== undefined && props.old_endwork !== undefined) {
                 const old_startDate = new Date(props.old_startwork)
                 const old_endDate = new Date(props.old_endwork)
                 if (old_startDate.setHours(0,0,0,0) > old_endDate.setHours(0,0,0,0)) {
-                    window.alert('คุณกรอกข้อมูลวันที่ไม่ถูกต้อง  \nกรุณากรอกข้อมูลใหม่อีกครั้ง !!!')
+                    props.setMessageModal("คุณกรอกข้อมูลวันที่ไม่ถูกต้อง กรุณากรอกข้อมูลใหม่อีกครั้ง !!!")
+                    props.setOpenModal(true)
+                    props.saveSuccess(false)
                 }
             }
             if (props.older_startwork !== undefined && props.older_endwork !== undefined) {
                 const older_startDate = new Date(props.older_startwork)
                 const older_endDate = new Date(props.older_endwork)
                 if (older_startDate.setHours(0,0,0,0) > older_endDate.setHours(0,0,0,0)) {
-                    window.alert('คุณกรอกข้อมูลวันที่ไม่ถูกต้อง  \nกรุณากรอกข้อมูลใหม่อีกครั้ง !!!')
+                    props.setMessageModal("คุณกรอกข้อมูลวันที่ไม่ถูกต้อง กรุณากรอกข้อมูลใหม่อีกครั้ง !!!")
+                    props.setOpenModal(true)
+                    props.saveSuccess(false)
                 }
             }
             if (props.checkAccept === false) {
-                window.alert('คุณกรอกข้อมูลไม่ครบถ้วน \nกรุณากดยอมรับข้อตกลงในการสมัครงาน !!!')
+                props.setMessageModal("คุณกรอกข้อมูลวันที่ไม่ถูกต้อง กรุณากรอกข้อมูลใหม่อีกครั้ง !!!")
+                props.setOpenModal(true)
+                props.saveSuccess(false)
             }
             else{
                 firebase.database().ref('resume/' + uid).update({
@@ -410,13 +415,18 @@ const enhance = compose(
                     older_endwork : props.older_endwork  || null,
                     older_resign : props.older_resign !== undefined ? props.older_resign : '-',
                     checkAccept : props.checkAccept !== undefined ? props.checkAccept : '-',
-                })
-                // setTimeout(() => {
-                //     Router.push('/')
-                // }, 1000);  
+                },
+                (error) => {
+                    error 
+                        ?   props.setMessageModal(error)
+                        :   props.setOpenModal(true)
+                            props.setMessageModal('บันทึกข้อมูลเรียบร้อยแล้ว')
+                            props.setSaveSuccess(true)
+                }) 
             }    
         },
         saveThisPagePrev: props => () => event => {
+            const uid = props.authStore.currentUser.uid
             firebase.database().ref('resume/' + uid).update({
                 current_work : props.current_work ,
                 current_position : props.current_position,
@@ -597,6 +607,29 @@ export default enhance( (props)=>
                         </div>
                     </MgBTNOrange>
                 <br/><br/>
+                <Modal size={'tiny'} open={props.openModal}>
+                    <Modal.Header>
+                        <center>
+                            <Icon name='info circle' size='big' color={props.saveSuccess ? "green" : "red"}/>
+                        </center>
+                    </Modal.Header>
+                    <Modal.Content>
+                        <center>
+                            <p style={{ fontSize : '20px'}}>{props.messageModal}</p>
+                        </center>
+                    </Modal.Content>
+                    <Modal.Actions>
+                        <center>
+                            <ButtonClick 
+                                color={props.saveSuccess ? "orange" : "red"}
+                                onClick={() => {return props.saveSuccess ? Router.push('/') : props.setOpenModal(false)}} 
+                                icon='close' 
+                                labelPosition='left' 
+                                content='ปิด' 
+                            />
+                        </center>
+                    </Modal.Actions>
+                </Modal>
             </Box>
         <Divider hidden />
     </Container>    

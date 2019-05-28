@@ -227,6 +227,7 @@ const enhance = compose(
             // }
         },
         saveThisPagePrev: props => () => event => {
+            const uid = props.authStore.currentUser.uid
             firebase.database().ref('resume/' + uid).update({
                 motorcycles : props.motorcycles ,
                 car : props.car,
