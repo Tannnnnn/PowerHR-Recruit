@@ -266,7 +266,7 @@ export default enhance( (props)=>
                 <Grid.Column>
                     <MgGridLeft>
                         <Form.Group widths='equal'>
-                            <TextSelect>ความรู้ด้านภาษาอังกฤษ :</TextSelect>
+                            <TextSelect>ความรู้ด้านภาษาอังกฤษ : <text style={{ color : theme.colors.orange }}> *</text></TextSelect>
                             <SizeFontSelect 
                                 fluid 
                                 options={props.option} 
@@ -280,7 +280,7 @@ export default enhance( (props)=>
                 <Grid.Column>
                     <SizeSelectFormRight>
                         <Form.Group widths='equal'>
-                            <TextSelect>ความรู้ด้านภาษาอังกฤษ (การพูด) :</TextSelect>
+                            <TextSelect>ความรู้ด้านภาษาอังกฤษ (การพูด)  <text style={{ color : theme.colors.orange }}> *</text> </TextSelect>
                             <SizeFontSelect 
                                 fluid 
                                 options={props.option} 
@@ -296,7 +296,7 @@ export default enhance( (props)=>
                 <Grid.Column>
                     <MgGridLeft>
                         <Form.Group widths='equal'>
-                            <TextSelect>ความรู้ด้านภาษาอังกฤษ (การอ่าน) :</TextSelect>
+                            <TextSelect>ความรู้ด้านภาษาอังกฤษ (การอ่าน) : <text style={{ color : theme.colors.orange }}> *</text> </TextSelect>
                             <SizeFontSelect 
                                 fluid 
                                 options={props.option} 
@@ -310,7 +310,7 @@ export default enhance( (props)=>
                 <Grid.Column>
                     <SizeSelectFormRight>
                         <Form.Group widths='equal'>
-                            <TextSelect>ความรู้ด้านภาษาอังกฤษ (การเขียน) :</TextSelect>
+                            <TextSelect>ความรู้ด้านภาษาอังกฤษ (การเขียน) : <text style={{ color : theme.colors.orange }}> *</text></TextSelect>
                             <SizeFontSelect 
                                 fluid 
                                 options={props.option} 
@@ -324,14 +324,14 @@ export default enhance( (props)=>
             </Grid>
             <Grid columns={2} padded='horizontally'>
                 <Grid.Column>
-                    <MgGridLeft>{inputOnkeyup('จำนวนคำพิมพ์ดีดภาษาไทย (คำ/นาที) :','กรุณากรอกจำนวนคำพิมพ์ดีดภาษาไทย' , props.handleThaiLanguagePrint() , 'number' , props.thaiprint)}</MgGridLeft>
+                    <MgGridLeft>{inputOnkeyup('จำนวนคำพิมพ์ดีดภาษาไทย (คำ/นาที) :','กรุณากรอกจำนวนคำพิมพ์ดีดภาษาไทย' , props.handleThaiLanguagePrint() , 'number' , props.thaiprint, '' , true)}</MgGridLeft>
                 </Grid.Column>
                 <Grid.Column>
-                    {input2GrideOnKeyUp('จำนวนคำพิมพ์ดีดภาษาอังกฤษ (คำ/นาที) :','กรุณากรอกจำนวนคำพิมพ์ดีดภาษาอังกฤษ' , props.handleEnglishLanguagePrint() , 'text' , props.engprint)}
+                    {input2GrideOnKeyUp('จำนวนคำพิมพ์ดีดภาษาอังกฤษ (คำ/นาที) :','กรุณากรอกจำนวนคำพิมพ์ดีดภาษาอังกฤษ' , props.handleEnglishLanguagePrint() , 'text' , props.engprint, true)}
                 </Grid.Column>
             </Grid>
             <MgTextArea>
-                {InputTextArea('ความสามารถด้านคอมพิวเตอร์ : ', 'กรุณากรอกความสามาถด้านคอมพิวเตอร์' , props.handleComputerSkill() , props.computerSkill)}
+                {InputTextArea('ความสามารถด้านคอมพิวเตอร์ : ', 'กรุณากรอกความสามาถด้านคอมพิวเตอร์' , props.handleComputerSkill() , props.computerSkill , true)}
             </MgTextArea>
             <MgTextArea>
                 <FontRadioCar>ความสามารถด้านการขับรถ :</FontRadioCar>

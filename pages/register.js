@@ -187,11 +187,11 @@ export default enhance((props) =>
                     <Grid columns={2} padded='horizontally'>
                         <Grid.Column>
                             <MgGridLeft>
-                                {input2GrideGrideMG('รหัสผ่าน :', 'กรุณากรอกรหัสผ่าน' , props.onChange() , 'password' , props.password , 'password' )}
+                                {input2GrideGrideMG('รหัสผ่าน :', 'กรอกรหัสผ่านอย่างน้อย 6 ตัวอักษร' , props.onChange() , 'password' , props.password , 'password' )}
                             </MgGridLeft>
                         </Grid.Column>
                         <Grid.Column>
-                            {input2Gride('ยืนยันรหัสผ่าน :', 'ยืนยันรหัสผ่าน' , props.onChange() , 'password' , props.passwordCheck , 'passwordCheck')}
+                            {input2Gride('ยืนยันรหัสผ่าน :', 'กรอกรหัสผ่านอย่างน้อย 6 ตัวอักษร' , props.onChange() , 'password' , props.passwordCheck , 'passwordCheck')}
                         </Grid.Column>
                     </Grid>
                 <ButtonRegister type='submit' onClick={props.onSubmit()}>ยืนยันการสมัครสมาชิก</ButtonRegister>
