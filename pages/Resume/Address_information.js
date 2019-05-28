@@ -398,23 +398,23 @@ const enhance = compose(
             firebase.database().ref('resume/' + uid).update({
                 primary_hno : props.primary_hno ,
                 primary_vilno : props.primary_vilno,
-                primary_alley : props.primary_alley,
-                primary_road : props.primary_road,
+                primary_alley : props.primary_alley ? props.primary_alley : '-',
+                primary_road : props.primary_road ? props.primary_road : '-',
                 primary_area : props.primary_area,
                 primary_district : props.primary_district,
                 primary_province : props.primary_province,
                 primary_zipcode : props.primary_zipcode,
-                primary_tel : props.primary_tel,
+                primary_tel : props.primary_tel ? props.primary_tel : '-',
                 primary_phone : props.primary_phone,
                 present_hno : props.present_hno,
                 present_vilno : props.present_vilno,
-                present_alley : props.present_alley,
-                present_road : props.present_road,
+                present_alley : props.present_alley ? props.present_alley : '-',
+                present_road : props.present_road ? props.present_road : '-',
                 present_area : props.present_area,
                 present_district : props.present_district,
                 present_province : props.present_province,
                 present_zipcode : props.present_zipcode,
-                present_tel : props.present_tel,
+                present_tel : props.present_tel ? props.present_tel : '-',
                 present_phone : props.present_phone,
                 checkAddress : props.checkAddress
             })
@@ -434,27 +434,27 @@ const enhance = compose(
         saveThisPagePrev: props => () => event => {
             const uid = props.authStore.currentUser.uid                 
             firebase.database().ref('resume/' + uid).update({
-                primary_hno : props.primary_hno ,
-                primary_vilno : props.primary_vilno,
-                primary_alley : props.primary_alley,
-                primary_road : props.primary_road,
-                primary_area : props.primary_area,
-                primary_district : props.primary_district,
-                primary_province : props.primary_province,
-                primary_zipcode : props.primary_zipcode,
-                primary_tel : props.primary_tel,
-                primary_phone : props.primary_phone,
-                present_hno : props.present_hno,
-                present_vilno : props.present_vilno,
-                present_alley : props.present_alley,
-                present_road : props.present_road,
-                present_area : props.present_area,
-                present_district : props.present_district,
-                present_province : props.present_province,
-                present_zipcode : props.present_zipcode,
-                present_tel : props.present_tel,
-                present_phone : props.present_phone,
-                checkAddress : props.checkAddress
+                primary_hno : props.primary_hno ? props.primary_hno : null,
+                primary_vilno : props.primary_vilno ? props.primary_vilno : null,
+                primary_alley : props.primary_alley ? props.primary_alley : null,
+                primary_road : props.primary_road ? props.primary_road : null,
+                primary_area : props.primary_area ? props.primary_area : null,
+                primary_district : props.primary_district ? props.primary_district : null,
+                primary_province : props.primary_province ? props.primary_province : null,
+                primary_zipcode : props.primary_zipcode ? props.primary_zipcode : null,
+                primary_tel : props.primary_tel ? props.primary_tel : null,
+                primary_phone : props.primary_phone ? props.primary_phone : null,
+                present_hno : props.present_hno ? props.present_hno : null,
+                present_vilno : props.present_vilno ? props.present_vilno : null,
+                present_alley : props.present_alley ? props.present_alley : null,
+                present_road : props.present_road ? props.present_road : null,
+                present_area : props.present_area ? props.present_area : null,
+                present_district : props.present_district ? props.present_district : null,
+                present_province : props.present_province ? props.present_province : null,
+                present_zipcode : props.present_zipcode ? props.present_zipcode : null,
+                present_tel : props.present_tel ? props.present_tel : null,
+                present_phone : props.present_phone ? props.present_phone : null,
+                checkAddress : props.checkAddress ? props.checkAddress : null
             })  
             Router.push({ pathname : '/Resume/Personal_information' })
         },
@@ -484,10 +484,10 @@ export default enhance( (props)=>
                 <Grid.Column>
                     <Grid columns={2}>
                         <Grid.Column>
-                            <WidthWeight>{input4GrideMG('บ้านเลขที่ :','กรุณากรอกบ้านเลขที่', props.handlePrimaryHouseNumber() , 'text' , props.primary_hno)}</WidthWeight>
+                            <WidthWeight>{input4GrideMG('บ้านเลขที่ :','กรุณากรอกบ้านเลขที่', props.handlePrimaryHouseNumber() , 'text' , props.primary_hno , true)}</WidthWeight>
                         </Grid.Column>
                         <Grid.Column>
-                            <MgGridHeight>{input4Gride('หมู่ที่ :','กรุณากรอกหมู่' , props.handlePrimaryVillageNumber() , 'text' , props.primary_vilno)}</MgGridHeight>
+                            <MgGridHeight>{input4Gride('หมู่ที่ :','กรุณากรอกหมู่' , props.handlePrimaryVillageNumber() , 'text' , props.primary_vilno , true)}</MgGridHeight>
                         </Grid.Column>
                     </Grid>
                 </Grid.Column>
@@ -506,20 +506,20 @@ export default enhance( (props)=>
                 <Grid.Column>
                     <Grid columns={2}>
                         <Grid.Column>
-                            <WidthWeight>{input4GrideMG('ตำบล/แขวง :','กรุณากรอกตำบล/แขวง' , props.handlePrimaryArea() , 'text' , props.primary_area)}</WidthWeight>
+                            <WidthWeight>{input4GrideMG('ตำบล/แขวง :','กรุณากรอกตำบล/แขวง' , props.handlePrimaryArea() , 'text' , props.primary_area , true)}</WidthWeight>
                         </Grid.Column>
                         <Grid.Column>
-                            <MgGridHeight>{input4Gride('อำเภอ/เขต :','กรุณากรอกอำเภอ/เขต' , props.handlePrimaryDistrict() , 'text' , props.primary_district)}</MgGridHeight>
+                            <MgGridHeight>{input4Gride('อำเภอ/เขต :','กรุณากรอกอำเภอ/เขต' , props.handlePrimaryDistrict() , 'text' , props.primary_district , true)}</MgGridHeight>
                         </Grid.Column>
                     </Grid>
                 </Grid.Column>
                 <Grid.Column>
                     <Grid columns={2}>
                         <Grid.Column>
-                            <WidthWeight>{input2Gride('จังหวัด :','กรุณากรอกจังหวัด' , props.handlePrimaryProvince() , 'text' , props.primary_province)}</WidthWeight>
+                            <WidthWeight>{input2Gride('จังหวัด :','กรุณากรอกจังหวัด' , props.handlePrimaryProvince() , 'text' , props.primary_province , '' , true)}</WidthWeight>
                         </Grid.Column>
                         <Grid.Column>
-                            <Mg4Gridnationality>{inputZipcode('รหัสไปรษณี :','กรุณากรอกรหัสไปรษณี' , props.handlePrimaryZipcode() , 'text' , props.primary_zipcode)}</Mg4Gridnationality>
+                            <Mg4Gridnationality>{inputZipcode('รหัสไปรษณี :','กรุณากรอกรหัสไปรษณี' , props.handlePrimaryZipcode() , 'text' , props.primary_zipcode , true)}</Mg4Gridnationality>
                         </Grid.Column>
                     </Grid>
                 </Grid.Column>
@@ -529,7 +529,7 @@ export default enhance( (props)=>
                     <MgGridLeft>{inputOnkeyup('เบอร์โทรศัพท์บ้าน :','กรุณากรอกเบอร์โทรศัพท์บ้าน' , props.handlePrimaryTelephone() , 'text' , props.primary_tel)}</MgGridLeft>
                 </Grid.Column>
                 <Grid.Column>
-                    {input2GrideOnKeyUp('เบอร์มือถือ :','กรุณากรอกเบอร์มือถือ' , props.handlePrimaryPhone() , 'text' , props.primary_phone)}
+                    {input2GrideOnKeyUp('เบอร์มือถือ :','กรุณากรอกเบอร์มือถือ' , props.handlePrimaryPhone() , 'text' , props.primary_phone , true)}
                 </Grid.Column>
             </Grid>
             <br/><br/>
@@ -541,10 +541,10 @@ export default enhance( (props)=>
                 <Grid.Column>
                     <Grid columns={2}>
                         <Grid.Column>
-                            <WidthWeight>{input4GrideMG('บ้านเลขที่ :','กรุณากรอกบ้านเลขที่' , props.handlePresentHouseNumber() , 'text' , props.present_hno)}</WidthWeight>
+                            <WidthWeight>{input4GrideMG('บ้านเลขที่ :','กรุณากรอกบ้านเลขที่' , props.handlePresentHouseNumber() , 'text' , props.present_hno , true)}</WidthWeight>
                         </Grid.Column>
                         <Grid.Column>
-                            <MgGridHeight>{input4Gride('หมู่ที่ :','กรุณากรอกหมู่' , props.handlePresentVillageNumber() , 'text' , props.present_vilno)}</MgGridHeight>
+                            <MgGridHeight>{input4Gride('หมู่ที่ :','กรุณากรอกหมู่' , props.handlePresentVillageNumber() , 'text' , props.present_vilno , true)}</MgGridHeight>
                         </Grid.Column>
                     </Grid>
                 </Grid.Column>
@@ -563,20 +563,20 @@ export default enhance( (props)=>
                 <Grid.Column>
                     <Grid columns={2}>
                         <Grid.Column>
-                            <WidthWeight>{input4GrideMG('ตำบล/แขวง :','กรุณากรอกตำบล/แขวง' , props.handlePresentArea() , 'text' , props.present_area)}</WidthWeight>
+                            <WidthWeight>{input4GrideMG('ตำบล/แขวง :','กรุณากรอกตำบล/แขวง' , props.handlePresentArea() , 'text' , props.present_area , true)}</WidthWeight>
                         </Grid.Column>
                         <Grid.Column>
-                            <MgGridHeight>{input4Gride('อำเภอ/เขต :','กรุณากรอกอำเภอ/เขต' , props.handlePresentDistrict() , 'text' , props.present_district)}</MgGridHeight>
+                            <MgGridHeight>{input4Gride('อำเภอ/เขต :','กรุณากรอกอำเภอ/เขต' , props.handlePresentDistrict() , 'text' , props.present_district , true)}</MgGridHeight>
                         </Grid.Column>
                     </Grid>
                 </Grid.Column>
                 <Grid.Column>
                     <Grid columns={2}>
                     <Grid.Column>
-                            <WidthWeight>{input2Gride('จังหวัด :','กรุณากรอกจังหวัด' , props.handlePresentProvince() , 'text' , props.present_province)}</WidthWeight>
+                            <WidthWeight>{input2Gride('จังหวัด :','กรุณากรอกจังหวัด' , props.handlePresentProvince() , 'text' , props.present_province , '' , true)}</WidthWeight>
                         </Grid.Column>
                         <Grid.Column>
-                            <Mg4Gridnationality>{input2Gride('รหัสไปรษณี :','กรุณากรอกรหัสไปรษณี' , props.handlePresentZipcode() , 'text' , props.present_zipcode)}</Mg4Gridnationality>
+                            <Mg4Gridnationality>{input2Gride('รหัสไปรษณี :','กรุณากรอกรหัสไปรษณีย์' , props.handlePresentZipcode() , 'text' , props.present_zipcode , '' , true)}</Mg4Gridnationality>
                         </Grid.Column>
                     </Grid>
                 </Grid.Column>
@@ -586,7 +586,7 @@ export default enhance( (props)=>
                     <MgGridLeft>{inputOnkeyup('เบอร์โทรศัพท์บ้าน :','กรุณากรอกเบอร์โทรศัพท์บ้าน' , props.handlePresentTelephone() , 'text' , props.present_tel)}</MgGridLeft>
                 </Grid.Column>
                 <Grid.Column>
-                    {input2GrideOnKeyUp('เบอร์มือถือ :','กรุณากรอกเบอร์มือถือ' , props.handlePresentPhone() , 'text' , props.present_phone)}
+                    {input2GrideOnKeyUp('เบอร์มือถือ :','กรุณากรอกเบอร์มือถือ' , props.handlePresentPhone() , 'text' , props.present_phone , true)}
                 </Grid.Column>
             </Grid>
             <br/><br/>

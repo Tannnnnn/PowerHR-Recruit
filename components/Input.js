@@ -37,10 +37,10 @@ const FontTextArea = styled(TextArea)`
     font-family : 'Kanit', sans-serif !important;
 `;
 
-export const inputZipcode = (data , placeholder , fn , type , value) => (
+export const inputZipcode = (data , placeholder , fn , type , value , require) => (
     <div>
         <Form>
-            <WidthFormRight>
+            <WidthFormRight required={require}>
                 <SizeText1>{data}</SizeText1>
                 <SizeTextinput placeholder={placeholder} onKeyUp={fn} type={type} defaultValue={value}/>
             </WidthFormRight>
@@ -51,12 +51,8 @@ export const inputZipcode = (data , placeholder , fn , type , value) => (
 export const inputHeigth = (data , placeholder , fn , type , value , require) => (
     <div>
         <Form>
-            <WidthFormRight4Grid>
-                {
-                    require 
-                        ? <SizeText1>{data}<text style={{ color : theme.colors.orange }}> *</text></SizeText1> 
-                        : <SizeText1>{data}</SizeText1>
-                }
+            <WidthFormRight4Grid required={require}>
+                 <SizeText1>{data}</SizeText1>
                 <SizeTextinput placeholder={placeholder} onKeyUp={fn} defaultValue={value} type={type}/>
             </WidthFormRight4Grid>
         </Form>
@@ -66,12 +62,8 @@ export const inputHeigth = (data , placeholder , fn , type , value , require) =>
 export const inputWeigth = (data , placeholder , fn , type , value , require) => (
     <div>
         <Form>
-            <WidthFormRight4GridMG>
-                {
-                    require 
-                        ? <SizeText1>{data}<text style={{ color : theme.colors.orange }}> *</text></SizeText1> 
-                        : <SizeText1>{data}</SizeText1>
-                }
+            <WidthFormRight4GridMG required={require}>
+                <SizeText1>{data}</SizeText1>
                 <SizeTextinput placeholder={placeholder} onKeyUp={fn} defaultValue={value} type={type}/>
             </WidthFormRight4GridMG>
         </Form>
@@ -92,12 +84,8 @@ export const inputAge = (data , placeholder , fn , type , value) => (
 export const input2GrideOnKeyUp = (data , placeholder , fn , type , value, require) => (
     <div>
         <Form>
-            <WidthFormRight>
-                {
-                    require 
-                        ? <SizeText1>{data}<text style={{ color : theme.colors.orange }}> *</text></SizeText1> 
-                        : <SizeText1>{data}</SizeText1>
-                }                
+            <WidthFormRight required={require}>  
+                <SizeText1>{data}</SizeText1>          
                 <SizeTextinput placeholder={placeholder} onKeyUp={fn} type={type} defaultValue={value}/>
             </WidthFormRight>
         </Form>
@@ -107,12 +95,8 @@ export const input2GrideOnKeyUp = (data , placeholder , fn , type , value, requi
 export const inputOnkeyup = (data , placeholder , fn , type , value , name, require) => (
     <div>
         <Form>
-            <WidthForm>
-                {
-                    require 
-                        ? <SizeText1>{data}<text style={{ color : theme.colors.orange }}> *</text></SizeText1> 
-                        : <SizeText1>{data}</SizeText1>
-                }
+            <WidthForm required={require}>
+                <SizeText1>{data}</SizeText1>
                 <SizeTextinput placeholder={placeholder} onKeyUp={fn} defaultValue={value} type={type} name={name}/>
             </WidthForm>
         </Form>
@@ -122,12 +106,8 @@ export const inputOnkeyup = (data , placeholder , fn , type , value , name, requ
 export const inputIdcard = (data , placeholder , fn , type , value , name, require) => (
     <div>
         <Form>
-            <WidthForm>
-                {
-                    require 
-                        ? <SizeText1>{data}<text style={{ color : theme.colors.orange }}> *</text></SizeText1> 
-                        : <SizeText1>{data}</SizeText1>
-                }
+            <WidthForm required={require}>
+                <SizeText1>{data}</SizeText1>
                 <SizeTextinput placeholder={placeholder} onKeyUp={fn} defaultValue={value} type={type} name={name} disabled/>
             </WidthForm>
         </Form>
@@ -137,12 +117,8 @@ export const inputIdcard = (data , placeholder , fn , type , value , name, requi
 export const input2GrideGrideMG = (data , placeholder , fn , type , value , name , require) => (
     <div>
         <Form>
-            <WidthForm>
-                {
-                    require 
-                        ? <SizeText1>{data}<text style={{ color : theme.colors.orange }}> *</text></SizeText1> 
-                        : <SizeText1>{data}</SizeText1>
-                }
+            <WidthForm required={require}>
+                <SizeText1>{data}</SizeText1>
                 <SizeTextinput placeholder={placeholder} onChange={fn} defaultValue={value} type={type} name={name}/>
             </WidthForm>
         </Form>
@@ -152,12 +128,9 @@ export const input2GrideGrideMG = (data , placeholder , fn , type , value , name
 export const inputEmail = (data , placeholder , fn , type , value , name , require) => (
     <div>
         <Form>
-            <WidthForm>
-                {
-                    require 
-                        ? <SizeText1>{data}<text style={{ color : theme.colors.orange }}> *</text></SizeText1> 
-                        : <SizeText1>{data}</SizeText1>
-                }
+            <WidthForm required={require}>
+                
+                <SizeText1>{data}</SizeText1>
                 <SizeTextinput placeholder={placeholder} onChange={fn} defaultValue={value} type={type} name={name} disabled/>
             </WidthForm>
         </Form>
@@ -167,12 +140,8 @@ export const inputEmail = (data , placeholder , fn , type , value , name , requi
 export const input2Gride = (data , placeholder , fn , type , value , name , require) => (
     <div>
         <Form>
-            <WidthFormRight>
-                {
-                    require 
-                        ? <SizeText1>{data}<text style={{ color : theme.colors.orange }}> *</text></SizeText1> 
-                        : <SizeText1>{data}</SizeText1>
-                }
+            <WidthFormRight required={require}>
+                <SizeText1>{data}</SizeText1>
                 <SizeTextinput placeholder={placeholder} onChange={fn} type={type} defaultValue={value} name={name}/>
             </WidthFormRight>
         </Form>
@@ -190,10 +159,10 @@ export const inputGridePosition = (data , placeholder , name) => (
     </div>
 )
 
-export const input4Gride = (data , placeholder , fn , type , value) => (
+export const input4Gride = (data , placeholder , fn , type , value , require) => (
     <div>
         <Form>
-            <WidthFormRight4Grid>
+            <WidthFormRight4Grid required={require}>
                 <SizeText1>{data}</SizeText1>
                 <SizeTextinput placeholder={placeholder} onChange={fn} defaultValue={value} type={type}/>
             </WidthFormRight4Grid>
@@ -201,10 +170,10 @@ export const input4Gride = (data , placeholder , fn , type , value) => (
     </div>
 )
 
-export const input4GrideMG = (data , placeholder , fn , type , value) => (
+export const input4GrideMG = (data , placeholder , fn , type , value , require ) => (
     <div>
         <Form>
-            <WidthFormRight4GridMG>
+            <WidthFormRight4GridMG required={require}>
                 <SizeText1>{data}</SizeText1>
                 <SizeTextinput placeholder={placeholder} onChange={fn} defaultValue={value} type={type}/>
             </WidthFormRight4GridMG>

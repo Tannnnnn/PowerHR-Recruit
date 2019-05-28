@@ -424,7 +424,7 @@ const enhance = compose(
                     status_married_lname : props.status_married_lname || null,
                     status_married_child : props.status_married_child || null,
                     status_married_company : props.status_married_company || null,
-                    soldier : props.soldier ,
+                    soldier : props.sex === "หญิง" ? '-' : props.soldier ,
                     congenitalDisease : props.congenitalDisease ,
                     congenitalDisease_name : props.congenitalDisease_name ,
                     urgent_contact : props.urgent_contact ,
@@ -653,7 +653,7 @@ const enhance = compose(
         },
         handleSequence: props => () => event => {
             let stack = props.sequence       
-            if (parseInt(event.target.value) > 16){
+            if (parseInt(event.target.value) > 16 || parseInt(event.target.value) > props.brethren || parseInt(event.target.value) === 0){
                 event.target.value = stack
             }
             else{
@@ -957,7 +957,7 @@ export default enhance((props) =>
             </Grid>
             <Grid columns={2} padded='horizontally'>
                 <Grid.Column>
-                    <MgGridLeft>{input2GrideGrideMG('ศาสนา :', 'กรุณากรอกศาสนา', props.handleReligion(), 'text', props.religion)}</MgGridLeft>
+                    <MgGridLeft>{input2GrideGrideMG('ศาสนา :', 'กรุณากรอกศาสนา', props.handleReligion(), 'text', props.religion, '' , true)}</MgGridLeft>
                 </Grid.Column>
             </Grid>
             <Grid columns={2} padded='horizontally'>
@@ -978,10 +978,10 @@ export default enhance((props) =>
             </Grid>
             <Grid columns={2} padded='horizontally'>
                 <Grid.Column>
-                    <MgGridLeft>{inputOnkeyup('จำนวนพี่น้อง (คน) :', 'กรุณากรอกจำนวนพี่น้อง', props.handleBrethren(), 'text', props.brethren)}</MgGridLeft>
+                    <MgGridLeft>{inputOnkeyup('จำนวนพี่น้อง (คน) :', 'กรุณากรอกจำนวนพี่น้อง', props.handleBrethren(), 'text', props.brethren, '' , true)}</MgGridLeft>
                 </Grid.Column>
                 <Grid.Column>
-                    {input2GrideOnKeyUp('คุณเป็นบุตรคนที่ :', 'กรุณากรอกข้อมูล', props.handleSequence(), 'text', props.sequence)}
+                    {input2GrideOnKeyUp('คุณเป็นบุตรคนที่ :', 'กรุณากรอกข้อมูล', props.handleSequence(), 'text', props.sequence, true)}
                 </Grid.Column>
             </Grid>
             <Grid columns={1} padded='horizontally'>
