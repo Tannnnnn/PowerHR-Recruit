@@ -3,46 +3,10 @@ import { withLayout } from '../../hoc'
 import { compose, withProps , withState , withHandlers , lifecycle} from 'recompose'
 import {CarouselCompane} from '../../components/Carousel'
 import styled from 'styled-components'
-import { Container , Divider , Segment , Header , Grid  } from 'semantic-ui-react'
+import { Container , Divider , Icon , Grid , Button  } from 'semantic-ui-react'
 import theme from '../../theme/default'
 import { inject, observer } from 'mobx-react'
 import { firebase } from '../../firebase/index'
-
-const SegmentHeader = styled(Segment)`
-  height : 80px ;
-  padding-top : 30px !important ;
-  padding-left: 39px !important ;
-  font-size : 25px !important ;
-  color : #fff;
-  background : #ee3900 !important ;
-  border-radius: 0rem !important ;
-  border: none !important ;
-  margin-bottom : 0px !important ;
-`
-const SegmentContent = styled(Segment)`
-  border-radius: 0rem !important ;
-  margin-bottom : 0px !important ;
-  margin-top : 0px !important ;
-  padding-top : 22px !important ;
-  padding-left : 44px !important ;
-  padding-right : 44px !important ;
-  height : 136px ;
-  cursor : pointer ;
-  :hover{
-    background: #6a6a6a ;
-  }
-`
-
-const HeaderContent = styled(Header)`
-  font-size: 23px !important ;
-  font-weight : normal !important ;
-  color: #707070 !important ;
-  font-family : 'Kanit', sans-serif !important;
-  ${SegmentContent}:hover & {
-    color: #fff !important ;
-    font-weight: 600 !important; 
-  }
-`
 
 const BoxText = styled.div`
     width: 100%;
@@ -83,6 +47,13 @@ const TextFail = styled.small`
 const MgRow = styled(Grid.Row)`
     margin-left: 8%;
 `;
+const ButtonClick = styled(Button)`
+    font-family : 'Kanit', sans-serif !important;
+    font-size: 11px !important;
+    :hover {
+        color : #fffff !important;
+    }
+`;
 
 const enhance = compose(
     withLayout,
@@ -115,7 +86,6 @@ const enhance = compose(
         async componentDidMount(){
             await this.props.initApplyJobsList()
             await this.props.initGetDataPositions()
-            console.log(this.props.position);
         }
     }),
     withHandlers({
@@ -144,7 +114,8 @@ export default enhance( (props)=>
                 ? props.position.map( (data,i) => {
                     return(
                         <CardName key={i}>
-                            <Grid columns={3}>
+                            {console.log(data , 'data')}
+                            <Grid columns={4}>
                                 <MgRow>
                                     <Grid.Column>
                                         <TextTopic>ตำแหน่ง :&nbsp; 
@@ -160,8 +131,7 @@ export default enhance( (props)=>
                                     <Grid.Column>
                                         <TextTopic>วันที่สมัคร : <TextContant>{props.handleDateToThai(data.apply_date)}</TextContant></TextTopic>
                                     </Grid.Column>
-                                    <Grid.Column>
-                                        {console.log(props.status)}
+                                    <Grid.Column style={{ paddingLeft : '5%'}}>
                                         <TextTopic>สถานะ :  
                                             {
                                                 data.status === 1
@@ -175,6 +145,14 @@ export default enhance( (props)=>
                                                             : <TextContant> รอการพิจารณา</TextContant>
                                             }
                                         </TextTopic>
+                                    </Grid.Column>
+                                    <Grid.Column style={{ paddingLeft : '5%'}}>
+                                        <ButtonClick basic animated size='mini' color="blue" onClick={() => window.open(data.resume_pdf)}>
+                                            <Button.Content visible>แบบฟอร์มใบสมัคร</Button.Content>
+                                            <Button.Content hidden>
+                                                <Icon name='arrow right' />
+                                            </Button.Content>
+                                        </ButtonClick>
                                     </Grid.Column>
                                 </MgRow>
                             </Grid>
