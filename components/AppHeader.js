@@ -1,11 +1,13 @@
-import { Segment , Header , Container , Menu , Image , Icon , Dropdown , Input , Form , Checkbox ,Button } from 'semantic-ui-react'
+import { Segment , Header , Container , Menu , Image , Icon , Dropdown , Input , Form , Checkbox ,Button , Modal } from 'semantic-ui-react'
 import styled from 'styled-components'
 import theme from '../theme/default'
 import Link from 'next/link'
-import { compose , withProps, withHandlers, withState , lifecycle } from 'recompose'
+import { compose , withProps, withHandlers, withState , lifecycle, mapPropsStream } from 'recompose'
 import { inject, observer } from 'mobx-react'
 import _ from 'lodash'
 import {auth} from '../firebase/index'
+
+const defaultImage = 'https://www.img.in.th/images/687206af74ec86d36b815002c694b34e.png'
 
 const SegmentHeader = styled(Segment) `
     overflow : none !important;
@@ -114,11 +116,21 @@ const DropdownButton = styled(Dropdown)`
     color : white ;
     margin-bottom : 10px;
 `;
+
 const DropdownMenu = styled(Dropdown.Menu)`
     margin-left : 30px !important;  
     margin-top : 2px !important; 
 `;
 
+const ColorTextSmall1 = styled.small`
+    font-size: 18px !important;
+    font-family : 'Kanit', sans-serif !important;
+`;
+
+const ButtonClick = styled(Button)`
+    font-family : 'Kanit', sans-serif !important;
+    font-size: 14px !important;
+`;
 
 const enhance = compose(
     inject('authStore'),
@@ -139,17 +151,27 @@ const enhance = compose(
             .catch(error => {
                 const errorCode = error.code;
                 if (errorCode === 'auth/wrong-password') {
-                    alert('รหัสผ่านไม่ถูกต้อง');
+                    props.setIsOpenInvalidCode(true)
+                    props.setMessage("รหัสผ่านไม่ถูกต้อง")    
+                } 
+                else if (errorCode === 'auth/invalid-email'){
+                    props.setIsOpenInvalidCode(true)
+                    props.setMessage("อีเมลของผู้ใช้งานไม่ถูกต้อง")
                 } else {
-                    alert('อีเมลไม่ถูกต้อง หรือ ไม่มีอยู่ในระบบ');
+                    props.setIsOpenInvalidCode(true)
+                    props.setMessage("ผู้ช้งานไม่มีอยู้ในระบบ")
                 }             
             })
-        }
+        },
+        
     }),
     lifecycle({
         async componentDidMount(){
             const authPath = window.location.pathname.split('/')
             authPath[1] === 'Resume' && this.props.authStore.accessToken === null ? window.location.href = '/' : null
+            console.log(this.props.authStore)
+            console.log(this.props.isOpenInvalidCode , 'isOpenInvalidCode');
+            
         }
     }),
     observer 
@@ -170,7 +192,7 @@ export default enhance((props) =>
                             </DropdownButton>
                         </TextHeader>
                         <ImageHeader as='h4' floated='right'>
-                            <Image  src='https://www.img.in.th/images/687206af74ec86d36b815002c694b34e.png' size='small' />
+                            <Image  src={props.authStore.imageBase64 ? props.authStore.imageBase64 : defaultImage} size='small' circular/>
                         </ImageHeader>
                         <TextHeader as='h4' floated='left'>
                             <Link href='/index'>

@@ -2,7 +2,7 @@ import React from 'react'
 import { withLayout } from '../../hoc'
 import { compose, withProps , withState , withHandlers , lifecycle} from 'recompose'
 import styled from 'styled-components'
-import { Container , Divider , Icon , Grid , Button , Image } from 'semantic-ui-react'
+import { Container , Divider , Icon , Grid , Button , Image , Loader } from 'semantic-ui-react'
 import theme from '../../theme/default'
 import { inject, observer } from 'mobx-react'
 import { firebase } from '../../firebase/index'
@@ -62,6 +62,7 @@ const enhance = compose(
     inject('authStore' , 'jobStore'),
     withState('position','setPosition'),
     withState('position_name','setPosition_name'),
+    withState('isLoading' , 'setIsLoading' , true),
     withProps({
         pageTitle: 'Position Interview'
     }),
@@ -72,8 +73,10 @@ const enhance = compose(
             .orderByChild("uid")
             .equalTo(props.authStore.accessToken)
             .once("value").then( snapshot => { 
+                props.setIsLoading(false)
                 let result = Object.values(snapshot.val())                
                 props.setPosition(result)
+                
             })
         },
         initGetDataPositions: props => () => {
@@ -161,8 +164,10 @@ export default enhance( (props)=>
                         </CardName>
                     )
                 })
-              : <center><br/><TextTopic>ไม่มีข้อมูลการประกาศผลการสมัครงานในขณะนี้</TextTopic><br/></center>
+              : props.isLoading ? <div><br/><br/><br/><br/></div> : <center><br/><TextTopic>ไม่มีข้อมูลการประกาศผลการสมัครงานในขณะนี้</TextTopic><br/></center>
+                
             }
+            <Loader size='medium' active={props.isLoading} style={{ top : "85%" }}>กำลังโหลดข้อมูล กรุณารอสักครู่...</Loader>
             <br/><br/>
         </Container>
     </div>

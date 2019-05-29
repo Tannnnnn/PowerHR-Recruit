@@ -125,12 +125,12 @@ export const inputIdcard = (data , placeholder , fn , type , value , name, requi
     </div>
 )
 
-export const input2GrideGrideMG = (data , placeholder , fn , type , value , name , require) => (
+export const input2GrideGrideMG = (data , placeholder , fn , type , value , name , require , disable) => (
     <div>
         <Form>
             <WidthForm required={require}>
                 <SizeText1>{data}</SizeText1>
-                <SizeTextinput placeholder={placeholder} onChange={fn} defaultValue={value} type={type} name={name}/>
+                <SizeTextinput placeholder={placeholder} onChange={fn} defaultValue={value} type={type} name={name} disabled={disable}/>
             </WidthForm>
         </Form>
     </div>

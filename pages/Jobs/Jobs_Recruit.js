@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Segment , Icon , Container , Header , Pagination , Image } from 'semantic-ui-react'
+import { Segment , Icon , Container , Header , Pagination , Loader } from 'semantic-ui-react'
 import { compose , withHandlers , withState , lifecycle } from 'recompose'
 import Link from 'next/link'
 import { inject, observer } from 'mobx-react'
@@ -119,6 +119,7 @@ const enhance = compose(
   withState('recruit' , 'setRecruit'),
   withState('dataInPage' , 'setDataInPage' , 5),
   withState('activePage' , 'setActivePage' , 1),
+  withState('isLoading' , 'setIsLoading' , true),
   withHandlers({
     initGetJobPositionsData: props => () => {
       firebase.database().ref("job_positions_log")
@@ -134,6 +135,7 @@ const enhance = compose(
           }
         })        
         props.setRecruit(result)
+        props.setIsLoading(false)
       })
     }
   }),
@@ -206,6 +208,11 @@ const enhance = compose(
       }
     },
     handleChangePagination: props => (data) => {
+      window.scrollTo({
+        top: 430,
+        left: 0,
+        behavior: 'smooth'
+      })
       props.setActivePage(data.activePage)
     },
     handleSetDateInThai: props => (value)  => {      
@@ -225,6 +232,7 @@ export default enhance((props) =>
     <ContainerHeader>
         <SegmentHeader>ตำแหน่งงานที่เปิดรับสมัคร :</SegmentHeader>
         <ContainerContent>
+          <Loader size='medium' active={props.isLoading} style={{ top : "83%" }}>กำลังโหลดข้อมูล กรุณารอสักครู่...</Loader>
           { props.recruit && props.handleShowData(props.handleSetDateInThai)}
         </ContainerContent>
     </ContainerHeader>
@@ -232,6 +240,9 @@ export default enhance((props) =>
       <center>
         { props.recruit && props.handlePagination(props.handleChangePagination)}
       </center>
+      {
+        props.recruit ? null : <div><br/><br/></div>
+      }
     </Container>
   </div>
 );

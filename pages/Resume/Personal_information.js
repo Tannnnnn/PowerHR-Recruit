@@ -442,6 +442,7 @@ const enhance = compose(
                     refer_career : props.refer_career ,
                     imageBase64 : props.imageBase64,
                 })
+                props.authStore.imageBase64 = props.imageBase64
                 Router.push({ pathname : '/Resume/Address_information' })
             }
         },
