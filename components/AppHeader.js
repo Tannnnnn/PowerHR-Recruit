@@ -185,13 +185,6 @@ export default enhance((props) =>
                         <TextHeader as='h4' floated='left'>
                             <Link href='/Interview/ListPositionInterview'>
                                 <MenuItem>
-                                    ประกาศผล
-                                </MenuItem>
-                            </Link>
-                        </TextHeader>
-                        <TextHeader as='h4' floated='left'>
-                            <Link href='/History/JobApplicationHistory'>
-                                <MenuItem>
                                     ประวัติการสมัครงาน
                                 </MenuItem>
                             </Link>

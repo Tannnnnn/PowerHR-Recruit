@@ -1,9 +1,8 @@
 import React from 'react'
 import { withLayout } from '../../hoc'
 import { compose, withProps , withState , withHandlers , lifecycle} from 'recompose'
-import {CarouselCompane} from '../../components/Carousel'
 import styled from 'styled-components'
-import { Container , Divider , Icon , Grid , Button ,Loader  } from 'semantic-ui-react'
+import { Container , Divider , Icon , Grid , Button , Image , Loader } from 'semantic-ui-react'
 import theme from '../../theme/default'
 import { inject, observer } from 'mobx-react'
 import { firebase } from '../../firebase/index'
@@ -53,6 +52,9 @@ const ButtonClick = styled(Button)`
     :hover {
         color : #fffff !important;
     }
+`;
+const ImgCarousel = styled(Image)`
+    margin-Top: 65px !important;
 `;
 
 const enhance = compose(
@@ -105,12 +107,12 @@ const enhance = compose(
 
 export default enhance( (props)=> 
     <div>
-        {CarouselCompane ('CUPCODE CO., LTD.')}
+        <ImgCarousel src='https://firebasestorage.googleapis.com/v0/b/powerhr-auth.appspot.com/o/powerHRSaveForWebTrue.jpg?alt=media&token=a82c6662-60e6-4358-b7da-dcb863c18c2b' fluid />
         <Container>
             <Divider hidden />
             <BoxText>
                 <br/>
-                <center><TextHeadInterview>ประกาศผลการสมัคร</TextHeadInterview></center>
+                <center><TextHeadInterview>ประวัติการสมัครงาน</TextHeadInterview></center>
             </BoxText>
             {
                 props.position

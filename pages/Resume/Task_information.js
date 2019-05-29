@@ -230,7 +230,7 @@ const enhance = compose(
         },
         handleCurrentOtherIncome: props => () => event => {
             let stack = props.current_other_income
-            if (parseInt(event.target.value) < 1) {
+            if (parseInt(event.target.value) < 0) {
                 event.target.value = ''
             }        
             else{
@@ -516,7 +516,7 @@ export default enhance( (props)=>
                         <MgGridLeft>{inputOnkeyup('เงินเดือนสุดท้ายที่ได้รับ (บาท) :','กรุณากรอกเงินเดือนสุดท้ายที่ได้รับ' , props.handleCurrentFinalSalary() , 'text' , props.current_final_salary , '' , true)}</MgGridLeft>
                     </Grid.Column>
                     <Grid.Column>
-                        {input2GrideOnKeyUp('รายได้อื่นๆ ที่นอกเหนือจากเงินเดือนพื้นฐาน (บาท) :','กรุณากรอกรายได้อื่นๆ ที่นอกเหนือจากเงินเดือน' , props.handleCurrentOtherIncome() , 'text' , props.current_other_income , true)}
+                        {input2GrideOnKeyUp('รายได้อื่นๆ ที่นอกเหนือจากเงินเดือนพื้นฐาน (บาท) :','หากไม่มีรายได้อื่นๆ กรุณากรอก 0' , props.handleCurrentOtherIncome() , 'text' , props.current_other_income , true)}
                     </Grid.Column>
                 </Grid>
                 <Grid columns={2} padded='horizontally'>

@@ -416,7 +416,7 @@ export const PDF_GENERATOR = (resume , props) => {
             },
             
             {
-                text : `วันที่ ${localDate.toLocaleDateString('th-TH', options)}`,
+                text : `วันที่สมัคร ${localDate.toLocaleDateString('th-TH', options)}`,
                 margin: [ 376 , 5 , 0 , 0],
                 style : 'content',
             },
