@@ -1,9 +1,8 @@
 import React from 'react'
 import { withLayout , withApp } from '../../hoc'
 import { compose , withState , lifecycle , withHandlers , withProps } from 'recompose'
-import {CarouselCompane} from '../../components/Carousel'
 import styled from 'styled-components'
-import { Container , Divider , Grid , Button , Image , Label , Modal , Icon , Loader , Dimmer} from 'semantic-ui-react'
+import { Container , Divider , Grid , Button , Image , Label , Modal , Icon } from 'semantic-ui-react'
 import {Breadcrumb2Page} from '../../components/Breadcrumb'
 import {input2GrideGrideMG } from '../../components/Input'
 import { inject, observer } from 'mobx-react'
@@ -15,7 +14,7 @@ const BodyBox = styled.div`
     background : #ffffff;
     box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
     width: 100%;
-    height: 590px;
+    height: auto;
     border-radius: 5px;
     margin-top: 2%;
 `;
@@ -47,6 +46,7 @@ const DangerHTML = styled.div`
     margin-left: 7% !important;
     margin-top: -1% !important;
     margin-bottom: 2% !important;
+    line-height: 1.6 !important;
 `;
 
 const MarginBTN = styled(Button)`
@@ -124,6 +124,9 @@ const IconModal = styled(Icon)`
 const ButtonClick = styled(Button)`
     font-family : 'Kanit', sans-serif !important;
     font-size: 14px !important;
+`;
+const ImgCarousel = styled(Image)`
+    margin-Top: 65px !important;
 `;
 
 const enhance = compose(
@@ -306,7 +309,7 @@ const enhance = compose(
 
 export default enhance( (props)=> 
     <div>
-        {CarouselCompane ('CUPCODE CO., LTD.')}
+        <ImgCarousel src='https://firebasestorage.googleapis.com/v0/b/powerhr-auth.appspot.com/o/powerHRSaveForWebTrue.jpg?alt=media&token=a82c6662-60e6-4358-b7da-dcb863c18c2b' fluid />
         {
             props.detail
                 ?   <Container>
@@ -348,14 +351,16 @@ export default enhance( (props)=>
                                 <ColorText>เงินเดือน : </ColorText>
                                 <ColorTextSmall1> <Icon name='money bill alternate outline' /> {props.detail.rate === "ตามประสบการณ์" ? props.detail.rate : props.detail.rate + " บาท"} </ColorTextSmall1>
                             </TextTopics2>
+                            <br/>
                         </BodyBox>
+                        <br/><br/>
                     </Container>
                 : null
         }       
         {
             props.isLoading
             ?   <Modal basic size='small' open={props.isLoading}>
-                    <Loader size='large'>กำลังดำเนินการ กรุณารอสักครู่...</Loader>
+                    <Lodaing size='large'>กำลังดำเนินการ กรุณารอสักครู่...</Lodaing>
                 </Modal>
             :   <Modal size={'tiny'} open={props.isOpen}>
                     <Modal.Header>

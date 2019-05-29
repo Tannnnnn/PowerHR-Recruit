@@ -5,7 +5,12 @@ import { Jobs_Company } from './Jobs/Jobs_Company'
 import { Benefit } from './Jobs/Benefit'
 import { Jobs_Recruit } from './Jobs/Jobs_Recruit'
 import { inject, observer } from 'mobx-react'
-import {CarouselCompane} from '../components/Carousel'
+import { Image } from 'semantic-ui-react'
+import styled from 'styled-components';
+
+const ImgCarousel = styled(Image)`
+    margin-Top: 65px !important;
+`;
 
 const enhance = compose(
     withLayout,
@@ -37,7 +42,7 @@ const enhance = compose(
   
 export default enhance((props) => 
     <div>
-        {CarouselCompane ('CUPCODE CO., LTD.')}
+        <ImgCarousel src='https://firebasestorage.googleapis.com/v0/b/powerhr-auth.appspot.com/o/powerHRSaveForWebTrue.jpg?alt=media&token=a82c6662-60e6-4358-b7da-dcb863c18c2b' fluid />
         {props.handleScrollView()}
         <Jobs_Recruit />
         <Benefit />
