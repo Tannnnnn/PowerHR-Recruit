@@ -2,14 +2,13 @@ import React from 'react'
 import { withLayout , withApp } from '../hoc'
 import styled from 'styled-components'
 import { compose , withProps, withHandlers, withState , lifecycle } from 'recompose'
-import { Container, Grid, Button } from 'semantic-ui-react'
+import { Container, Grid, Button, Image } from 'semantic-ui-react'
 import theme from '../theme/default'
 import { 
     input2GrideGrideMG,
     input2Gride,
     input2GrideOnKeyUp
 } from '../components/Input'
-import {CarouselCompane} from '../components/Carousel'
 import { inject, observer } from 'mobx-react'
 import { firebase } from '../firebase/index'
 
@@ -19,7 +18,9 @@ const BoxHead = styled.div`
     background-color: ${theme.colors.elementBackground};
     box-shadow: ${theme.colors.boxShadow};
 `;
-
+const ImgCarousel = styled(Image)`
+    margin-Top: 65px !important;
+`;
 const BoxHead2 = styled.div`
     background-color: ${theme.colors.orange};
     box-shadow: ${theme.colors.boxShadow};
@@ -156,7 +157,7 @@ const enhance = compose(
  
 export default enhance((props) => 
     <div>
-        {CarouselCompane ('CUPCODE CO., LTD.')}
+        <ImgCarousel src='https://firebasestorage.googleapis.com/v0/b/powerhr-auth.appspot.com/o/powerHRSaveForWebTrue.jpg?alt=media&token=a82c6662-60e6-4358-b7da-dcb863c18c2b' fluid />
         <Container>
             <BoxHead>
                 <center><br/><TextBox>สมัครสมาชิก</TextBox></center><br/>

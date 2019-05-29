@@ -209,7 +209,7 @@ const enhance = compose(
     },
     handleChangePagination: props => (data) => {
       window.scrollTo({
-        top: 430,
+        top: 360,
         left: 0,
         behavior: 'smooth'
       })
