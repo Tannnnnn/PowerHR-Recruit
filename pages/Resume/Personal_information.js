@@ -3,7 +3,7 @@ import Jimp from 'jimp'
 import { withLayout ,withApp } from '../../hoc'
 import { compose, withProps, withState, withHandlers, lifecycle } from 'recompose'
 import styled from 'styled-components'
-import { Container, Step, Icon, Divider, Grid, Image, Form, Radio } from 'semantic-ui-react'
+import { Container, Step, Icon, Divider, Grid, Image, Form, Radio , Modal ,Button } from 'semantic-ui-react'
 import { inject, observer } from 'mobx-react'
 import theme from '../../theme/default'
 import { 
@@ -21,6 +21,7 @@ import { btn_orange } from '../../components/Button'
 import { stepApplyJobInfomation } from '../../components/Step'
 import {firebase} from '../../firebase/index'
 import Router from 'next/router'
+import { async } from '@firebase/util';
 
 const buildFileSelector = (fn) => {
     const fileSelector = document.createElement('input');
@@ -189,6 +190,10 @@ const ImgUserHidden = styled(Image)`
     padding-top: 26% ;
     display : block ;
 `;
+const ButtonClick = styled(Button)`
+    font-family : 'Kanit', sans-serif !important;
+    font-size: 14px !important;
+`;
 
 const enhance = compose(
     withApp,
@@ -236,6 +241,8 @@ const enhance = compose(
     withState('stack', 'setStack' , false),
     withState('position_name' , 'setPosition_name' , ''),
     withState('check_soldier', 'setCheck_soldier'),
+    withState('openModal' , 'setOpenModal' , false),
+    withState('messageModal' , 'setMessageModal' , ''),
     withProps({
         pageTitle: 'Personal information'
     }),
@@ -398,17 +405,18 @@ const enhance = compose(
                 props.check_status === true &&
                 props.status_married_fname === undefined
             ){
-                window.alert('คุณกรอกข้อมูลไม่ถูกต้อง หรือ ไม่ครบถ้วน \nกรุณากรอกข้อมูลใหม่อีกครั้ง !!!')
+                props.setOpenModal(true)
+                props.setMessageModal('คุณกรอกข้อมูลไม่ถูกต้อง หรือ ไม่ครบถ้วน \nกรุณากรอกข้อมูลใหม่อีกครั้ง !!!')
             }
             else{
-                const uid = props.authStore.currentUser.uid                 
-                firebase.database().ref('resume/' + uid).update({
+                const uid = props.authStore.currentUser.uid     
+                const result = {
                     user_id : uid,
                     email : props.authStore.userData.email,
                     firstname : props.fname_thai,
                     lastname : props.lname_thai, 
                     idcard : props.authStore.userData.idcard,
-                    facebook : props.facebook,
+                    facebook : props.facebook || null,
                     tel : props.tel ,
                     birthday : props.birthday ,
                     age : props.age ,
@@ -441,9 +449,60 @@ const enhance = compose(
                     refer_phone : props.refer_phone ,
                     refer_career : props.refer_career ,
                     imageBase64 : props.imageBase64,
+                }
+                let personal = Object.values(result)
+                let isSuccess = true
+                personal.map((data) => {                    
+                    return  data === undefined ? isSuccess = false : null
                 })
-                props.authStore.imageBase64 = props.imageBase64
-                Router.push({ pathname : '/Resume/Address_information' })
+                if (isSuccess) {
+                    firebase.database().ref('resume/' + uid).update({
+                        user_id : uid,
+                        email : props.authStore.userData.email,
+                        firstname : props.fname_thai,
+                        lastname : props.lname_thai, 
+                        idcard : props.authStore.userData.idcard,
+                        facebook : props.facebook || null,
+                        tel : props.tel ,
+                        birthday : props.birthday ,
+                        age : props.age ,
+                        sex : props.sex ,
+                        weight : props.weight ,
+                        height : props.height ,
+                        ethnicity : props.ethnicity ,
+                        nationality : props.nationality ,
+                        religion : props.religion ,
+                        dad_name : props.dad_name ,
+                        dad_career : props.dad_career ,
+                        mom_name : props.mom_name ,
+                        mom_career : props.mom_career ,
+                        brethren : props.brethren ,
+                        sequence : props.sequence ,
+                        status : props.status ,
+                        status_married_fname : props.status_married_fname || null ,
+                        status_married_lname : props.status_married_lname || null,
+                        status_married_child : props.status_married_child || null,
+                        status_married_company : props.status_married_company || null,
+                        soldier : props.sex === "หญิง" ? '-' : props.soldier ,
+                        congenitalDisease : props.congenitalDisease ,
+                        congenitalDisease_name : props.congenitalDisease_name ,
+                        urgent_contact : props.urgent_contact ,
+                        urgent_relation : props.urgent_relation ,
+                        urgent_phone : props.urgent_phone ,
+                        urgent_apply : props.urgent_apply ,
+                        refer_name : props.refer_name ,
+                        refer_address : props.refer_address ,
+                        refer_phone : props.refer_phone ,
+                        refer_career : props.refer_career ,
+                        imageBase64 : props.imageBase64,
+                    })
+                    props.authStore.imageBase64 = props.imageBase64
+                    Router.push({ pathname : '/Resume/Address_information' })
+                } 
+                else{
+                    props.setOpenModal(true)
+                    props.setMessageModal('คุณกรอกข้อมูลไม่ครบถ้วน \nกรุณากรอกข้อมูลใหม่อีกครั้ง !!!')
+                }       
             }
         },
         handleFnameThai: props => () => event => {
@@ -1137,6 +1196,29 @@ export default enhance((props) =>
                 {btn_orange('ถัดไป', 'https://www.img.in.th/images/c0dce936813662e607bd5798e68fd712.png', props.saveThisPage())}
             </MgBTNOrange>
             <br /><br />
+            <Modal size={'tiny'} open={props.openModal} dimmer="blurring">
+                <Modal.Header>
+                    <center>
+                        <Icon name='info circle' size='big' color={"red"}/>
+                    </center>
+                </Modal.Header>
+                <Modal.Content>
+                    <center>
+                        <p style={{ fontSize : '20px'}}>{props.messageModal}</p>
+                    </center>
+                </Modal.Content>
+                <Modal.Actions>
+                    <center>
+                        <ButtonClick 
+                            color={"red"}
+                            onClick={() => props.setOpenModal(false)} 
+                            icon='close' 
+                            labelPosition='left' 
+                            content='ปิด' 
+                        />
+                    </center>
+                </Modal.Actions>
+            </Modal>
         </Box>
         <Divider hidden />
     </Container>
