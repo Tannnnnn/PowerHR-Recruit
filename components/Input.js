@@ -202,11 +202,13 @@ export const InputTextArea = (data , placeholder , fn , value, require) =>(
     </div>
 )
 
-export const InputTextAreaMini = (data , placeholder , fn , value) =>(
+export const InputTextAreaMini = (data , placeholder , fn , value , require) =>(
     <div>
-        <Form>
-            <SizeText1>{data}</SizeText1>
-            <FontTextArea autoHeight placeholder={placeholder} rows={1} onChange={fn} value={value}/>
+        <Form >
+            <Form.Field required={require}>
+                <SizeText1>{data}</SizeText1>
+                <FontTextArea autoHeight placeholder={placeholder} rows={1} onChange={fn} value={value} />
+            </Form.Field>
         </Form>
     </div>
 )

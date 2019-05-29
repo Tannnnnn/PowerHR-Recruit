@@ -256,30 +256,6 @@ const enhance = compose(
                 }
             }
         },
-        // handleCurrentNetIncome: props => () => event => {
-        //     let stack = props.current_net_income
-        //     if (parseInt(event.target.value) < 1) {
-        //         event.target.value = ''
-        //     }        
-        //     else{
-        //         if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode > 47 && event.keyCode < 58) { 
-        //             if (event.target.value.length > 7) {
-        //                 event.target.value = stack
-        //             }
-        //             else{
-        //                 props.setCurrent_net_income(event.target.value)
-        //             }
-        //         }
-        //         else{
-        //             if (event.keyCode === 9) {
-        //                 event.target.value = ''
-        //             }
-        //             else{
-        //                 event.target.value = stack
-        //             }
-        //         }
-        //     }
-        // },
         handleCurrentWelfare: props => () => event => {
             props.setCurrent_welfare(event.target.value)
         },
@@ -365,7 +341,22 @@ const enhance = compose(
             props.setOlder_resign(event.target.value)
         },
         saveThisPageNext: props => () => event => {    
-            const uid = props.authStore.currentUser.uid                                    
+            const uid = props.authStore.currentUser.uid  
+            const result = {
+                current_work : props.current_work ,
+                current_position : props.current_position,
+                current_description : props.current_description,
+                current_startwork : props.current_startwork,
+                current_endwork : props.current_endwork,
+                current_final_salary : props.current_final_salary,
+                current_other_income : props.current_other_income,
+                current_net_income : props.current_net_income,
+            }  
+            let task = Object.values(result)
+            let isSuccess = true            
+            task.map( data => {
+                return data === undefined || data === "" ? isSuccess = false : null
+            })                                  
             if (props.current_startwork !== undefined && props.current_endwork !== undefined) {
                 const c_startDate = new Date(props.current_startwork)
                 const c_endDate = new Date(props.current_endwork)
@@ -399,51 +390,58 @@ const enhance = compose(
                 props.saveSuccess(false)
             }
             else{
-                firebase.database().ref('resume/' + uid).update({
-                    current_work : props.current_work ,
-                    current_position : props.current_position,
-                    current_description : props.current_description,
-                    current_startwork : props.current_startwork,
-                    current_endwork : props.current_endwork,
-                    current_final_salary : props.current_final_salary,
-                    current_other_income : props.current_other_income,
-                    current_net_income : props.current_net_income,
-                    current_welfare : props.current_welfare ? props.current_welfare : '-',
-                    current_resign : props.current_resign ? props.current_resign : '-',
-                    old_work : props.old_work  !== undefined ? props.old_work : '-',
-                    old_position : props.old_position !== undefined ? props.old_position : '-',
-                    old_final_salary : props.old_final_salary !== undefined ? props.old_final_salary : '-',
-                    old_startwork : props.old_startwork || null,
-                    old_endwork : props.old_endwork || null,
-                    old_resign : props.old_resign !== undefined ? props.old_resign : '-',
-                    older_work : props.older_work !== undefined ? props.older_work : '-',
-                    older_position : props.older_position !== undefined ? props.older_position : '-',
-                    older_final_salary : props.older_final_salary !== undefined ? props.older_final_salary : '-',
-                    older_startwork : props.older_startwork  || null,
-                    older_endwork : props.older_endwork  || null,
-                    older_resign : props.older_resign !== undefined ? props.older_resign : '-',
-                    checkAccept : props.checkAccept !== undefined ? props.checkAccept : '-',
-                },
-                (error) => {
-                    error 
-                        ?   props.setMessageModal(error)
-                        :   props.setOpenModal(true)
-                            props.setMessageModal('บันทึกข้อมูลเรียบร้อยแล้ว')
-                            props.setSaveSuccess(true)
-                }) 
+                if (isSuccess) {
+                    firebase.database().ref('resume/' + uid).update({
+                        current_work : props.current_work ,
+                        current_position : props.current_position,
+                        current_description : props.current_description,
+                        current_startwork : props.current_startwork,
+                        current_endwork : props.current_endwork,
+                        current_final_salary : props.current_final_salary,
+                        current_other_income : props.current_other_income,
+                        current_net_income : props.current_net_income,
+                        current_welfare : props.current_welfare ? props.current_welfare : '-',
+                        current_resign : props.current_resign ? props.current_resign : '-',
+                        old_work : props.old_work  !== undefined ? props.old_work : '-',
+                        old_position : props.old_position !== undefined ? props.old_position : '-',
+                        old_final_salary : props.old_final_salary !== undefined ? props.old_final_salary : '-',
+                        old_startwork : props.old_startwork || null,
+                        old_endwork : props.old_endwork || null,
+                        old_resign : props.old_resign !== undefined ? props.old_resign : '-',
+                        older_work : props.older_work !== undefined ? props.older_work : '-',
+                        older_position : props.older_position !== undefined ? props.older_position : '-',
+                        older_final_salary : props.older_final_salary !== undefined ? props.older_final_salary : '-',
+                        older_startwork : props.older_startwork  || null,
+                        older_endwork : props.older_endwork  || null,
+                        older_resign : props.older_resign !== undefined ? props.older_resign : '-',
+                        checkAccept : props.checkAccept !== undefined ? props.checkAccept : '-',
+                    },
+                    (error) => {
+                        error 
+                            ?   props.setMessageModal(error)
+                            :   props.setOpenModal(true)
+                                props.setMessageModal('บันทึกข้อมูลเรียบร้อยแล้ว')
+                                props.setSaveSuccess(true)
+                    }) 
+                }
+                else{
+                    props.setMessageModal("คุณกรอกข้อมูลไม่ครบถ้วน กรุณากรอกข้อมูลใหม่อีกครั้ง !!!")
+                    props.setOpenModal(true)
+                    props.setSaveSuccess(false)
+                }
             }    
         },
         saveThisPagePrev: props => () => event => {
             const uid = props.authStore.currentUser.uid
             firebase.database().ref('resume/' + uid).update({
-                current_work : props.current_work ,
-                current_position : props.current_position,
-                current_description : props.current_description,
-                current_startwork : props.current_startwork,
-                current_endwork : props.current_endwork,
-                current_final_salary : props.current_final_salary,
-                current_other_income : props.current_other_income,
-                current_net_income : props.current_net_income,
+                current_work : props.current_work ? props.current_work : null ,
+                current_position : props.current_position ? props.current_position : null,
+                current_description : props.current_description ? props.current_description : null,
+                current_startwork : props.current_startwork ? props.current_startwork : null,
+                current_endwork : props.current_endwork ? props.current_endwork : null,
+                current_final_salary : props.current_final_salary ? props.current_final_salary : null,
+                current_other_income : props.current_other_income ? props.current_other_income : null,
+                current_net_income : props.current_net_income ? props.current_net_income : null,
                 current_welfare : props.current_welfare ? props.current_welfare : '-',
                 current_resign : props.current_resign ? props.current_resign : '-',
                 old_work : props.old_work  !== undefined ? props.old_work : '-',
@@ -516,19 +514,19 @@ export default enhance( (props)=>
                         <MgGridLeft>{inputOnkeyup('เงินเดือนสุดท้ายที่ได้รับ (บาท) :','กรุณากรอกเงินเดือนสุดท้ายที่ได้รับ' , props.handleCurrentFinalSalary() , 'text' , props.current_final_salary , '' , true)}</MgGridLeft>
                     </Grid.Column>
                     <Grid.Column>
-                        {input2GrideOnKeyUp('รายได้อื่นๆ ที่นอกเหนือจากเงินเดือนพื้นฐาน (บาท) :','หากไม่มีรายได้อื่นๆ กรุณากรอก 0' , props.handleCurrentOtherIncome() , 'text' , props.current_other_income , true)}
+                        {input2GrideOnKeyUp('รายได้อื่นๆ ที่นอกเหนือจากเงินเดือนพื้นฐาน (บาท) :','หากไม่มีรายได้อื่นๆ กรุณากรอก 0' , props.handleCurrentOtherIncome() , 'text' , props.current_other_income ,true)}
                     </Grid.Column>
                 </Grid>
                 <Grid columns={2} padded='horizontally'>
                     <Grid.Column>
-                        <MgGridLeft>{inputOnkeyupDisabled('รวมรายได้สุทธิต่อเดือน (บาท) :','กรุณากรอกรายได้สุทธิต่อเดือน' , null , 'text' , props.current_net_income)}</MgGridLeft>
+                        <MgGridLeft>{inputOnkeyupDisabled('รวมรายได้สุทธิต่อเดือน (บาท) :','กรุณากรอกรายได้สุทธิต่อเดือน' , null , 'text' , props.current_net_income , '',true)}</MgGridLeft>
                     </Grid.Column>
                     <Grid.Column>
-                        {input2Gride('สวัสดิการอื่นๆ ของบริษัท :','กรุณากรอกสวัสดิการอื่นๆ ของบริษัท' , props.handleCurrentWelfare() , 'text' , props.current_welfare)}
+                        {input2Gride('สวัสดิการอื่นๆ ของบริษัท :','กรุณากรอกสวัสดิการอื่นๆ ของบริษัท' , props.handleCurrentWelfare() , 'text' , props.current_welfare , '',true)}
                     </Grid.Column>
                 </Grid>
                 <MgTextArea>
-                    {InputTextAreaMini('สาเหตุที่ลาออก :', 'กรุณากรอกสาเหตุที่ลาออก' , props.handleCurrentResign() , props.current_resign)}
+                    {InputTextAreaMini('สาเหตุที่ลาออก :', 'กรุณากรอกสาเหตุที่ลาออก' , props.handleCurrentResign() , props.current_resign ,true)}
                 </MgTextArea>
                 <br/>
                 <center>
@@ -586,7 +584,7 @@ export default enhance( (props)=>
                     </Grid.Column>
                 </Grid>
                 <MgTextArea>
-                    {InputTextAreaMini('สาเหตุที่ลาออก :', 'กรุณากรอกสาเหตุที่ลาออก' , props.handleOlderResign() , props.older_resign)}
+                    {InputTextAreaMini('สาเหตุที่ลาออก :', 'กรุณากรอกสาเหตุที่ลาออก' , props.handleOlderResign() , props.older_resign , false)}
                 </MgTextArea>
                 <br/><br/>
                 <BoxGray>
@@ -615,10 +613,10 @@ export default enhance( (props)=>
                         </div>
                     </MgBTNOrange>
                 <br/><br/>
-                <Modal size={'tiny'} open={props.openModal}>
+                <Modal size={'tiny'} open={props.openModal} dimmer="blurring">
                     <Modal.Header>
                         <center>
-                            <Icon name='info circle' size='big' color={props.saveSuccess ? "green" : "red"}/>
+                            <Icon name={props.saveSuccess ? 'check' : 'info circle'} size='big' color={props.saveSuccess ? "orange" : "red"}/>
                         </center>
                     </Modal.Header>
                     <Modal.Content>

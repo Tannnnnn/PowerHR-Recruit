@@ -2,11 +2,10 @@ import React from 'react'
 import { withLayout } from '../../hoc'
 import { compose, withProps , withState , withHandlers , lifecycle } from 'recompose'
 import styled from 'styled-components'
-import { Container , Icon , Divider , Grid , Checkbox } from 'semantic-ui-react'
-import {Breadcrumb3Page} from '../../components/Breadcrumb'
+import { Container , Icon , Divider , Grid , Checkbox , Modal , Button } from 'semantic-ui-react'
 import theme from '../../theme/default'
 import {
-    inputZipcode,input2GrideGrideMG , 
+    inputZipcode , 
     input2Gride , 
     input4GrideMG , 
     input4Gride ,
@@ -70,18 +69,19 @@ const MgGridHeight = styled.div`
     margin-left: 6%;
     width: 100%;
 `;
-
 const WidthWeight = styled.div`
     width: 100%;
 `;
-
 const MgChackbox = styled(Checkbox)`
     margin-left: 14.4% !important;   
     font-size: 18px !important;                                                         
 `;
-
 const MgBTNOrange = styled.div`
     margin-left: 70%;
+`;
+const ButtonClick = styled(Button)`
+    font-family : 'Kanit', sans-serif !important;
+    font-size: 14px !important;
 `;
 
 const enhance = compose(
@@ -108,6 +108,7 @@ const enhance = compose(
     withState('present_zipcode' , 'setPresent_zipcode'),
     withState('present_tel' , 'setPresent_tel'),
     withState('present_phone' , 'setPresent_phone'),
+    withState('openModal' , 'setOpenModal' , false),
     withProps({
         pageTitle: 'Address information'
     }),
@@ -394,8 +395,8 @@ const enhance = compose(
         },
 
         saveThisPageNext: props => () => event => {
-            const uid = props.authStore.currentUser.uid                 
-            firebase.database().ref('resume/' + uid).update({
+            const uid = props.authStore.currentUser.uid    
+            const result = {
                 primary_hno : props.primary_hno ,
                 primary_vilno : props.primary_vilno,
                 primary_alley : props.primary_alley ? props.primary_alley : '-',
@@ -417,19 +418,42 @@ const enhance = compose(
                 present_tel : props.present_tel ? props.present_tel : '-',
                 present_phone : props.present_phone,
                 checkAddress : props.checkAddress
+            }  
+            let address = Object.values(result)
+            let isSuccess = true
+            address.map( data => {
+                return data === undefined ? isSuccess = false : null
             })
-            Router.push({ pathname : '/Resume/School_information' })
-            // const checkInputData = Object.getOwnPropertyNames(JSON.parse(localStorage.getItem('Address_page')));            
-            // if (
-            //     props.primary_zipcode.length !== 5 && props.present_zipcode.length !== 5 ||
-            //     props.primary_tel.length !== 9 && props.present_tel.length !== 9 ||
-            //     props.primary_phone.length !== 10 && props.primary_phone !== 10
-            // ) {
-            //     window.alert('คุณกรอกข้อมูลไม่ถูกต้อง หรือ ไม่ครบถ้วน \nกรุณากรอกข้อมูลใหม่อีกครั้ง !!!')
-            // }
-            // else{
-            //     Router.push({ pathname : '/Resume/School_information' , query : { id : props.url.query.id }})
-            // }
+            if (isSuccess) {
+                firebase.database().ref('resume/' + uid).update({
+                    primary_hno : props.primary_hno ,
+                    primary_vilno : props.primary_vilno,
+                    primary_alley : props.primary_alley ? props.primary_alley : '-',
+                    primary_road : props.primary_road ? props.primary_road : '-',
+                    primary_area : props.primary_area,
+                    primary_district : props.primary_district,
+                    primary_province : props.primary_province,
+                    primary_zipcode : props.primary_zipcode,
+                    primary_tel : props.primary_tel ? props.primary_tel : '-',
+                    primary_phone : props.primary_phone,
+                    present_hno : props.present_hno,
+                    present_vilno : props.present_vilno,
+                    present_alley : props.present_alley ? props.present_alley : '-',
+                    present_road : props.present_road ? props.present_road : '-',
+                    present_area : props.present_area,
+                    present_district : props.present_district,
+                    present_province : props.present_province,
+                    present_zipcode : props.present_zipcode,
+                    present_tel : props.present_tel ? props.present_tel : '-',
+                    present_phone : props.present_phone,
+                    checkAddress : props.checkAddress
+                })
+                return Router.push({ pathname : '/Resume/School_information' })
+            } 
+            else{
+                props.setOpenModal(true)
+            }
+            
         },
         saveThisPagePrev: props => () => event => {
             const uid = props.authStore.currentUser.uid                 
@@ -594,6 +618,29 @@ export default enhance( (props)=>
                     {btn_NextBack('ย้อนกลับ', 'ถัดไป' ,'https://www.img.in.th/images/c0dce936813662e607bd5798e68fd712.png' , props.saveThisPageNext() , props.saveThisPagePrev())}
                 </MgBTNOrange>
             <br/><br/>
+            <Modal size={'tiny'} open={props.openModal} dimmer="blurring">
+                <Modal.Header>
+                    <center>
+                        <Icon name='info circle' size='big' color={"red"}/>
+                    </center>
+                </Modal.Header>
+                <Modal.Content>
+                    <center>
+                        <p style={{ fontSize : '20px'}}>{"กรุณากรอกข้อมูลให้ครบถ้วน"}</p>
+                    </center>
+                </Modal.Content>
+                <Modal.Actions>
+                    <center>
+                        <ButtonClick 
+                            color={"red"}
+                            onClick={() => props.setOpenModal(false)} 
+                            icon='close' 
+                            labelPosition='left' 
+                            content='ปิด' 
+                        />
+                    </center>
+                </Modal.Actions>
+            </Modal>
         </Box>
         <Divider hidden />
     </Container>    

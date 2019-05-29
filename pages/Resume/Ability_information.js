@@ -2,8 +2,7 @@ import React from 'react'
 import { withLayout } from '../../hoc'
 import { compose, withProps , withState , withHandlers , lifecycle } from 'recompose'
 import styled from 'styled-components'
-import { Container , Radio  , Icon , Divider , Grid , Form } from 'semantic-ui-react'
-import {Breadcrumb3Page} from '../../components/Breadcrumb'
+import { Container , Radio  , Icon , Divider , Grid , Form , Modal , Button } from 'semantic-ui-react'
 import theme from '../../theme/default'
 import {input2GrideOnKeyUp,inputOnkeyup , InputTextArea} from '../../components/Input'
 import {btn_NextBack} from '../../components/Button'
@@ -86,6 +85,11 @@ const FontRadioCar = styled.p`
     font-size: 16px !important;
     font-weight: 600 !important;
 `;
+const ButtonClick = styled(Button)`
+    font-family : 'Kanit', sans-serif !important;
+    font-size: 14px !important;
+`;
+
 
 const enhance = compose(
     withLayout,
@@ -102,6 +106,7 @@ const enhance = compose(
     withState('engprint','setEngprint'),
     withState('computerSkill','setComputerSkill'),
     withState('positionEng','setPositionEng'),
+    withState('openModal' , 'setOpenModal' , false),
     withProps({
         pageTitle: 'Ability information'
     }),
@@ -204,8 +209,8 @@ const enhance = compose(
         },
 
         saveThisPageNext: props => () => event => {
-            const uid = props.authStore.currentUser.uid                  
-            firebase.database().ref('resume/' + uid).update({
+            const uid = props.authStore.currentUser.uid     
+            const result = {
                 motorcycles : props.motorcycles ,
                 car : props.car,
                 outer : props.outer,
@@ -216,29 +221,44 @@ const enhance = compose(
                 thaiprint : props.thaiprint,
                 engprint : props.engprint,
                 computerSkill : props.computerSkill,
+            }  
+            let ability = Object.values(result)
+            let isSuccess = true
+            ability.map( data => {
+                return data === undefined || data === ''  ? isSuccess = false : null
             })
-            Router.push({ pathname : '/Resume/Task_information' })        
-            // const checkInputData = Object.getOwnPropertyNames(JSON.parse(localStorage.getItem('Ability_page')));
-            // if (checkInputData.length < 10) {
-            //     window.alert('คุณกรอกข้อมูลไม่ถูกต้อง หรือ ไม่ครบถ้วน \nกรุณากรอกข้อมูลใหม่อีกครั้ง !!!')
-            // }
-            // else{
-            //     Router.push({ pathname : '/Resume/Task_information' , query : { id : props.url.query.id }})
-            // }
+            if (isSuccess) {
+                firebase.database().ref('resume/' + uid).update({
+                    motorcycles : props.motorcycles ,
+                    car : props.car,
+                    outer : props.outer,
+                    english : props.english,
+                    english_speak : props.english_speak,
+                    english_read : props.english_read,
+                    english_writh : props.english_writh,
+                    thaiprint : props.thaiprint,
+                    engprint : props.engprint,
+                    computerSkill : props.computerSkill,
+                })
+                Router.push({ pathname : '/Resume/Task_information' })
+            } 
+            else{
+                props.setOpenModal(true)
+            }
         },
         saveThisPagePrev: props => () => event => {
             const uid = props.authStore.currentUser.uid
             firebase.database().ref('resume/' + uid).update({
-                motorcycles : props.motorcycles ,
-                car : props.car,
-                outer : props.outer,
-                english : props.english,
-                english_speak : props.english_speak,
-                english_read : props.english_read,
-                english_writh : props.english_writh,
-                thaiprint : props.thaiprint,
-                engprint : props.engprint,
-                computerSkill : props.computerSkill,
+                motorcycles : props.motorcycles ? props.motorcycles : null ,
+                car : props.car ? props.car : null,
+                outer : props.outer ? props.outer : null,
+                english : props.english ? props.english : null,
+                english_speak : props.english_speak ? props.english_speak : null,
+                english_read : props.english_read ? props.english_read : null,
+                english_writh : props.english_writh ? props.english_writh : null,
+                thaiprint : props.thaiprint ? props.thaiprint : null,
+                engprint : props.engprint ? props.engprint : null,
+                computerSkill : props.computerSkill ? props.computerSkill : null,
             })
             Router.push({ pathname : '/Resume/School_information' })
         },
@@ -334,7 +354,7 @@ export default enhance( (props)=>
                 {InputTextArea('ความสามารถด้านคอมพิวเตอร์ : ', 'กรุณากรอกความสามาถด้านคอมพิวเตอร์' , props.handleComputerSkill() , props.computerSkill , true)}
             </MgTextArea>
             <MgTextArea>
-                <FontRadioCar>ความสามารถด้านการขับรถ :</FontRadioCar>
+                <FontRadioCar>ความสามารถด้านการขับรถ : <text style={{ color : theme.colors.orange }}> *</text></FontRadioCar>
                 <Form>
                     <SizeFontRadio>
                          <Form.Field>
@@ -376,7 +396,7 @@ export default enhance( (props)=>
                     </SizeFontRadio>
                     <SizeFontRadio>
                          <Form.Field>
-                            สามารถออกปฏิบัติงานนอกพื้นที่ :
+                            สามารถออกปฏิบัติงานนอกพื้นที่ : 
                             <MgRedio
                                 label='ได้'
                                 name='haveOuter'
@@ -400,6 +420,29 @@ export default enhance( (props)=>
                     {btn_NextBack('ย้อนกลับ', 'ถัดไป' ,'https://www.img.in.th/images/c0dce936813662e607bd5798e68fd712.png' , props.saveThisPageNext() , props.saveThisPagePrev())}
                 </MgBTNOrange>
             <br/><br/>
+            <Modal size={'tiny'} open={props.openModal} dimmer="blurring">
+                <Modal.Header>
+                    <center>
+                        <Icon name='info circle' size='big' color={"red"}/>
+                    </center>
+                </Modal.Header>
+                <Modal.Content>
+                    <center>
+                        <p style={{ fontSize : '20px'}}>{"กรุณากรอกข้อมูลให้ครบถ้วน"}</p>
+                    </center>
+                </Modal.Content>
+                <Modal.Actions>
+                    <center>
+                        <ButtonClick 
+                            color={"red"}
+                            onClick={() => props.setOpenModal(false)} 
+                            icon='close' 
+                            labelPosition='left' 
+                            content='ปิด' 
+                        />
+                    </center>
+                </Modal.Actions>
+            </Modal>
         </Box>
         <Divider hidden />
     </Container>    

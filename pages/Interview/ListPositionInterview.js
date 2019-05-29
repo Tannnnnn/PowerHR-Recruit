@@ -7,6 +7,8 @@ import theme from '../../theme/default'
 import { inject, observer } from 'mobx-react'
 import { firebase } from '../../firebase/index'
 
+const imageCover = 'https://firebasestorage.googleapis.com/v0/b/powerhr-auth.appspot.com/o/powerHRSaveForWebTrue.jpg?alt=media&token=a82c6662-60e6-4358-b7da-dcb863c18c2b'
+
 const BoxText = styled.div`
     width: 100%;
     height: 87px;
@@ -107,7 +109,7 @@ const enhance = compose(
 
 export default enhance( (props)=> 
     <div>
-        <ImgCarousel src='https://firebasestorage.googleapis.com/v0/b/powerhr-auth.appspot.com/o/powerHRSaveForWebTrue.jpg?alt=media&token=a82c6662-60e6-4358-b7da-dcb863c18c2b' fluid />
+        <ImgCarousel src={imageCover} fluid />
         <Container>
             <Divider hidden />
             <BoxText>
@@ -167,7 +169,7 @@ export default enhance( (props)=>
               : props.isLoading ? <div><br/><br/><br/><br/></div> : <center><br/><TextTopic>ไม่มีข้อมูลการประกาศผลการสมัครงานในขณะนี้</TextTopic><br/></center>
                 
             }
-            <Loader size='medium' active={props.isLoading} style={{ top : "85%" }}>กำลังโหลดข้อมูล กรุณารอสักครู่...</Loader>
+            <Loader size='medium' active={props.isLoading} style={{ top : "75%" }}>กำลังโหลดข้อมูล กรุณารอสักครู่...</Loader>
             <br/><br/>
         </Container>
     </div>

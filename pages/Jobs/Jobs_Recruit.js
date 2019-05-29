@@ -209,7 +209,7 @@ const enhance = compose(
     },
     handleChangePagination: props => (data) => {
       window.scrollTo({
-        top: 430,
+        top: 360,
         left: 0,
         behavior: 'smooth'
       })
@@ -232,7 +232,7 @@ export default enhance((props) =>
     <ContainerHeader>
         <SegmentHeader>ตำแหน่งงานที่เปิดรับสมัคร :</SegmentHeader>
         <ContainerContent>
-          <Loader size='medium' active={props.isLoading} style={{ top : "83%" }}>กำลังโหลดข้อมูล กรุณารอสักครู่...</Loader>
+          <Loader size='medium' active={props.isLoading} style={{ top : "73%" }}>กำลังโหลดข้อมูล กรุณารอสักครู่...</Loader>
           { props.recruit && props.handleShowData(props.handleSetDateInThai)}
         </ContainerContent>
     </ContainerHeader>
