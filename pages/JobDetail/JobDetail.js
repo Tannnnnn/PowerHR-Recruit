@@ -267,10 +267,11 @@ const enhance = compose(
                         </MarginBTN>
                     } 
                     open={props.open}
+                    dimmer={"inverted"}
                 >
                 {
                     props.authStore.accessToken
-                    ? <Modal.Content>
+                    ? <Modal.Content >
                         <Modal.Description>
                             <center>
                                 <BgHandTask>
@@ -278,7 +279,7 @@ const enhance = compose(
                                 </BgHandTask>
                             </center>
                                 <TextPosition>ตำแหน่งงานที่สมัคร : {name}</TextPosition>
-                                {input2GrideGrideMG('เงินเดือนที่ต้องการ :','กรุณากรอกเงินเดือนที่ต้องการ' , (event) => props.setSalary(event.target.value) , 'text' , props.salary)}
+                                {input2GrideGrideMG('เงินเดือนที่ต้องการ :','กรุณากรอกเงินเดือนที่ต้องการ' , (event) => props.setSalary(event.target.value) , 'text' , props.salary , 'salary' , false , props.isSalary)}
                                 <center>
                                     <ButtonCancle onClick={() => props.setOpen(false) }>ยกเลิก</ButtonCancle>
                                     <ButtonOK onClick={props.handleSubmitRegister()} disabled={props.salary ? false : true}>ยืนยันสมัครงาน</ButtonOK>
@@ -354,10 +355,10 @@ export default enhance( (props)=>
         }       
         {
             props.isLoading
-            ?   <Modal basic size='small' open={props.isLoading}>
+            ?   <Modal basic size='small' open={props.isLoading} dimmer={"inverted"}>
                     <Loader size='large'>กำลังดำเนินการ กรุณารอสักครู่...</Loader>
                 </Modal>
-            :   <Modal size={'tiny'} open={props.isOpen}>
+            :   <Modal size={'tiny'} open={props.isOpen} dimmer={"inverted"}>
                     <Modal.Header>
                         <center>
                             <Icon name='check' size='big' color={"orange"}/>

@@ -11,11 +11,13 @@ class AuthStore {
   @observable accessToken = null
   @observable currentUser = null
   @observable userData = null
+  @observable imageBase64 = null
 
   constructor(isServer) {
     this.accessToken = storejs.get('accessToken')
     this.currentUser = storejs.get('currentUser')
     this.userData = storejs.get('userData')
+    this.imageBase64 = storejs.get('imageBase64')
   }
 
   @action createUser(data , idcard){
@@ -60,7 +62,16 @@ class AuthStore {
         firebase.database().ref('users/' + response.user.uid)
         .once("value").then( snapshot => {
           storejs.set('userData', snapshot.val());
-          window.location.href = '/'
+        })
+        firebase.database().ref('resume/' + response.user.uid)
+        .once("value")
+        .then( snapshot => {
+          let data = snapshot.val()
+          storejs.set('imageBase64', data.imageBase64)
+        })
+        .catch( err => {
+          storejs.set('imageBase64', null)
+          return window.location.href = '/'
         })
       }
     })
@@ -71,6 +82,7 @@ class AuthStore {
     storejs.set('accessToken',null);
     storejs.set('currentUser', null);
     storejs.set('userData', null);
+    storejs.set('imageBase64', null)
     return window.location.href = '/'
   }
 

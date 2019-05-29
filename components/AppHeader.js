@@ -7,6 +7,8 @@ import { inject, observer } from 'mobx-react'
 import _ from 'lodash'
 import {auth} from '../firebase/index'
 
+const defaultImage = 'https://www.img.in.th/images/687206af74ec86d36b815002c694b34e.png'
+
 const SegmentHeader = styled(Segment) `
     overflow : none !important;
     background : #ff5722 !important;
@@ -150,6 +152,7 @@ const enhance = compose(
         async componentDidMount(){
             const authPath = window.location.pathname.split('/')
             authPath[1] === 'Resume' && this.props.authStore.accessToken === null ? window.location.href = '/' : null
+            console.log(this.props.authStore)
         }
     }),
     observer 
@@ -170,7 +173,7 @@ export default enhance((props) =>
                             </DropdownButton>
                         </TextHeader>
                         <ImageHeader as='h4' floated='right'>
-                            <Image  src='https://www.img.in.th/images/687206af74ec86d36b815002c694b34e.png' size='small' />
+                            <Image  src={props.authStore.imageBase64 ? props.authStore.imageBase64 : defaultImage} size='small' circular/>
                         </ImageHeader>
                         <TextHeader as='h4' floated='left'>
                             <Link href='/index'>
