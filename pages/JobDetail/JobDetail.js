@@ -144,6 +144,8 @@ const enhance = compose(
     withState('isApply' , 'setIsApply' , false),
     withState('isLoading' , 'setIsLoading' , false),
     withState('isOpen' , 'setIsOpen' , false),
+    withState('isResumeDone' , 'setIsResumeDone' , false),
+    withState('isNotSuccess' , 'setIsNotSuccess' , false),
     withProps({
         pageTitle: 'Jobs Detail'
     }),
@@ -177,59 +179,66 @@ const enhance = compose(
         initGetDataResume: props => () => {
             firebase.database().ref('resume/' + props.authStore.accessToken)
             .once("value").then( snapshot => {
+                let result = Object.values(snapshot.val())
+                result.length >= 80 ? props.setIsResumeDone(true) : props.setIsResumeDone(false)
                 props.setResume(snapshot.val())
             })
         },
         handleSubmitRegister: props => () => event => {
             props.setOpen(false)
-            props.setIsLoading(true)
-            props.setIsOpen(true)
-            let pdfDocGenerator = PDF_GENERATOR(props.resume , props)
-            let uniqueID = firebase.database().ref().push().key
-            let pdfID = firebase.database().ref().push().key            
-            pdfDocGenerator.getDataUrl((dataUrl) => {
-                ref.child(pdfID).putString(dataUrl, 'data_url')
-                .then( () => {
-                    let getUrl = ref.child(pdfID)
-                    getUrl.getDownloadURL()
-                    .then(function(url) {
-                        let result = {
-                            apply_job_id : uniqueID,
-                            department_id : props.jobStore.job_positions.department_id,
-                            apply_date : firebase.database.ServerValue.TIMESTAMP,
-                            position_id : props.jobStore.job_positions.position_id,
-                            job_position_id : props.jobStore.job_positions.job_position_id,
-                            uid : props.authStore.accessToken,
-                            rate : props.salary,
-                            status : 0,
-                            resume_pdf : url
-                        }
-                        firebase.database().ref('apply_jobs/' + uniqueID).set(result , (err) => {
-                            err 
-                            ?   null 
-                            :   props.setIsLoading(false) 
-                                props.setIsOpen(true)
-                        })    
+            if (props.isResumeDone) {
+                props.setIsLoading(true)
+                props.setIsOpen(true)
+                let pdfDocGenerator = PDF_GENERATOR(props.resume , props)
+                let uniqueID = firebase.database().ref().push().key
+                let pdfID = firebase.database().ref().push().key            
+                pdfDocGenerator.getDataUrl((dataUrl) => {
+                    ref.child(pdfID).putString(dataUrl, 'data_url')
+                    .then( () => {
+                        let getUrl = ref.child(pdfID)
+                        getUrl.getDownloadURL()
+                        .then(function(url) {
+                            let result = {
+                                apply_job_id : uniqueID,
+                                department_id : props.jobStore.job_positions.department_id,
+                                apply_date : firebase.database.ServerValue.TIMESTAMP,
+                                position_id : props.jobStore.job_positions.position_id,
+                                job_position_id : props.jobStore.job_positions.job_position_id,
+                                uid : props.authStore.accessToken,
+                                rate : props.salary,
+                                status : 0,
+                                resume_pdf : url
+                            }
+                            firebase.database().ref('apply_jobs/' + uniqueID).set(result , (err) => {
+                                err 
+                                ?   null 
+                                :   props.setIsLoading(false) 
+                                    props.setIsOpen(true)
+                            })    
+                        })
+                        .catch(function(error) {
+                            switch (error.code) {
+                                case 'storage/object-not-found':
+                                break;
+                            
+                                case 'storage/unauthorized':
+                                break;
+                            
+                                case 'storage/canceled':
+                                break;
+                                        
+                                case 'storage/unknown':
+                                break;
+                            }
+                        });
+                        
                     })
-                    .catch(function(error) {
-                        switch (error.code) {
-                            case 'storage/object-not-found':
-                            break;
-                        
-                            case 'storage/unauthorized':
-                            break;
-                        
-                            case 'storage/canceled':
-                            break;
-                                    
-                            case 'storage/unknown':
-                            break;
-                        }
-                    });
-                    
-                })
-                .catch( err => console.log(err))
-            });
+                    .catch( err => console.log(err))
+                });
+            }
+            else{
+                props.setIsNotSuccess(true)
+            }
         },
         handleApplyJobsData: props => () => {
             let jobID = props.jobStore.job_positions.job_position_id
@@ -385,6 +394,27 @@ export default enhance( (props)=>
                     </Modal.Actions>
                 </Modal>
         }
+        <Modal size={'tiny'} open={props.isNotSuccess} dimmer={"inverted"}>
+            <Modal.Header>
+                <center>
+                    <Icon name='info circle' size='big' color={"red"}/>
+                </center>
+            </Modal.Header>
+            <Modal.Content>
+                <center>
+                    <ColorTextSmall1>กรุณากรอกข้อมูลส่วนตัวให้ครบถ้วนก่อนทำการสมัคร</ColorTextSmall1>
+                </center>
+            </Modal.Content>
+            <Modal.Actions>
+                <center>
+                    <ButtonClick
+                        color={"red"}
+                        onClick={() => props.setIsNotSuccess(false)} 
+                        content='ปิด' 
+                    />
+                </center>
+            </Modal.Actions>
+        </Modal>
         <Divider hidden />
     </div>
 )

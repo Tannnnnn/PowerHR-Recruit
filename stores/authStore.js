@@ -68,6 +68,7 @@ class AuthStore {
         .then( snapshot => {
           let data = snapshot.val()
           storejs.set('imageBase64', data.imageBase64)
+          return window.location.href = '/'
         })
         .catch( err => {
           storejs.set('imageBase64', null)

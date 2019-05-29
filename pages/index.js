@@ -35,6 +35,11 @@ const enhance = compose(
     lifecycle({
         componentDidMount(){
             this.props.setLocation(window.location.pathname)
+            window.scrollTo({
+                top: 0,
+                left: 0,
+                behavior: 'smooth'
+            })
         }
     }),
     observer

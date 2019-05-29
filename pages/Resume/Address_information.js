@@ -618,7 +618,7 @@ export default enhance( (props)=>
                     {btn_NextBack('ย้อนกลับ', 'ถัดไป' ,'https://www.img.in.th/images/c0dce936813662e607bd5798e68fd712.png' , props.saveThisPageNext() , props.saveThisPagePrev())}
                 </MgBTNOrange>
             <br/><br/>
-            <Modal size={'tiny'} open={props.openModal}>
+            <Modal size={'tiny'} open={props.openModal} dimmer="blurring">
                 <Modal.Header>
                     <center>
                         <Icon name='info circle' size='big' color={"red"}/>
