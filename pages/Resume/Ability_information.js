@@ -107,6 +107,8 @@ const enhance = compose(
     withState('computerSkill','setComputerSkill'),
     withState('positionEng','setPositionEng'),
     withState('openModal' , 'setOpenModal' , false),
+    withState('toeic','setToeic'),
+    withState('toefl','setToefl'),
     withProps({
         pageTitle: 'Ability information'
     }),
@@ -125,6 +127,8 @@ const enhance = compose(
                 props.setThaiprint(resume.thaiprint)            
                 props.setEngprint(resume.engprint)            
                 props.setComputerSkill(resume.computerSkill) 
+                props.setToeic(resume.toeic)
+                props.setToefl(resume.toefl)
             })
         }
     }),
@@ -204,6 +208,54 @@ const enhance = compose(
                 }
             }
         },
+        handleSetToeic: props => () => event => {
+            let stack = props.toeic
+            if (parseInt(event.target.value) < 1) {
+                event.target.value = ''
+            }        
+            else{
+                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode > 47 && event.keyCode < 58) { 
+                    if (event.target.value.length > 3 || parseInt(event.target.value) > 990 ) {
+                        event.target.value = stack
+                    }
+                    else{
+                        props.setToeic(event.target.value)
+                    }
+                }
+                else{
+                    if (event.keyCode === 9) {
+                        event.target.value = ''
+                    }
+                    else{
+                        event.target.value = stack
+                    }
+                }
+            }
+        },
+        handleSetToefl: props => () => event => {
+            let stack = props.toefl
+            if (parseInt(event.target.value) < 1) {
+                event.target.value = ''
+            }        
+            else{
+                if (event.keyCode > 95 && event.keyCode < 106 || event.keyCode === 8 || event.keyCode > 47 && event.keyCode < 58) { 
+                    if (event.target.value.length > 3 || parseInt(event.target.value) > 677) {
+                        event.target.value = stack
+                    }
+                    else{
+                        props.setToefl(event.target.value)
+                    }
+                }
+                else{
+                    if (event.keyCode === 9) {
+                        event.target.value = ''
+                    }
+                    else{
+                        event.target.value = stack
+                    }
+                }
+            }
+        },
         handleComputerSkill: props => () => event => {
             props.setComputerSkill(event.target.value)
         },
@@ -220,7 +272,7 @@ const enhance = compose(
                 english_writh : props.english_writh,
                 thaiprint : props.thaiprint,
                 engprint : props.engprint,
-                computerSkill : props.computerSkill,
+                computerSkill : props.computerSkill
             }  
             let ability = Object.values(result)
             let isSuccess = true
@@ -239,6 +291,8 @@ const enhance = compose(
                     thaiprint : props.thaiprint,
                     engprint : props.engprint,
                     computerSkill : props.computerSkill,
+                    toeic: props.toeic ? props.toeic : null ,
+                    toefl: props.toefl ? props.toefl : null
                 })
                 Router.push({ pathname : '/Resume/Task_information' })
             } 
@@ -259,6 +313,8 @@ const enhance = compose(
                 thaiprint : props.thaiprint ? props.thaiprint : null,
                 engprint : props.engprint ? props.engprint : null,
                 computerSkill : props.computerSkill ? props.computerSkill : null,
+                toeic: props.toeic ? props.toeic : null ,
+                toefl: props.toefl ? props.toefl : null
             })
             Router.push({ pathname : '/Resume/School_information' })
         },
@@ -344,17 +400,25 @@ export default enhance( (props)=>
             </Grid>
             <Grid columns={2} padded='horizontally'>
                 <Grid.Column>
+                    <MgGridLeft>{inputOnkeyup('คะแนน TOEIC (ถ้ามี) :','กรุณากรอกคะแนนสอบ TOEIC' , props.handleSetToeic() , 'number' , props.toeic, '' , false)}</MgGridLeft>
+                </Grid.Column>
+                <Grid.Column>
+                    {input2GrideOnKeyUp('คะแนน TOEFL (ถ้ามี) :','กรุณากรอกคะแนนสอบ TOEFL' , props.handleSetToefl() , 'number' , props.toefl, false)}
+                </Grid.Column>
+            </Grid>
+            <Grid columns={2} padded='horizontally'>
+                <Grid.Column>
                     <MgGridLeft>{inputOnkeyup('จำนวนคำพิมพ์ดีดภาษาไทย (คำ/นาที) :','กรุณากรอกจำนวนคำพิมพ์ดีดภาษาไทย' , props.handleThaiLanguagePrint() , 'number' , props.thaiprint, '' , true)}</MgGridLeft>
                 </Grid.Column>
                 <Grid.Column>
-                    {input2GrideOnKeyUp('จำนวนคำพิมพ์ดีดภาษาอังกฤษ (คำ/นาที) :','กรุณากรอกจำนวนคำพิมพ์ดีดภาษาอังกฤษ' , props.handleEnglishLanguagePrint() , 'text' , props.engprint, true)}
+                    {input2GrideOnKeyUp('จำนวนคำพิมพ์ดีดภาษาอังกฤษ (คำ/นาที) :','กรุณากรอกจำนวนคำพิมพ์ดีดภาษาอังกฤษ' , props.handleEnglishLanguagePrint() , 'number' , props.engprint, true)}
                 </Grid.Column>
             </Grid>
             <MgTextArea>
                 {InputTextArea('ความสามารถด้านคอมพิวเตอร์ : ', 'กรุณากรอกความสามาถด้านคอมพิวเตอร์' , props.handleComputerSkill() , props.computerSkill , true)}
             </MgTextArea>
             <MgTextArea>
-                <FontRadioCar>ความสามารถด้านการขับรถ : <text style={{ color : theme.colors.orange }}> *</text></FontRadioCar>
+                <FontRadioCar>ใบอนุญาติขับรถ : <text style={{ color : theme.colors.orange }}> *</text></FontRadioCar>
                 <Form>
                     <SizeFontRadio>
                          <Form.Field>

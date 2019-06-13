@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { Segment , Icon , Container , Header , Pagination , Loader } from 'semantic-ui-react'
 import { compose , withHandlers , withState , lifecycle } from 'recompose'
 import Link from 'next/link'
-import { inject, observer } from 'mobx-react'
+import { inject } from 'mobx-react'
 import { firebase } from '../../firebase/index'
 
 const SegmentHeader = styled(Segment)`
@@ -120,9 +120,10 @@ const enhance = compose(
   withState('dataInPage' , 'setDataInPage' , 5),
   withState('activePage' , 'setActivePage' , 1),
   withState('isLoading' , 'setIsLoading' , true),
+  withState('position' , 'setPosition'),
   withHandlers({
     initGetJobPositionsData: props => () => {
-      firebase.database().ref("job_positions_log")
+      firebase.database().ref("job_positions")
       .once("value").then( snapshot => {
         let data = Object.values(snapshot.val())
         let result = []
@@ -137,11 +138,18 @@ const enhance = compose(
         props.setRecruit(result)
         props.setIsLoading(false)
       })
+    },
+    initGetPosition: props => () => {
+      firebase.database().ref('positions')
+      .once("value").then( snapshot => {
+        props.setPosition(Object.values(snapshot.val()))
+      })
     }
   }),
   lifecycle({
     async componentDidMount(){      
       await this.props.initGetJobPositionsData()
+      await this.props.initGetPosition()
     }
   }),
   withHandlers({
@@ -151,29 +159,29 @@ const enhance = compose(
         const indexOfLast = activePage * dataInPage;
         const indexOfFirst = indexOfLast - dataInPage;
         const currentData = recruit.slice(indexOfFirst, indexOfLast);
-        return  currentData.map( (data , i) => {           
-                  return(
-                    <div key={i} onClick={() => props.jobStore.job_positions = data}>
-                      <Link href={{ pathname : '../JobDetail/JobDetail' }} >
-                        <SegmentContent >
-                            <HeaderContentRight floated='right'>
-                              <LabelDate>
-                                {dateInThai(data.startdate)} - {dateInThai(data.enddate)}
-                              </LabelDate><br/><br/>
-                              <LabelRecruit>
-                                {data.value} อัตรา
-                              </LabelRecruit>
-                            </HeaderContentRight>
-                            <HeaderContentLeft floated='left'>
-                              <LabelPosition>{data.position_name}</LabelPosition><br/><br/>
-                              <LabelSalary>
-                                <Icon name='money bill alternate outline' />{data.rate === "ตามประสบการณ์" ? data.rate : data.rate + " บาท"}
-                              </LabelSalary>
-                            </HeaderContentLeft>
-                        </SegmentContent>
-                      </Link>
-                    </div>
-                  )
+        return  currentData.map( (data , i) => {                           
+                return(
+                      <div key={i} onClick={() => props.jobStore.job_positions = data}>
+                        <Link href={{ pathname : '../JobDetail/JobDetail' }} >
+                          <SegmentContent >
+                              <HeaderContentRight floated='right'>
+                                <LabelDate>
+                                  {dateInThai(data.startdate)} - {dateInThai(data.enddate)}
+                                </LabelDate><br/><br/>
+                                <LabelRecruit>
+                                  {data.value} อัตรา
+                                </LabelRecruit>
+                              </HeaderContentRight>
+                              <HeaderContentLeft floated='left'>
+                                <LabelPosition>{props.position && props.position.map( result => {return result.position_id === data.position_id ? result.position_name : null})}</LabelPosition><br/><br/>
+                                <LabelSalary>
+                                  <Icon name='money bill alternate outline' />{data.rate === "ตามประสบการณ์" ? data.rate : data.rate + " บาท"}
+                                </LabelSalary>
+                              </HeaderContentLeft>
+                          </SegmentContent>
+                        </Link>
+                      </div>
+                )
         })
       }
       else{

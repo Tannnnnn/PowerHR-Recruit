@@ -146,6 +146,7 @@ const enhance = compose(
     withState('isOpen' , 'setIsOpen' , false),
     withState('isResumeDone' , 'setIsResumeDone' , false),
     withState('isNotSuccess' , 'setIsNotSuccess' , false),
+    withState('position' , 'setPosition'),
     withProps({
         pageTitle: 'Jobs Detail'
     }),
@@ -254,13 +255,20 @@ const enhance = compose(
                     })     
                     : props.setIsApply(false)
             })
+        },
+        initGetPosition: props => () => {
+            firebase.database().ref('positions')
+            .once("value").then( snapshot => {
+              props.setPosition(Object.values(snapshot.val()))
+            })
         }
     }),
     lifecycle({
         async componentDidMount(){
             await this.props.initGetJobPositionData()  
             await this.props.initGetDataResume()
-            await this.props.handleApplyJobsData()            
+            await this.props.handleApplyJobsData()          
+            await this.props.initGetPosition()  
         }
     }),
     withHandlers({
@@ -312,6 +320,10 @@ const enhance = compose(
                 }
                 </Modal>
             )
+        },
+        handleSubmitNotHaveResume: props => () => {
+            props.setIsNotSuccess(false)
+            return Router.push('/Resume/Personal_information')
         }
     }),
     observer
@@ -323,7 +335,7 @@ export default enhance( (props)=>
         {
             props.detail
                 ?   <Container>
-                        {Breadcrumb2Page('ตำแหน่งเปิดรับ', `รายละเอียดตำแหน่ง ${props.detail.position_name}`)}
+                        {Breadcrumb2Page('ตำแหน่งเปิดรับ', `รายละเอียดตำแหน่ง`)}
                         <BodyBox>
                             <Grid>
                                 <Grid.Row>
@@ -334,12 +346,12 @@ export default enhance( (props)=>
                                         </TextTopics1>
                                     </Grid.Column>
                                     <Grid.Column width={7}>
-                                        {props.handleButtonApplyJob(props.detail.position_name)}
+                                        {props.handleButtonApplyJob(props.position && props.position.map( result => {return result.position_id === props.detail.position_id ? result.position_name : null}))}
                                     </Grid.Column>
                                 </Grid.Row>
                             </Grid>
                             <TextTopics2><ColorText>ตำแหน่ง : </ColorText>
-                                <ColorTextSmall1> {props.detail.position_name}</ColorTextSmall1>
+                                <ColorTextSmall1> {props.position && props.position.map( result => {return result.position_id === props.detail.position_id ? result.position_name : null})}</ColorTextSmall1>
                             </TextTopics2>
                             <TextTopics2>
                                 <ColorText>รายละเอียดตำแหน่งงาน : </ColorText>
@@ -369,15 +381,10 @@ export default enhance( (props)=>
         }       
         {
             props.isLoading
-<<<<<<< HEAD
-            ?   <Modal basic size='small' open={props.isLoading}>
-                    <Lodaing size='large'>กำลังดำเนินการ กรุณารอสักครู่...</Lodaing>
-=======
-            ?   <Modal basic size='small' open={props.isLoading} dimmer={"inverted"}>
+            ?   <Modal basic size='small' open={props.isLoading} dimmer="blurring">
                     <Loader size='large'>กำลังดำเนินการ กรุณารอสักครู่...</Loader>
->>>>>>> origin/tan_dev
                 </Modal>
-            :   <Modal size={'tiny'} open={props.isOpen} dimmer={"inverted"}>
+            :   <Modal size={'tiny'} open={props.isOpen} dimmer="blurring">
                     <Modal.Header>
                         <center>
                             <Icon name='check' size='big' color={"orange"}/>
@@ -414,7 +421,7 @@ export default enhance( (props)=>
                 <center>
                     <ButtonClick
                         color={"red"}
-                        onClick={() => props.setIsNotSuccess(false)} 
+                        onClick={() => props.handleSubmitNotHaveResume()} 
                         content='ปิด' 
                     />
                 </center>

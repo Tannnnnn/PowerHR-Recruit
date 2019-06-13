@@ -23,7 +23,7 @@ const TextHeadInterview = styled.p`
 
 const CardName = styled.div`
     width: 100%;
-    height: 56px;
+    height: auto;
     box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
     background-color: #ffffff;
     margin-top: 2%;
@@ -121,7 +121,6 @@ export default enhance( (props)=>
                 ? props.position.map( (data,i) => {
                     return(
                         <CardName key={i}>
-                            {console.log(data , 'data')}
                             <Grid columns={4}>
                                 <MgRow>
                                     <Grid.Column>

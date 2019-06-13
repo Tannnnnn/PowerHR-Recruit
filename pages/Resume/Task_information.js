@@ -84,6 +84,16 @@ const MgChackbox = styled(Checkbox)`
     line-height: 1.5;                                              
 `;
 
+const CheckboxTask = styled(Checkbox)`
+    margin-top: 2%;
+    margin-bottom: 2%;
+    margin-right: 2%;
+    margin-left: 14.5% !important;   
+    font-size: 16px !important;  
+    font-weight: 500;        
+    line-height: 1.5;                                              
+`;
+
 const BtnBack = styled(Button)`
     box-shadow: 0 0 0px 1px #ee3900 !important;
     font-family : 'Kanit', sans-serif !important;
@@ -143,7 +153,7 @@ const enhance = compose(
     withState('openModal' , 'setOpenModal' , false),
     withState('messageModal' , 'setMessageModal' , false),
     withState('saveSuccess' , 'setSaveSuccess' , false),
-
+    withState('exp' , 'setExp' , false),
     withProps({
         pageTitle: 'Task information'
     }),
@@ -175,6 +185,7 @@ const enhance = compose(
                 props.setOlder_endwork(resume.older_endwork)
                 props.setOlder_resign(resume.older_resign)
                 props.setCheckAccept(resume.checkAccept)
+                props.setExp(resume.exp)
             })
         }
     }),
@@ -390,7 +401,7 @@ const enhance = compose(
                 props.saveSuccess(false)
             }
             else{
-                if (isSuccess) {
+                if (isSuccess || props.exp) {
                     firebase.database().ref('resume/' + uid).update({
                         current_work : props.current_work ,
                         current_position : props.current_position,
@@ -414,7 +425,8 @@ const enhance = compose(
                         older_startwork : props.older_startwork  || null,
                         older_endwork : props.older_endwork  || null,
                         older_resign : props.older_resign !== undefined ? props.older_resign : '-',
-                        checkAccept : props.checkAccept !== undefined ? props.checkAccept : '-',
+                        checkAccept : props.checkAccept,
+                        exp : props.exp
                     },
                     (error) => {
                         error 
@@ -456,7 +468,8 @@ const enhance = compose(
                 older_startwork : props.older_startwork  || null,
                 older_endwork : props.older_endwork  || null,
                 older_resign : props.older_resign !== undefined ? props.older_resign : '-',
-                checkAccept : props.checkAccept !== undefined ? props.checkAccept : '-',
+                checkAccept : props.checkAccept,
+                exp : props.exp
             })
             Router.push({ pathname : '/Resume/Ability_information' })      
         },
@@ -467,6 +480,30 @@ const enhance = compose(
             }
             else{
                 props.setCheckAccept(false)
+            }
+        },
+        handleCheckExp: props => () => event => {
+            const { exp } = props
+            if (exp === false) {
+                props.setExp(true)
+                window.scrollTo({
+                    top: 2000,
+                    left: 0,
+                    behavior: 'smooth'
+                }) 
+            }
+            else{
+                props.setExp(false)
+                props.setCurrent_work('-')
+                props.setCurrent_position('-')
+                props.setCurrent_description('-')
+                props.setCurrent_final_salary('-')
+                props.setCurrent_other_income('-')
+                props.setCurrent_net_income('-')
+                props.setCurrent_welfare('-')
+                props.setCurrent_resign('-')
+                props.setCurrent_startwork(null)
+                props.setCurrent_endwork(null)
             }
         },
     })
@@ -488,6 +525,11 @@ export default enhance( (props)=>
                     <MgIcon name='window minimize outline' size='big'/>
                 </center>
                 <br/>
+                <CheckboxTask 
+                    label='ไม่มีประสบการณ์ในการทำงาน' 
+                    onChange={props.handleCheckExp()} 
+                    checked={props.exp}
+                />
                 <TextSort>เรียงลำดับจากปัจจุบันถึงอดีต</TextSort>
                 <Grid columns={2} padded='horizontally'>
                     <Grid.Column>

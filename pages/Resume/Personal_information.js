@@ -21,8 +21,59 @@ import { btn_orange } from '../../components/Button'
 import { stepApplyJobInfomation } from '../../components/Step'
 import {firebase} from '../../firebase/index'
 import Router from 'next/router'
-import { async } from '@firebase/util';
 
+const option = [
+    { key: 'กฎหมาย', text: 'กฎหมาย', value: 'กฎหมาย' },
+    { key: 'การตลาด', text: 'การตลาด', value: 'การตลาด' },
+    { key: 'ทุกประเภท', text: 'ทุกประเภท', value: 'ทุกประเภท' },
+    { key: 'เกษตร/จัดสวน/ปศุสัตว์/ประมง/เหมืองแร่', text: 'เกษตร/จัดสวน/ปศุสัตว์/ประมง/เหมืองแร่', value: 'เกษตร/จัดสวน/ปศุสัตว์/ประมง/เหมืองแร่' },
+    { key: 'ขาย', text: 'ขาย', value: 'ขาย' },
+    { key: 'เขียนแบบ/งานDrawing/AutoCad/ออกแบบวิศวกรรม', text: 'เขียนแบบ/งานDrawing/AutoCad/ออกแบบวิศวกรรม', value: 'เขียนแบบ/งานDrawing/AutoCad/ออกแบบวิศวกรรม' },
+    { key: 'คอมพิวเตอร์/IT/โปรแกรมเมอร์', text: 'คอมพิวเตอร์/IT/โปรแกรมเมอร์', value: 'คอมพิวเตอร์/IT/โปรแกรมเมอร์' },
+    { key: 'งานการเงิน-ธนาคาร', text: 'งานการเงิน-ธนาคาร', value: 'งานการเงิน-ธนาคาร' },
+    { key: 'งานขนส่ง-คลังสินค้า', text: 'งานขนส่ง-คลังสินค้า', value: 'งานขนส่ง-คลังสินค้า' },
+    { key: 'งานนำเข้า-ส่งออก', text: 'งานนำเข้า-ส่งออก', value: 'งานนำเข้า-ส่งออก' },
+    { key: 'งานบริการลูกค้า-Call Center', text: 'งานบริการลูกค้า-Call Center', value: 'งานบริการลูกค้า-Call Center' },
+    { key: 'งานบัญชี', text: 'งานบัญชี', value: 'งานบัญชี' },
+    { key: 'งานบันเทิง/นักแสดง/นางแบบ/นักร้อง/Stylist/Costume', text: 'งานบันเทิง/นักแสดง/นางแบบ/นักร้อง/Stylist/Costume', value: 'งานบันเทิง/นักแสดง/นางแบบ/นักร้อง/Stylist/Costume' },
+    { key: 'จัดซื้อ/ธุรการ/ประสานงานทั่วไป', text: 'จัดซื้อ/ธุรการ/ประสานงานทั่วไป', value: 'จัดซื้อ/ธุรการ/ประสานงานทั่วไป' },
+    { key: 'เจ้าหน้าที่ความปลอดภัย(จป.)/สิ่งแวดล้อม/ISO', text: 'เจ้าหน้าที่ความปลอดภัย(จป.)/สิ่งแวดล้อม/ISO', value: 'เจ้าหน้าที่ความปลอดภัย(จป.)/สิ่งแวดล้อม/ISO' },
+    { key: 'ช่างเทคนิค/อิเลคโทรนิค/ซ่อมบำรุง/ช่างพิมพ์', text: 'ช่างเทคนิค/อิเลคโทรนิค/ซ่อมบำรุง/ช่างพิมพ์', value: 'ช่างเทคนิค/อิเลคโทรนิค/ซ่อมบำรุง/ช่างพิมพ์' },
+    { key: 'นักเขียน/บรรณาธิการ/พิสูจน์อักษร/Copywriter/นักแปลภาษา', text: 'นักเขียน/บรรณาธิการ/พิสูจน์อักษร/Copywriter/นักแปลภาษา', value: 'นักเขียน/บรรณาธิการ/พิสูจน์อักษร/Copywriter/นักแปลภาษา' },
+    { key: 'บุคคล/ฝึกอบรม', text: 'บุคคล/ฝึกอบรม', value: 'บุคคล/ฝึกอบรม' },
+    { key: 'ผลิต/ควบคุมคุณภาพ/โรงงาน', text: 'ผลิต/ควบคุมคุณภาพ/โรงงาน', value: 'ผลิต/ควบคุมคุณภาพ/โรงงาน' },
+    { key: 'ผู้จัดการ/ผู้อำนวยการ/MD/CEO', text: 'ผู้จัดการ/ผู้อำนวยการ/MD/CEO', value: 'ผู้จัดการ/ผู้อำนวยการ/MD/CEO' },
+    { key: 'แผนกรักษาความปลอดภัย/งานอาคารจอดรถ', text: 'แผนกรักษาความปลอดภัย/งานอาคารจอดรถ', value: 'แผนกรักษาความปลอดภัย/งานอาคารจอดรถ' },
+    { key: 'แพทย์/เภสัชกร/สาธารณสุข', text: 'แพทย์/เภสัชกร/สาธารณสุข', value: 'แพทย์/เภสัชกร/สาธารณสุข' },
+    { key: 'ภูมิศาสตร์/แผนที่/GIS/ผังเมือง', text: 'ภูมิศาสตร์/แผนที่/GIS/ผังเมือง', value: 'ภูมิศาสตร์/แผนที่/GIS/ผังเมือง' },
+    { key: 'แม่บ้าน/พี่เลี้ยง/คนสวน', text: 'แม่บ้าน/พี่เลี้ยง/คนสวน', value: 'แม่บ้าน/พี่เลี้ยง/คนสวน' },
+    { key: 'โยธา/สำรวจ/สถาปัตย์/มัณฑนากร/ประเมินราคา', text: 'โยธา/สำรวจ/สถาปัตย์/มัณฑนากร/ประเมินราคา', value: 'โยธา/สำรวจ/สถาปัตย์/มัณฑนากร/ประเมินราคา' },
+    { key: 'ล่าม/มัคคุเทศก์/จองห้อง/จองตั๋ว', text: 'ล่าม/มัคคุเทศก์/จองห้อง/จองตั๋ว', value: 'ล่าม/มัคคุเทศก์/จองห้อง/จองตั๋ว' },
+    { key: 'เลขานุการ', text: 'เลขานุการ', value: 'เลขานุการ' },
+    { key: 'วิทยาศาสตร์/Lab/วิจัยพัฒนา', text: 'วิทยาศาสตร์/Lab/วิจัยพัฒนา', value: 'วิทยาศาสตร์/Lab/วิจัยพัฒนา' },
+    { key: 'วิศวกร', text: 'วิศวกร', value: 'วิศวกร' },
+    { key: 'วิจัย / วิเคราะห์ ( เศรษฐศาสตร์/หุ้น/ประกันภัย/ธนาคาร )', text: 'วิจัย / วิเคราะห์ ( เศรษฐศาสตร์/หุ้น/ประกันภัย/ธนาคาร )', value: 'วิจัย / วิเคราะห์ ( เศรษฐศาสตร์/หุ้น/ประกันภัย/ธนาคาร )' },
+    { key: 'ศิลปะ/กราฟฟิค/ออกแบบ/ช่างภาพ', text: 'ศิลปะ/กราฟฟิค/ออกแบบ/ช่างภาพ', value: 'ศิลปะ/กราฟฟิค/ออกแบบ/ช่างภาพ' },
+    { key: 'ส่งเอกสาร/ขับรถ/ส่งผลิตภัณฑ์', text: 'ส่งเอกสาร/ขับรถ/ส่งผลิตภัณฑ์', value: 'ส่งเอกสาร/ขับรถ/ส่งผลิตภัณฑ์' },
+    { key: 'สื่อสารมวลชน/นักข่าว/งานวิทยุ/โทรทัศน์/หนังสือพิมพ์', text: 'สื่อสารมวลชน/นักข่าว/งานวิทยุ/โทรทัศน์/หนังสือพิมพ์', value: 'สื่อสารมวลชน/นักข่าว/งานวิทยุ/โทรทัศน์/หนังสือพิมพ์' },
+    { key: 'สุขภาพ/โภชนาการ/ความงาม/ฟิตเนส/สปา', text: 'สุขภาพ/โภชนาการ/ความงาม/ฟิตเนส/สปา', value: 'สุขภาพ/โภชนาการ/ความงาม/ฟิตเนส/สปา' },
+    { key: 'เสื้อผ้า/สิ่งทอ/ช่างแพทเทิร์น', text: 'เสื้อผ้า/สิ่งทอ/ช่างแพทเทิร์น', value: 'เสื้อผ้า/สิ่งทอ/ช่างแพทเทิร์น' },
+    { key: 'ออกแบบเว็บไซต์/Web', text: 'ออกแบบเว็บไซต์/Web', value: 'ออกแบบเว็บไซต์/Web' },
+    { key: 'อัญมณีและเครื่องประดับ', text: 'อัญมณีและเครื่องประดับ', value: 'อัญมณีและเครื่องประดับ' },
+    { key: 'อาจารย์/ครู/งานวิชาการ', text: 'อาจารย์/ครู/งานวิชาการ', value: 'อาจารย์/ครู/งานวิชาการ' },
+    { key: 'อาหาร/เครื่องดื่ม/กุ๊ก/บาร์เทนเดอร์/พนักงานเสิร์ฟ', text: 'อาหาร/เครื่องดื่ม/กุ๊ก/บาร์เทนเดอร์/พนักงานเสิร์ฟ', value: 'อาหาร/เครื่องดื่ม/กุ๊ก/บาร์เทนเดอร์/พนักงานเสิร์ฟ' },
+    { key: 'งาน Part-time/พนักงานชั่วคราว', text: 'งาน Part-time/พนักงานชั่วคราว', value: 'งาน Part-time/พนักงานชั่วคราว' },
+    { key: 'Freelance', text: 'Freelance', value: 'Freelance' },
+    { key: 'อื่นๆ', text: 'อื่นๆ', value: 'อื่นๆ' },
+]
+
+const SizeFontSelect = styled(Form.Select)`
+    font-size: 16px !important;
+    margin-top: -3%;
+`;
+const SizeSelectFormRight = styled.div`
+    width: 74%;
+`;
 const buildFileSelector = (fn) => {
     const fileSelector = document.createElement('input');
     fileSelector.setAttribute('type', 'file');
@@ -142,6 +193,11 @@ const MgRedio = styled(Radio)`
     font-size: 16px !important;
 `;
 
+const TextSelect = styled.p`
+    font-size: 16px !important;
+    font-weight: 600 !important;
+`;
+
 const HiddenStatus = styled.div`
     border: 1px solid #cccccc ;
     border-radius: 5px;
@@ -243,6 +299,12 @@ const enhance = compose(
     withState('check_soldier', 'setCheck_soldier'),
     withState('openModal' , 'setOpenModal' , false),
     withState('messageModal' , 'setMessageModal' , ''),
+    withState('dad_career_check' , 'setDad_career_check' , false),
+    withState('mom_career_check' , 'setMom_career_check' , false),
+    withState('ref_career_check' , 'setRef_career_check' , false),
+    withState('dad_other_work' , 'setDad_other_work'),
+    withState('mom_other_work' , 'setMom_other_work'),
+    withState('ref_other_work' , 'setRef_other_work'),
     withProps({
         pageTitle: 'Personal information'
     }),
@@ -282,6 +344,12 @@ const enhance = compose(
                 props.setRefer_phone(resume.refer_phone)
                 props.setRefer_career(resume.refer_career)
                 props.setImageBase64(resume.imageBase64)
+                props.setDad_career_check(resume.dad_career_check)
+                props.setMom_career_check(resume.mom_career_check)
+                props.setRef_career_check(resume.ref_career_check)
+                props.setDad_other_work(resume.dad_other_work)
+                props.setMom_other_work(resume.mom_other_work)
+                props.setRef_other_work(resume.ref_other_work)
 
                 const local_status = resume.status
                 props.setStatus(local_status)    
@@ -304,6 +372,8 @@ const enhance = compose(
                 else{
                     props.SetCongenitalDisease_name('')
                 }
+
+                resume.sex === 'ชาย' ? props.setCheck_soldier(true) : props.setCheck_soldier(false)
             })
         }
     }),
@@ -388,7 +458,7 @@ const enhance = compose(
                 return (
                     <center>
                         <ImgUser src='https://www.img.in.th/images/42b597219a8880bf0c8769a8eb93e38f.png' size='mini' />
-                        <TextImg>ขนาด 160 x 180<br />คลิกเพื่อเพิ่มรูป</TextImg>
+                        <TextImg>ขนาด 160 x 180<br />คลิกเพื่อเพิ่มรูปไฟล์ JPG หรือ PNG</TextImg>
                     </center>
                 )
             }
@@ -495,6 +565,12 @@ const enhance = compose(
                         refer_phone : props.refer_phone ,
                         refer_career : props.refer_career ,
                         imageBase64 : props.imageBase64,
+                        dad_career_check : props.dad_career_check ? true : false,
+                        mom_career_check : props.mom_career_check ? true : false,
+                        ref_career_check : props.ref_career_check ? true : false,
+                        dad_other_work : props.dad_other_work,
+                        mom_other_work : props.mom_other_work,
+                        ref_other_work : props.ref_other_work
                     })
                     props.authStore.imageBase64 = props.imageBase64
                     Router.push({ pathname : '/Resume/Address_information' })
@@ -682,14 +758,32 @@ const enhance = compose(
         handleDadName: props => () => event => {
             props.setDad_name(event.target.value)
         },
-        handleDadCareer: props => () => event => {
-            props.setDad_career(event.target.value)
+        handleDadCareer: props => () => (event, {value}) => {
+            if (value === 'อื่นๆ') {
+                props.setDad_career_check(true)
+                props.setDad_career('')
+                props.setDad_other_work(value)
+            }            
+            else{
+                props.setDad_career_check(false)
+                props.setDad_career(value)
+                props.setDad_other_work(value)
+            }
         },
         handleMomName: props => () => event => {
             props.setMom_name(event.target.value)
         },
-        handleMomCareer: props => () => event => {
-            props.setMom_career(event.target.value)
+        handleMomCareer: props => () => (event, {value}) => {
+            if (value === 'อื่นๆ') {
+                props.setMom_career_check(true)
+                props.setMom_career('')
+                props.setMom_other_work(value)
+            }            
+            else{
+                props.setMom_career_check(false)
+                props.setMom_career(value)
+                props.setMom_other_work(value)
+            }
         },
         handleBrethren: props => () => event => {
             let stack = props.brethren                
@@ -851,8 +945,17 @@ const enhance = compose(
                 }
             }
         },
-        handleReferCareer: props => () => event => {
-            props.setRefer_career(event.target.value)
+        handleReferCareer: props => () => (event, {value}) => {
+            if (value === 'อื่นๆ') {
+                props.setRef_career_check(true)
+                props.setRefer_career('')
+                props.setRef_other_work(value)
+            }            
+            else{
+                props.setRef_career_check(false)
+                props.setRefer_career(value)
+                props.setRef_other_work(value)
+            }
         },
         showPanelStatus: props => (firstName , lastname , child , company) => {
             if (props.check_status === true) {
@@ -901,6 +1004,69 @@ const enhance = compose(
                 return null
             }
         },
+        showPanel๋DadOtherJobs: props => (name) => {
+            if (props.dad_career_check === true) {
+                return (
+                    <HiddenStatus>
+                        <MgGridHidden>
+                            <Grid columns={1} >
+                                <Grid.Column>
+                                    {input2GrideGrideMG('กรุณาระบุชื่ออาชีพ :', 'กรุณากรอกชื่ออาชีพ' , name , 'text' , props.dad_career , '' , true)}
+                                </Grid.Column>
+                            </Grid>
+                        </MgGridHidden>
+                    </HiddenStatus>
+                )
+            }
+            else {
+                return null
+            }
+        },
+        handleSetDadCarreer: props => () => event => {
+            props.setDad_career(event.target.value)
+        },
+        showPanel๋MomOtherJobs: props => (name) => {
+            if (props.mom_career_check === true) {
+                return (
+                    <HiddenStatus>
+                        <MgGridHidden>
+                            <Grid columns={1} >
+                                <Grid.Column>
+                                    {input2GrideGrideMG('กรุณาระบุชื่ออาชีพ :', 'กรุณากรอกชื่ออาชีพ' , name , 'text' , props.mom_career , '' , true)}
+                                </Grid.Column>
+                            </Grid>
+                        </MgGridHidden>
+                    </HiddenStatus>
+                )
+            }
+            else {
+                return null
+            }
+        },
+        handleSetMomCarreer: props => () => event => {
+            props.setMom_career(event.target.value)
+        },
+        showPanel๋RefOtherJobs: props => (name) => {
+            if (props.ref_career_check === true) {
+                return (
+                    <HiddenStatus>
+                        <MgGridHidden>
+                            <Grid columns={1} >
+                                <Grid.Column>
+                                    {input2GrideGrideMG('กรุณาระบุชื่ออาชีพ :', 'กรุณากรอกชื่ออาชีพ' , name , 'text' , props.refer_career , '' , true)}
+                                </Grid.Column>
+                            </Grid>
+                        </MgGridHidden>
+                    </HiddenStatus>
+                )
+            }
+            else {
+                return null
+            }
+        },
+        handleSetRefCarreer: props => () => event => {
+            props.setRefer_career(event.target.value)
+        }
     }),
     observer
 )
@@ -929,7 +1095,7 @@ export default enhance((props) =>
                             <DivHiddenImage id="div5">
                                 <center>
                                     <ImgUserHidden src='https://www.img.in.th/images/42b597219a8880bf0c8769a8eb93e38f.png' size='mini' />
-                                    <TextImg>ขนาด 160 x 180<br />เลือกรูปภาพอื่น</TextImg>
+                                    <TextImg>ขนาด 160 x 180<br />เลือกรูปภาพอื่นไฟล์ JPG หรือ PNG</TextImg>
                                 </center>
                             </DivHiddenImage>
                         </DivImage>
@@ -1030,17 +1196,41 @@ export default enhance((props) =>
                     <MgGridLeft>{input2GrideGrideMG('ชื่อ-นามสกุล บิดา :', 'กรุณากรอกชื่อ-นามสกุลบิดา', props.handleDadName(), 'text', props.dad_name , '' , true)}</MgGridLeft>
                 </Grid.Column>
                 <Grid.Column>
-                    {input2Gride('อาชีพ :', 'กรุณากรอกอาชีพ', props.handleDadCareer(), 'text', props.dad_career , '' , true)}
+                    <SizeSelectFormRight>
+                        <Form.Group widths='equal'>
+                            <TextSelect>อาชีพ : <text style={{ color : theme.colors.orange }}> *</text></TextSelect>
+                            <SizeFontSelect 
+                                fluid 
+                                options={option} 
+                                placeholder='กรุณาเลือกอาชีพ' 
+                                onChange={props.handleDadCareer()}
+                                value={props.dad_other_work}
+                            />
+                        </Form.Group>
+                    </SizeSelectFormRight>
                 </Grid.Column>
             </Grid>
+            {props.showPanel๋DadOtherJobs(props.handleSetDadCarreer())}
             <Grid columns={2} padded='horizontally'>
                 <Grid.Column>
                     <MgGridLeft>{input2GrideGrideMG('ชื่อ-นามสกุล มารดา :', 'กรุณากรอกชื่อ-นามสกุลมารดา', props.handleMomName(), 'text', props.mom_name , '' , true)}</MgGridLeft>
                 </Grid.Column>
                 <Grid.Column>
-                    {input2Gride('อาชีพ :', 'กรุณากรอกอาชีพ', props.handleMomCareer(), 'text', props.mom_career , '' , true)}
+                <SizeSelectFormRight>
+                        <Form.Group widths='equal'>
+                            <TextSelect>อาชีพ : <text style={{ color : theme.colors.orange }}> *</text></TextSelect>
+                            <SizeFontSelect 
+                                fluid 
+                                options={option} 
+                                placeholder='กรุณาเลือกอาชีพ' 
+                                onChange={props.handleMomCareer()}
+                                value={props.mom_other_work}
+                            />
+                        </Form.Group>
+                    </SizeSelectFormRight>
                 </Grid.Column>
             </Grid>
+            {props.showPanel๋MomOtherJobs(props.handleSetMomCarreer())}
             <Grid columns={2} padded='horizontally'>
                 <Grid.Column>
                     <MgGridLeft>{inputOnkeyup('จำนวนพี่น้อง (คน) :', 'กรุณากรอกจำนวนพี่น้อง', props.handleBrethren(), 'text', props.brethren, '' , true)}</MgGridLeft>
@@ -1085,6 +1275,13 @@ export default enhance((props) =>
                                     value='หม้าย'
                                     checked={props.status === 'หม้าย'}
                                     onChange={props.handleChangeStatus('หม้าย')}
+                                />
+                                <MgRedio
+                                    label='แยกกันอยู่'
+                                    name='status'
+                                    value='แยกกันอยู่'
+                                    checked={props.status === 'แยกกันอยู่'}
+                                    onChange={props.handleChangeStatus('แยกกันอยู่')}
                                 />
                             </Form.Field>
                         </Form>
@@ -1188,9 +1385,21 @@ export default enhance((props) =>
                     <MgGridLeft>{inputOnkeyup('เบอร์โทรศัพท์ :', 'กรุณากรอกเบอร์โทรศัพท์' , props.handleReferPhone() , 'text' , props.refer_phone , '' , true)}</MgGridLeft>
                 </Grid.Column>
                 <Grid.Column>
-                    {input2Gride('อาชีพ :', 'กรุณากรอกอาชีพ' , props.handleReferCareer() , 'text' , props.refer_career , '' , true)}
+                    <SizeSelectFormRight>
+                        <Form.Group widths='equal'>
+                            <TextSelect>อาชีพ : <text style={{ color : theme.colors.orange }}> *</text></TextSelect>
+                            <SizeFontSelect 
+                                fluid 
+                                options={option} 
+                                placeholder='กรุณาเลือกอาชีพ' 
+                                onChange={props.handleReferCareer()}
+                                value={props.ref_other_work}
+                            />
+                        </Form.Group>
+                    </SizeSelectFormRight>
                 </Grid.Column>
             </Grid>
+            {props.showPanel๋RefOtherJobs(props.handleSetRefCarreer())}
             <br /><br />
             <MgBTNOrange>
                 {btn_orange('ถัดไป', 'https://www.img.in.th/images/c0dce936813662e607bd5798e68fd712.png', props.saveThisPage())}

@@ -510,7 +510,7 @@ export default enhance( (props)=>
                 </Grid.Column>
             </Grid>
             <br/><br/>
-                <FontInfoMG>ระดับการศึกษา : อื่นๆ</FontInfoMG>
+                <FontInfoMG>ระดับการศึกษาสูงกว่า : อื่นๆ</FontInfoMG>
             <br/>
             <Grid columns={2} padded='horizontally'>
                 <Grid.Column>

@@ -427,7 +427,7 @@ const enhance = compose(
             if (isSuccess) {
                 firebase.database().ref('resume/' + uid).update({
                     primary_hno : props.primary_hno ,
-                    primary_vilno : props.primary_vilno,
+                    primary_vilno : props.primary_vilno ? props.primary_vilno : '-',
                     primary_alley : props.primary_alley ? props.primary_alley : '-',
                     primary_road : props.primary_road ? props.primary_road : '-',
                     primary_area : props.primary_area,
@@ -437,7 +437,7 @@ const enhance = compose(
                     primary_tel : props.primary_tel ? props.primary_tel : '-',
                     primary_phone : props.primary_phone,
                     present_hno : props.present_hno,
-                    present_vilno : props.present_vilno,
+                    present_vilno : props.present_vilno ? props.present_vilno : '-',
                     present_alley : props.present_alley ? props.present_alley : '-',
                     present_road : props.present_road ? props.present_road : '-',
                     present_area : props.present_area,
@@ -511,7 +511,7 @@ export default enhance( (props)=>
                             <WidthWeight>{input4GrideMG('บ้านเลขที่ :','กรุณากรอกบ้านเลขที่', props.handlePrimaryHouseNumber() , 'text' , props.primary_hno , true)}</WidthWeight>
                         </Grid.Column>
                         <Grid.Column>
-                            <MgGridHeight>{input4Gride('หมู่ที่ :','กรุณากรอกหมู่' , props.handlePrimaryVillageNumber() , 'text' , props.primary_vilno , true)}</MgGridHeight>
+                            <MgGridHeight>{input4Gride('หมู่ที่ :','กรุณากรอกหมู่' , props.handlePrimaryVillageNumber() , 'number' , props.primary_vilno , true)}</MgGridHeight>
                         </Grid.Column>
                     </Grid>
                 </Grid.Column>
@@ -543,7 +543,7 @@ export default enhance( (props)=>
                             <WidthWeight>{input2Gride('จังหวัด :','กรุณากรอกจังหวัด' , props.handlePrimaryProvince() , 'text' , props.primary_province , '' , true)}</WidthWeight>
                         </Grid.Column>
                         <Grid.Column>
-                            <Mg4Gridnationality>{inputZipcode('รหัสไปรษณี :','กรุณากรอกรหัสไปรษณี' , props.handlePrimaryZipcode() , 'text' , props.primary_zipcode , true)}</Mg4Gridnationality>
+                            <Mg4Gridnationality>{inputZipcode('รหัสไปรษณี :','กรุณากรอกรหัสไปรษณี' , props.handlePrimaryZipcode() , 'number' , props.primary_zipcode , true)}</Mg4Gridnationality>
                         </Grid.Column>
                     </Grid>
                 </Grid.Column>
@@ -568,7 +568,7 @@ export default enhance( (props)=>
                             <WidthWeight>{input4GrideMG('บ้านเลขที่ :','กรุณากรอกบ้านเลขที่' , props.handlePresentHouseNumber() , 'text' , props.present_hno , true)}</WidthWeight>
                         </Grid.Column>
                         <Grid.Column>
-                            <MgGridHeight>{input4Gride('หมู่ที่ :','กรุณากรอกหมู่' , props.handlePresentVillageNumber() , 'text' , props.present_vilno , true)}</MgGridHeight>
+                            <MgGridHeight>{input4Gride('หมู่ที่ :','กรุณากรอกหมู่' , props.handlePresentVillageNumber() , 'number' , props.present_vilno , true)}</MgGridHeight>
                         </Grid.Column>
                     </Grid>
                 </Grid.Column>
@@ -600,7 +600,7 @@ export default enhance( (props)=>
                             <WidthWeight>{input2Gride('จังหวัด :','กรุณากรอกจังหวัด' , props.handlePresentProvince() , 'text' , props.present_province , '' , true)}</WidthWeight>
                         </Grid.Column>
                         <Grid.Column>
-                            <Mg4Gridnationality>{input2Gride('รหัสไปรษณี :','กรุณากรอกรหัสไปรษณีย์' , props.handlePresentZipcode() , 'text' , props.present_zipcode , '' , true)}</Mg4Gridnationality>
+                            <Mg4Gridnationality>{input2Gride('รหัสไปรษณี :','กรุณากรอกรหัสไปรษณีย์' , props.handlePresentZipcode() , 'number' , props.present_zipcode , '' , true)}</Mg4Gridnationality>
                         </Grid.Column>
                     </Grid>
                 </Grid.Column>
