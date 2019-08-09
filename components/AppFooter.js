@@ -10,15 +10,14 @@ const SegmentFooter = styled(Segment) `
     height : 130px ;
 `
 const ContentFooter = styled.div`
-    // padding-left : 73px ;
     padding-top : 15px ;
     color: #ffffff;
 `
 const LabelContact = styled.label`
-    font-size: 23px ;
+    font-size: 18px ;
 `
 const LabelAddress = styled.label`
-    font-size: 18px ;
+    font-size: 14px ;
 `
 export default () => (
     <div>
@@ -28,7 +27,7 @@ export default () => (
                     <LabelContact>Contact : oraphan@cupcodeteam.com</LabelContact><br/><br/>
                     <LabelAddress>
                         <Icon name="map marker alternate"/>
-                        1679/2 town in town 11 ladprao road, plabpla, wangthonglang Bangkok 10310
+                        65/184 อาคารชำนาญเพ็ญชาติ บิสเนส เซ็นเตอร์ ถนน พระราม 9 แขวง ห้วยขวาง เขต ห้วยขวาง กรุงเทพมหานคร 10310 
                     </LabelAddress>
                 </ContentFooter>
             </Container>

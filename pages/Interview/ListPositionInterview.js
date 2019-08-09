@@ -1,47 +1,13 @@
 import React from 'react'
 import { withLayout } from '../../hoc'
-import { compose, withProps , withState , withHandlers} from 'recompose'
-import {CarouselCompane} from '../../components/Carousel'
+import { compose, withProps , withState , withHandlers , lifecycle} from 'recompose'
 import styled from 'styled-components'
-import { Container , Divider , Segment , Header , Image , Pagination , Grid  } from 'semantic-ui-react'
+import { Container , Divider , Icon , Grid , Button , Image , Loader } from 'semantic-ui-react'
 import theme from '../../theme/default'
+import { inject, observer } from 'mobx-react'
+import { firebase } from '../../firebase/index'
 
-
-const SegmentHeader = styled(Segment)`
-  height : 80px ;
-  padding-top : 30px !important ;
-  padding-left: 39px !important ;
-  font-size : 25px !important ;
-  color : #fff;
-  background : #ee3900 !important ;
-  border-radius: 0rem !important ;
-  border: none !important ;
-  margin-bottom : 0px !important ;
-`
-const SegmentContent = styled(Segment)`
-  border-radius: 0rem !important ;
-  margin-bottom : 0px !important ;
-  margin-top : 0px !important ;
-  padding-top : 22px !important ;
-  padding-left : 44px !important ;
-  padding-right : 44px !important ;
-  height : 136px ;
-  cursor : pointer ;
-  :hover{
-    background: #6a6a6a ;
-  }
-`
-
-const HeaderContent = styled(Header)`
-  font-size: 23px !important ;
-  font-weight : normal !important ;
-  color: #707070 !important ;
-  font-family : 'Kanit', sans-serif !important;
-  ${SegmentContent}:hover & {
-    color: #fff !important ;
-    font-weight: 600 !important; 
-  }
-`
+const imageCover = 'https://firebasestorage.googleapis.com/v0/b/powerhr-auth.appspot.com/o/powerHRSaveForWebTrue.jpg?alt=media&token=a82c6662-60e6-4358-b7da-dcb863c18c2b'
 
 const BoxText = styled.div`
     width: 100%;
@@ -57,7 +23,7 @@ const TextHeadInterview = styled.p`
 
 const CardName = styled.div`
     width: 100%;
-    height: 56px;
+    height: auto;
     box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
     background-color: #ffffff;
     margin-top: 2%;
@@ -71,54 +37,139 @@ const TextContant = styled.small`
     font-size: 16px;
     color: ${theme.colors.textGray};
 `;
-
+const TextSuccess = styled.small`
+    font-size: 16px;
+    color: #05E31F;
+`;
+const TextFail = styled.small`
+    font-size: 16px;
+    color: red;
+`;
 const MgRow = styled(Grid.Row)`
     margin-left: 8%;
 `;
+const ButtonClick = styled(Button)`
+    font-family : 'Kanit', sans-serif !important;
+    font-size: 11px !important;
+    :hover {
+        color : #fffff !important;
+    }
+`;
+const ImgCarousel = styled(Image)`
+    margin-Top: 65px !important;
+`;
 
 const enhance = compose(
-    withState('position','setPosition',[{position: 'Fontend Developer',  date: '28 พฤศจิกายน 2561', status:'รอการพิจารณา' }]),
-    withProps({
-        pageTitle: 'List position interview'
-    }),
     withLayout,
+    inject('authStore' , 'jobStore'),
+    withState('position','setPosition'),
+    withState('position_name','setPosition_name'),
+    withState('isLoading' , 'setIsLoading' , true),
+    withProps({
+        pageTitle: 'Position Interview'
+    }),
     withHandlers({
-        handleShowData: props => () => {
-            return  props.position.map( (data,i) => {
-                return(
-                    <CardName key={i}>
-                        <Grid columns={3}>
-                            <MgRow>
-                                <Grid.Column>
-                                    <TextTopic>ตำแหน่ง : <TextContant>{data.position}</TextContant></TextTopic>
-                                </Grid.Column>
-                                <Grid.Column>
-                                    <TextTopic>วันที่สมัคร : <TextContant>{data.date}</TextContant></TextTopic>
-                                </Grid.Column>
-                                <Grid.Column>
-                                    <TextTopic>สถานะ : <TextContant>{data.status}</TextContant></TextTopic>
-                                </Grid.Column>
-                            </MgRow>
-                        </Grid>
-                    </CardName>
-                )
+        initApplyJobsList: props => () => {
+            firebase.database()
+            .ref('apply_jobs')
+            .orderByChild("uid")
+            .equalTo(props.authStore.accessToken)
+            .once("value").then( snapshot => { 
+                props.setIsLoading(false)
+                let result = Object.values(snapshot.val())                
+                props.setPosition(result)
+                
+            })
+        },
+        initGetDataPositions: props => () => {
+            firebase.database().ref('positions')
+            .once("value").then( snapshot => { 
+                let result = Object.values(snapshot.val())                
+                props.setPosition_name(result)
             })
         }
-    })
-    
+    }),
+    lifecycle({
+        async componentDidMount(){
+            await this.props.initApplyJobsList()
+            await this.props.initGetDataPositions()
+        }
+    }),
+    withHandlers({
+        handleDateToThai: props => (date) => {
+            let timestamp = new Date(1970, 0, 1); // Epoch
+            timestamp.setMilliseconds(date);
+            const st_localDate = new Date(Date.UTC(timestamp.getFullYear(),timestamp.getMonth(),timestamp.getDate()));
+            const st_options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return st_localDate.toLocaleDateString('th-TH', st_options)
+        },
+    }),
+    observer
 )
 
 export default enhance( (props)=> 
     <div>
-        {CarouselCompane ('CUPCODE CO., LTD.')}
-        <Divider hidden />
+        <ImgCarousel src={imageCover} fluid />
         <Container>
+            <Divider hidden />
             <BoxText>
                 <br/>
-                <center><TextHeadInterview>ประกาศผล</TextHeadInterview></center>
+                <center><TextHeadInterview>ประวัติการสมัครงาน</TextHeadInterview></center>
             </BoxText>
-            {props.handleShowData()}
+            {
+                props.position
+                ? props.position.map( (data,i) => {
+                    return(
+                        <CardName key={i}>
+                            <Grid columns={4}>
+                                <MgRow>
+                                    <Grid.Column>
+                                        <TextTopic>ตำแหน่ง :&nbsp; 
+                                            <TextContant>
+                                            {
+                                                props.position_name
+                                                ?   props.position_name.map( result => { return result.position_id === data.position_id ? result.position_name : null})
+                                                :   null
+                                            }
+                                            </TextContant>
+                                        </TextTopic>
+                                    </Grid.Column>
+                                    <Grid.Column>
+                                        <TextTopic>วันที่สมัคร : <TextContant>{props.handleDateToThai(data.apply_date)}</TextContant></TextTopic>
+                                    </Grid.Column>
+                                    <Grid.Column style={{ paddingLeft : '5%'}}>
+                                        <TextTopic>สถานะ :  
+                                            {
+                                                data.status === 1
+                                                ? <TextFail> ไม่ผ่านการพิจารณา</TextFail>
+                                                : data.status === 2
+                                                    ? <TextContant> เรียกสัมภาษณ์</TextContant>
+                                                    : data.status === 3 
+                                                        ? <TextSuccess> ผ่านการสัมภาษณ์</TextSuccess>
+                                                        : data.status === 4 
+                                                            ? <TextFail> ไม่ผ่านการสัมภาษณ์</TextFail>
+                                                            : <TextContant> รอการพิจารณา</TextContant>
+                                            }
+                                        </TextTopic>
+                                    </Grid.Column>
+                                    <Grid.Column style={{ paddingLeft : '5%'}}>
+                                        <ButtonClick basic animated size='mini' color="blue" onClick={() => window.open(data.resume_pdf)}>
+                                            <Button.Content visible>แบบฟอร์มใบสมัคร</Button.Content>
+                                            <Button.Content hidden>
+                                                <Icon name='arrow right' />
+                                            </Button.Content>
+                                        </ButtonClick>
+                                    </Grid.Column>
+                                </MgRow>
+                            </Grid>
+                        </CardName>
+                    )
+                })
+              : props.isLoading ? <div><br/><br/><br/><br/></div> : <center><br/><TextTopic>ไม่มีข้อมูลการประกาศผลการสมัครงานในขณะนี้</TextTopic><br/></center>
+                
+            }
+            <Loader size='medium' active={props.isLoading} style={{ top : "75%" }}>กำลังโหลดข้อมูล กรุณารอสักครู่...</Loader>
+            <br/><br/>
         </Container>
-        <Divider hidden />
     </div>
 )

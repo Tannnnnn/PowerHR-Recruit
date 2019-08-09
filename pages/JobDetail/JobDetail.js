@@ -1,62 +1,57 @@
 import React from 'react'
-import { withLayout } from '../../hoc'
-import { compose , withState , lifecycle , withHandlers } from 'recompose'
-import {CarouselCompane} from '../../components/Carousel'
+import { withLayout , withApp } from '../../hoc'
+import { compose , withState , lifecycle , withHandlers , withProps } from 'recompose'
 import styled from 'styled-components'
-import { Container , Divider , Grid , Button , Image , Label} from 'semantic-ui-react'
+import { Container , Divider , Grid , Button , Image , Label , Modal , Icon , Loader } from 'semantic-ui-react'
 import {Breadcrumb2Page} from '../../components/Breadcrumb'
-import axios from 'axios'
-import Link from 'next/link'
+import {input2GrideGrideMG } from '../../components/Input'
+import { inject, observer } from 'mobx-react'
+import { PDF_GENERATOR } from '../../components/PdfMake'
+import { ref , firebase } from '../../firebase/index'
+import Router from 'next/router'
 
 const BodyBox = styled.div`
     background : #ffffff;
     box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
     width: 100%;
-    height: 562px;
+    height: auto;
     border-radius: 5px;
     margin-top: 2%;
 `;
 
 const TextTopics1 = styled.p`
     font-size: 20px !important;
-    margin-left: 6% !important;
+    margin-left: 9% !important;
     margin-top: 1% !important;
     margin-bottom: 0px;
 `;
-const TextTopics4 = styled.p`
-    font-size: 20px !important;
-    margin-left: 6% !important;
-    margin-top: 2% !important;
-    margin-bottom: 0px;
-`;
+
 const TextTopics2 = styled.p`
     font-size: 20px !important;
     margin-left: 5% !important;
     margin-top: 1% !important;
 `;
 
-const TextTopics3 = styled.p`
-    font-size: 20px !important;
-    margin-top: 1% !important;
-`;
-
 const ColorTextSmall1 = styled.small`
     font-size: 18px !important;
-    color: #707070 !important;
+    font-family : 'Kanit', sans-serif !important;
+`;
+const ColorText = styled.small`
+    font-size: 18px !important;
+    color : #ee3900 !important ;
 `;
 
 const DangerHTML = styled.div`
     font-size: 18px !important;
-    color: #707070 !important;
-    margin-left: 8% !important;
-    margin-top: 2% !important;
+    margin-left: 7% !important;
+    margin-top: -1% !important;
     margin-bottom: 2% !important;
+    line-height: 1.6 !important;
 `;
 
 const MarginBTN = styled(Button)`
-    // margin-left: 47% !important;
-    margin-left: 0% !important;
-
+    margin-left: 60% !important;
+    margin-top: 2% !important;
 `;
 
 const ColorBTN = styled(Button)`
@@ -72,118 +67,366 @@ const Colorlabel = styled(Label)`
     color : #fff !important;
 `;
 
-const IMGSize = styled(Image)`
-    width: 24px !important;
-    height: 24px !important;
-    display: inline-block !important;
+const BgHandTask = styled.div`
+    background : #ee3900 !important;
+    height: 62px !important;
+    width: 100% !important;
+    border-radius: 5px;
+`;
+
+const TextTask = styled.p`
+    font-family: 'Kanit', sans-serif !important;
+    color : #fff !important;
+    font-size: 25px !important;
+    padding-top: 3% !important;
+`;
+
+const TextPosition = styled.p`
+    font-family: 'Kanit', sans-serif !important;
+    font-size: 16px !important;
+    margin-top: 3% !important;
+    font-weight: 600 !important;
+`;
+
+const ButtonOK = styled(Button)`
+    margin-top: 3% !important;
+    margin-left: 3px !important;
+    background : #ee3900 !important;
+    floated : right;
+    fontSize: 18 !important;
+    font-family: 'Kanit', sans-serif !important;
+    width: 34% !important;
+    height: 46px !important;
+    color: #ffffff !important;
+    font-weight: 500 !important;
+`;
+
+const ButtonCancle = styled(Button)`
+    floated : left;
+    margin-top: 3% !important;
+    margin-left: 3px !important;
+    background : #ffffff !important;
+    fontSize: 18 !important;
+    font-family: 'Kanit', sans-serif !important;
+    width: 34% !important;
+    height: 46px !important;
+    color: #ee3900 !important;
+    font-weight: 500 !important;
+    border: 1px solid #cccccc !important;
+`;
+const TextNoLogin = styled.p`
+    font-size: 20px !important;
+    font-family: 'Kanit', sans-serif !important;
+`;
+const IconModal = styled(Icon)`
+  font-size: 55px !important;
+`;
+const ButtonClick = styled(Button)`
+    font-family : 'Kanit', sans-serif !important;
+    font-size: 14px !important;
+`;
+const ImgCarousel = styled(Image)`
+    margin-Top: 65px !important;
 `;
 
 const enhance = compose(
+    withApp,
+    inject('authStore' , 'jobStore'),
     withState('detail','setDetail',[]),
     withState('startdate','setStartdate'),
     withState('enddate','setEnddate'),
+    withState('salary','setSalary' , (props) => {return props.jobStore.job_positions.rate.length <= 7 ? props.jobStore.job_positions.rate : undefined}),
+    withState('isSalary','setIsSalary' , (props) => {return props.jobStore.job_positions.rate.length <= 7 ? true : false}),
+    withState('email','setEmail'),
+    withState('password','setPassword'),
+    withState('open' , 'setOpen' , false),
+    withState('resume' , 'setResume'),
+    withState('isApply' , 'setIsApply' , false),
+    withState('isLoading' , 'setIsLoading' , false),
+    withState('isOpen' , 'setIsOpen' , false),
+    withState('isResumeDone' , 'setIsResumeDone' , false),
+    withState('isNotSuccess' , 'setIsNotSuccess' , false),
+    withState('position' , 'setPosition'),
+    withProps({
+        pageTitle: 'Jobs Detail'
+    }),
     withLayout,
-    lifecycle({
-        async componentDidMount(){
-            if (this.props.url.query.id !== undefined) {
-                const url = `http://localhost:4000/job_position/${this.props.url.query.id}`
-                const res = await axios.get(url)
-                this.props.setDetail(res.data)            
-                res.data.map( data => {
-                    //set startdate in thai
-                    const st_event = data.startdate.split('-')
-                    const st_years = parseInt(st_event[0])
-                    const st_month = parseInt(st_event[1]) 
-                    const st_days  = parseInt(st_event[2])                  
-                    const st_localDate = new Date(Date.UTC(st_years,st_month,st_days));
-                    const st_options = { year: 'numeric', month: 'long', day: 'numeric' };
-                    this.props.setStartdate(st_localDate.toLocaleDateString('th-TH', st_options))
-                    
-                    //set enddate in thai
-                    const end_event = data.enddate.split('-')
-                    const end_years = parseInt(end_event[0])
-                    const end_month = parseInt(end_event[1]) 
-                    const end_days  = parseInt(end_event[2])                  
-                    const end_localDate = new Date(Date.UTC(end_years,end_month,end_days));
-                    const end_options = { year: 'numeric', month: 'long', day: 'numeric' };
-                    this.props.setEnddate(end_localDate.toLocaleDateString('th-TH', end_options))
-                })
+    withHandlers({
+        onChange: props => () => event => {
+            const { name , value } = event.target
+            name === 'email' ? props.setEmail(value) : props.setPassword(value)            
+        },
+        initGetJobPositionData: props => () => {
+            let result = props.jobStore.job_positions
+            props.setDetail(result)
+            //set startdate in thai
+            const st_event = result.startdate.split('-')
+            const st_years = parseInt(st_event[0])
+            const st_month = parseInt(st_event[1]) - 1
+            const st_days  = parseInt(st_event[2])                  
+            const st_localDate = new Date(Date.UTC(st_years,st_month,st_days));
+            const st_options = { year: 'numeric', month: 'long', day: 'numeric' };
+            props.setStartdate(st_localDate.toLocaleDateString('th-TH', st_options))
+            
+            //set enddate in thai
+            const end_event = result.enddate.split('-')
+            const end_years = parseInt(end_event[0])
+            const end_month = parseInt(end_event[1]) - 1
+            const end_days  = parseInt(end_event[2])                  
+            const end_localDate = new Date(Date.UTC(end_years,end_month,end_days));
+            const end_options = { year: 'numeric', month: 'long', day: 'numeric' };
+            props.setEnddate(end_localDate.toLocaleDateString('th-TH', end_options))
+        },
+        initGetDataResume: props => () => {
+            firebase.database().ref('resume/' + props.authStore.accessToken)
+            .once("value").then( snapshot => {
+                let result = Object.values(snapshot.val())
+                result.length >= 80 ? props.setIsResumeDone(true) : props.setIsResumeDone(false)
+                props.setResume(snapshot.val())
+            })
+        },
+        handleSubmitRegister: props => () => event => {
+            props.setOpen(false)
+            if (props.isResumeDone) {
+                props.setIsLoading(true)
+                props.setIsOpen(true)
+                let pdfDocGenerator = PDF_GENERATOR(props.resume , props)
+                let uniqueID = firebase.database().ref().push().key
+                let pdfID = firebase.database().ref().push().key            
+                pdfDocGenerator.getDataUrl((dataUrl) => {
+                    ref.child(pdfID).putString(dataUrl, 'data_url')
+                    .then( () => {
+                        let getUrl = ref.child(pdfID)
+                        getUrl.getDownloadURL()
+                        .then(function(url) {
+                            let result = {
+                                apply_job_id : uniqueID,
+                                department_id : props.jobStore.job_positions.department_id,
+                                apply_date : firebase.database.ServerValue.TIMESTAMP,
+                                position_id : props.jobStore.job_positions.position_id,
+                                job_position_id : props.jobStore.job_positions.job_position_id,
+                                uid : props.authStore.accessToken,
+                                rate : props.salary,
+                                status : 0,
+                                resume_pdf : url
+                            }
+                            firebase.database().ref('apply_jobs/' + uniqueID).set(result , (err) => {
+                                err 
+                                ?   null 
+                                :   props.setIsLoading(false) 
+                                    props.setIsOpen(true)
+                            })    
+                        })
+                        .catch(function(error) {
+                            switch (error.code) {
+                                case 'storage/object-not-found':
+                                break;
+                            
+                                case 'storage/unauthorized':
+                                break;
+                            
+                                case 'storage/canceled':
+                                break;
+                                        
+                                case 'storage/unknown':
+                                break;
+                            }
+                        });
+                        
+                    })
+                    .catch( err => console.log(err))
+                });
             }
             else{
-                const url = `http://localhost:4000/job_position/${this.props.url.query.data[1]}`
-                const res = await axios.get(url)
-                this.props.setDetail(res.data)            
-                res.data.map( data => {
-                    //set startdate in thai
-                    const st_event = data.startdate.split('-')
-                    const st_years = parseInt(st_event[0])
-                    const st_month = parseInt(st_event[1]) 
-                    const st_days  = parseInt(st_event[2])                  
-                    const st_localDate = new Date(Date.UTC(st_years,st_month,st_days));
-                    const st_options = { year: 'numeric', month: 'long', day: 'numeric' };
-                    this.props.setStartdate(st_localDate.toLocaleDateString('th-TH', st_options))
-                    
-                    //set enddate in thai
-                    const end_event = data.enddate.split('-')
-                    const end_years = parseInt(end_event[0])
-                    const end_month = parseInt(end_event[1]) 
-                    const end_days  = parseInt(end_event[2])                  
-                    const end_localDate = new Date(Date.UTC(end_years,end_month,end_days));
-                    const end_options = { year: 'numeric', month: 'long', day: 'numeric' };
-                    this.props.setEnddate(end_localDate.toLocaleDateString('th-TH', end_options))
-                })
+                props.setIsNotSuccess(true)
             }
+        },
+        handleApplyJobsData: props => () => {
+            let jobID = props.jobStore.job_positions.job_position_id
+            firebase.database()
+            .ref('apply_jobs')
+            .orderByChild("uid")
+            .equalTo(props.authStore.accessToken)
+            .once("value").then( snapshot => { 
+                let result = Object.values(snapshot.val())           
+                result 
+                    ? result.map( data => {
+                        data.job_position_id === jobID ? props.setIsApply(true) : null
+                    })     
+                    : props.setIsApply(false)
+            })
+        },
+        initGetPosition: props => () => {
+            firebase.database().ref('positions')
+            .once("value").then( snapshot => {
+              props.setPosition(Object.values(snapshot.val()))
+            })
+        }
+    }),
+    lifecycle({
+        async componentDidMount(){
+            await this.props.initGetJobPositionData()  
+            await this.props.initGetDataResume()
+            await this.props.handleApplyJobsData()          
+            await this.props.initGetPosition()  
         }
     }),
     withHandlers({
-        handleButtonApplyJob: props => (name) => {
+        handleButtonApplyJob: props => (name) => {                        
             return(
-                <Link href={{ pathname : '../ApplyJob/Personal_information' , query : { data : [name , props.url.query.id] } }}>
-                    <MarginBTN as='div' labelPosition='right'>
-                        <ColorBTN>
-                            สมัครงาน
-                        </ColorBTN>
-                        <Colorlabel as='a'>
-                            <Image src='https://www.img.in.th/images/68c0f730b867d22a3086b9fdfd7cf787.png' size='small' />
-                        </Colorlabel>
-                    </MarginBTN>
-                </Link>
+                <Modal 
+                    size={'tiny'} 
+                    trigger={
+                        <MarginBTN as='div' labelPosition='right' onClick={() => props.setOpen(true)} disabled={props.isApply}>
+                            <ColorBTN>
+                                สมัครงาน
+                            </ColorBTN>
+                            <Colorlabel as='a'>
+                                <Image src='https://www.img.in.th/images/68c0f730b867d22a3086b9fdfd7cf787.png' size='small' />
+                            </Colorlabel>
+                        </MarginBTN>
+                    } 
+                    open={props.open}
+                    dimmer={"inverted"}
+                >
+                {
+                    props.authStore.accessToken
+                    ? <Modal.Content >
+                        <Modal.Description>
+                            <center>
+                                <BgHandTask>
+                                    <TextTask>สมัครงาน</TextTask>
+                                </BgHandTask>
+                            </center>
+                                <TextPosition>ตำแหน่งงานที่สมัคร : {name}</TextPosition>
+                                {input2GrideGrideMG('เงินเดือนที่ต้องการ :','กรุณากรอกเงินเดือนที่ต้องการ' , (event) => props.setSalary(event.target.value) , 'text' , props.salary , 'salary' , false , props.isSalary)}
+                                <center>
+                                    <ButtonCancle onClick={() => props.setOpen(false) }>ยกเลิก</ButtonCancle>
+                                    <ButtonOK onClick={props.handleSubmitRegister()} disabled={props.salary ? false : true}>ยืนยันสมัครงาน</ButtonOK>
+                                </center>
+                        </Modal.Description>
+                    </Modal.Content>
+                    :<Modal.Content>
+                        <Modal.Description>
+                            <br/>
+                            <center>
+                                <IconModal name="exclamation circle"/><br/><br/><br/>
+                                <TextNoLogin>ไม่สามารถสมัครงานได้ เนื่องจากท่านยังไม่ได้เข้าสู่ระบบ</TextNoLogin>
+                                <ButtonOK onClick={() => props.setOpen(false) }>ปิด</ButtonOK>
+                            </center>
+                            <br/>
+                        </Modal.Description>
+                    </Modal.Content>
+                }
+                </Modal>
             )
+        },
+        handleSubmitNotHaveResume: props => () => {
+            props.setIsNotSuccess(false)
+            return Router.push('/Resume/Personal_information')
         }
-    })
+    }),
+    observer
 )
 
 export default enhance( (props)=> 
     <div>
-        {CarouselCompane ('CUPCODE CO., LTD.')}
-            { props.detail.map( (data , i) => {
-                return(
-                    <Container key={i}>
-                        {Breadcrumb2Page('ตำแหน่งเปิดรับ', `รายละเอียดตำแหน่ง ${data.position_name}`)}
+        <ImgCarousel src='https://firebasestorage.googleapis.com/v0/b/powerhr-auth.appspot.com/o/powerHRSaveForWebTrue.jpg?alt=media&token=a82c6662-60e6-4358-b7da-dcb863c18c2b' fluid />
+        {
+            props.detail
+                ?   <Container>
+                        {Breadcrumb2Page('ตำแหน่งเปิดรับ', `รายละเอียดตำแหน่ง`)}
                         <BodyBox>
                             <Grid>
                                 <Grid.Row>
-                                    <Grid.Column width={11}>
-                                        <TextTopics1>ตำแหน่ง : <ColorTextSmall1> {data.position_name}</ColorTextSmall1></TextTopics1>
-                                        <TextTopics4>
-                                            รายละเอียดตำแหน่งงาน :
-                                        </TextTopics4>
-                                        <DangerHTML dangerouslySetInnerHTML={{ __html: data.description }} />
+                                    <Grid.Column width={9}>
+                                        <TextTopics1>
+                                            <ColorText>วันที่รับสมัคร : </ColorText>
+                                            <ColorTextSmall1> {props.startdate} - {props.enddate}</ColorTextSmall1> 
+                                        </TextTopics1>
                                     </Grid.Column>
-                                    <Grid.Column width={5}>
-                                        <TextTopics3>วันที่รับสมัคร : <ColorTextSmall1>{props.startdate} - {props.enddate}</ColorTextSmall1> </TextTopics3>
-                                        {props.handleButtonApplyJob(data.position_name)}
+                                    <Grid.Column width={7}>
+                                        {props.handleButtonApplyJob(props.position && props.position.map( result => {return result.position_id === props.detail.position_id ? result.position_name : null}))}
                                     </Grid.Column>
                                 </Grid.Row>
                             </Grid>
-                            <TextTopics2> เวลาทำงาน : <ColorTextSmall1>ทำงานวันจันทร์ - ศุกร์ เวลา 10:00 - 19:00 น. (Flexible Hours)</ColorTextSmall1> </TextTopics2>
-                            <TextTopics2> สถานที่ปฏิบัติการ : <ColorTextSmall1>1679/2 town in town 11 ladprao road, plabpla, wangthonglang Bangkok 10310</ColorTextSmall1> </TextTopics2>
-                            <TextTopics2>อัตรา : <ColorTextSmall1> {data.value} </ColorTextSmall1></TextTopics2>
-                            <TextTopics2>เงินเดือน : <ColorTextSmall1> <IMGSize src='https://www.img.in.th/images/5d8d89d8b5d3db32c8d66c2b5db62234.png' /> {data.rate} </ColorTextSmall1></TextTopics2>
+                            <TextTopics2><ColorText>ตำแหน่ง : </ColorText>
+                                <ColorTextSmall1> {props.position && props.position.map( result => {return result.position_id === props.detail.position_id ? result.position_name : null})}</ColorTextSmall1>
+                            </TextTopics2>
+                            <TextTopics2>
+                                <ColorText>รายละเอียดตำแหน่งงาน : </ColorText>
+                            </TextTopics2>
+                            <DangerHTML dangerouslySetInnerHTML={{ __html: props.detail.description }} />
+                            <TextTopics2> 
+                                <ColorText>เวลาทำงาน : </ColorText>
+                                <ColorTextSmall1> ทำงานวันจันทร์ - ศุกร์ เวลา 10:00 - 19:00 น. (Flexible Hours)</ColorTextSmall1> 
+                            </TextTopics2>
+                            <TextTopics2>
+                                <ColorText>สถานที่ปฏิบัติการ : </ColorText>
+                                <ColorTextSmall1> 65/184 อาคารชำนาญเพ็ญชาติ บิสเนส เซ็นเตอร์ ถนน พระราม 9 แขวง ห้วยขวาง เขต ห้วยขวาง กรุงเทพมหานคร 10310 </ColorTextSmall1> 
+                            </TextTopics2>
+                            <TextTopics2>
+                                <ColorText>อัตรา : </ColorText>
+                                <ColorTextSmall1> {props.detail.value} ตำแหน่ง </ColorTextSmall1>
+                            </TextTopics2>
+                            <TextTopics2>
+                                <ColorText>เงินเดือน : </ColorText>
+                                <ColorTextSmall1> <Icon name='money bill alternate outline' /> {props.detail.rate === "ตามประสบการณ์" ? props.detail.rate : props.detail.rate + " บาท"} </ColorTextSmall1>
+                            </TextTopics2>
+                            <br/>
                         </BodyBox>
+                        <br/><br/>
                     </Container>
-                )
-            })}
+                : null
+        }       
+        {
+            props.isLoading
+            ?   <Modal basic size='small' open={props.isLoading} dimmer="blurring">
+                    <Loader size='large'>กำลังดำเนินการ กรุณารอสักครู่...</Loader>
+                </Modal>
+            :   <Modal size={'tiny'} open={props.isOpen} dimmer="blurring">
+                    <Modal.Header>
+                        <center>
+                            <Icon name='check' size='big' color={"orange"}/>
+                        </center>
+                    </Modal.Header>
+                    <Modal.Content>
+                        <center>
+                            <ColorTextSmall1>สมัครงานเรียบร้อย</ColorTextSmall1>
+                        </center>
+                    </Modal.Content>
+                    <Modal.Actions>
+                        <center>
+                            <ButtonClick
+                                color={"orange"}
+                                onClick={() => {return Router.push('/Interview/ListPositionInterview')}} 
+                                content='ตกลง' 
+                            />
+                        </center>
+                    </Modal.Actions>
+                </Modal>
+        }
+        <Modal size={'tiny'} open={props.isNotSuccess} dimmer={"inverted"}>
+            <Modal.Header>
+                <center>
+                    <Icon name='info circle' size='big' color={"red"}/>
+                </center>
+            </Modal.Header>
+            <Modal.Content>
+                <center>
+                    <ColorTextSmall1>กรุณากรอกข้อมูลส่วนตัวให้ครบถ้วนก่อนทำการสมัคร</ColorTextSmall1>
+                </center>
+            </Modal.Content>
+            <Modal.Actions>
+                <center>
+                    <ButtonClick
+                        color={"red"}
+                        onClick={() => props.handleSubmitNotHaveResume()} 
+                        content='ปิด' 
+                    />
+                </center>
+            </Modal.Actions>
+        </Modal>
         <Divider hidden />
     </div>
 )

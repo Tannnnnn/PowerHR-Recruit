@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Segment , Container } from 'semantic-ui-react'
-import {CarouselCompane} from '../../components/Carousel'
+
 
 const LabelHeader = styled.label `
   font-size : 25px;
@@ -35,7 +35,6 @@ const ContainerContent = styled(Container)`
 
 export default (props)=> (
   <div>
-    {CarouselCompane ('CUPCODE CO., LTD.')}
     <ContainerHeader>
       <SegmentHeader>CUPCODE CO., LTD.</SegmentHeader>
     </ContainerHeader>

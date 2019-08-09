@@ -1,9 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Segment , Icon , Container , Header , Pagination , Image } from 'semantic-ui-react'
+import { Segment , Icon , Container , Header , Pagination , Loader } from 'semantic-ui-react'
 import { compose , withHandlers , withState , lifecycle } from 'recompose'
 import Link from 'next/link'
-import axios from 'axios'
+import { inject } from 'mobx-react'
+import { firebase } from '../../firebase/index'
 
 const SegmentHeader = styled(Segment)`
   height : 80px ;
@@ -25,6 +26,11 @@ const SegmentContent = styled(Segment)`
   padding-right : 44px !important ;
   height : 136px ;
   cursor : pointer ;
+  background : #fff ;
+  -webkit-transition: background-color .3s ease-in-out;
+  -moz-transition: background-color .3s ease-in-out;
+  -o-transition: background-color .3s ease-in-out;
+  transition: background-color .3s ease-in-out;
   :hover{
     background: #6a6a6a ;
   }
@@ -36,32 +42,60 @@ const ContainerHeader = styled(Container)`
 `
 const ContainerContent = styled(Container)`
   width: 1142px !important ;
-  margin-bottom : 39px ;
+  margin-bottom : 2% ;
   background : #ffffff !important ;
 `
-const HeaderContent = styled(Header)`
+const HeaderContentLeft = styled(Header)`
+  font-size: 23px !important ;
+  font-weight : normal !important ;
+  color: #707070 !important ;
+  font-family : 'Kanit', sans-serif !important;
+  width: 30%;
+  ${SegmentContent}:hover & {
+    color: #fff !important ;
+    font-weight: 400 !important; 
+  }
+`
+const HeaderContentRight = styled(Header)`
   font-size: 23px !important ;
   font-weight : normal !important ;
   color: #707070 !important ;
   font-family : 'Kanit', sans-serif !important;
   ${SegmentContent}:hover & {
     color: #fff !important ;
-    font-weight: 600 !important; 
+    font-weight: 400 !important; 
   }
 `
 const LabelDate = styled.label`
-  font-size: 18px !important ;
+  font-size: 16px !important ;
   cursor : pointer ;
 `
 const LabelRecruit = styled.label`
-  font-size: 18px !important ;
-  padding-left : 79% !important ;
+  font-size: 22px !important ;
+  padding-left : 74% !important ;
   cursor : pointer ;
+  ${SegmentContent}:hover & {
+    font-weight: 600 !important;
+  }
 `
 const LabelSalary = styled.label`
-  font-size: 18px !important ;
+  font-size: 16px !important ;
   padding-left : 3% !important ;
   cursor : pointer ;
+`
+const LabelPosition = styled.label`
+  font-size: 22px !important ;
+  padding-left : 3% !important ;
+  cursor : pointer ;
+  color : #ff5800 ;
+  -webkit-transition:color .3s ease-in-out;
+  -moz-transition: color .3s ease-in-out;
+  -o-transition: color .3s ease-in-out;
+  transition: color .3s ease-in-out;
+  ${SegmentContent}:hover & {
+    color: #fff !important ;
+    font-weight: 600 !important;
+  }
 `
 const Paginations = styled(Pagination)`
   color : #707070 !important ;
@@ -75,72 +109,91 @@ const Paginations = styled(Pagination)`
     outline : 0 !important ;
   }
 `
+const HeaderNotHaveData = styled.h3`
+  color : #707070 ;
+  font-family : 'Kanit', sans-serif !important;
+`
 
 const enhance = compose(
+  inject('jobStore'),
   withState('recruit' , 'setRecruit'),
   withState('dataInPage' , 'setDataInPage' , 5),
   withState('activePage' , 'setActivePage' , 1),
-  lifecycle({
-    async componentDidMount(){
-      let result = []
-      //check Jobs_Positions Now
-      let today = new Date()
-      let days = today.getDate()
-      let month = today.getMonth()
-      let years = today.getFullYear()
-
-      const url = 'http://localhost:4000/joinPosition'
-      const res = await axios.get(url)
-
-      res.data.map((data) => {    
-        let end = data.enddate.split('-')
-        const years_end = parseInt(end[0])
-        const month_end = parseInt(end[1])
-        const days_end  = parseInt(end[2])              
-
-        if (days <= days_end && month <= month_end && years <= years_end) {
-          result.push(data)
-        }
+  withState('isLoading' , 'setIsLoading' , true),
+  withState('position' , 'setPosition'),
+  withHandlers({
+    initGetJobPositionsData: props => () => {
+      firebase.database().ref("job_positions")
+      .once("value").then( snapshot => {
+        let data = Object.values(snapshot.val())
+        let result = []
+        data.map((data) => {   
+          const today = new Date() 
+          const endDate = new Date(data.enddate)
+          const startDate = new Date(data.startdate)
+          if (today.setHours(0,0,0,0) >= startDate.setHours(0,0,0,0) && today.setHours(0,0,0,0) <= endDate) {
+            return result.push(data)
+          }
+        })        
+        props.setRecruit(result)
+        props.setIsLoading(false)
       })
-
-      this.props.setRecruit(result)
+    },
+    initGetPosition: props => () => {
+      firebase.database().ref('positions')
+      .once("value").then( snapshot => {
+        props.setPosition(Object.values(snapshot.val()))
+      })
+    }
+  }),
+  lifecycle({
+    async componentDidMount(){      
+      await this.props.initGetJobPositionsData()
+      await this.props.initGetPosition()
     }
   }),
   withHandlers({
     handleShowData: props => (dateInThai) => {
-      const { dataInPage , activePage , recruit } = props
-      
-      if ( recruit !== undefined) {
+      const { dataInPage , activePage , recruit } = props   
+      if ( recruit && recruit !== undefined && recruit.length !== 0) {
         const indexOfLast = activePage * dataInPage;
         const indexOfFirst = indexOfLast - dataInPage;
         const currentData = recruit.slice(indexOfFirst, indexOfLast);
-        return  currentData.map( (data , i) => {           
-                  return(
-                    <div key={i}>
-                      <Link href={{ pathname : '../JobDetail/JobDetail' , query : { id : data.id} }}>
-                        <SegmentContent >
-                            <HeaderContent floated='right'>
-                              <LabelDate>
-                                {dateInThai(data.startdate)} - {dateInThai(data.enddate)}
-                              </LabelDate><br/><br/>
-                              <LabelRecruit>
-                                {data.value} อัตรา
-                              </LabelRecruit>
-                            </HeaderContent>
-                            <HeaderContent floated='left'>
-                              &nbsp;&nbsp;{data.position_name}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/><br/>
-                              <LabelSalary>
-                                <Icon name='usd' />{data.rate}
-                              </LabelSalary>
-                            </HeaderContent>
-                        </SegmentContent>
-                      </Link>
-                    </div>
-                  )
+        return  currentData.map( (data , i) => {                           
+                return(
+                      <div key={i} onClick={() => props.jobStore.job_positions = data}>
+                        <Link href={{ pathname : '../JobDetail/JobDetail' }} >
+                          <SegmentContent >
+                              <HeaderContentRight floated='right'>
+                                <LabelDate>
+                                  {dateInThai(data.startdate)} - {dateInThai(data.enddate)}
+                                </LabelDate><br/><br/>
+                                <LabelRecruit>
+                                  {data.value} อัตรา
+                                </LabelRecruit>
+                              </HeaderContentRight>
+                              <HeaderContentLeft floated='left'>
+                                <LabelPosition>{props.position && props.position.map( result => {return result.position_id === data.position_id ? result.position_name : null})}</LabelPosition><br/><br/>
+                                <LabelSalary>
+                                  <Icon name='money bill alternate outline' />{data.rate === "ตามประสบการณ์" ? data.rate : data.rate + " บาท"}
+                                </LabelSalary>
+                              </HeaderContentLeft>
+                          </SegmentContent>
+                        </Link>
+                      </div>
+                )
         })
       }
       else{
-        return null
+        return(
+          <div>
+            <br/>
+            <center>
+              <HeaderNotHaveData>ไม่มีตำแหน่งงานที่เปิดรับสมัครในขณะนี้</HeaderNotHaveData>
+            </center>
+            <br/>
+          </div>
+        )
       }
     },
     handlePagination: props => (fnSetPage) => {      
@@ -163,6 +216,11 @@ const enhance = compose(
       }
     },
     handleChangePagination: props => (data) => {
+      window.scrollTo({
+        top: 360,
+        left: 0,
+        behavior: 'smooth'
+      })
       props.setActivePage(data.activePage)
     },
     handleSetDateInThai: props => (value)  => {      
@@ -182,14 +240,18 @@ export default enhance((props) =>
     <ContainerHeader>
         <SegmentHeader>ตำแหน่งงานที่เปิดรับสมัคร :</SegmentHeader>
         <ContainerContent>
-          {props.handleShowData(props.handleSetDateInThai)}
+          <Loader size='medium' active={props.isLoading} style={{ top : "73%" }}>กำลังโหลดข้อมูล กรุณารอสักครู่...</Loader>
+          { props.recruit && props.handleShowData(props.handleSetDateInThai)}
         </ContainerContent>
     </ContainerHeader>
     <Container>
       <center>
-        {props.handlePagination(props.handleChangePagination)}
+        { props.recruit && props.handlePagination(props.handleChangePagination)}
       </center>
-    </Container><br/><br/>
+      {
+        props.recruit ? null : <div><br/><br/></div>
+      }
+    </Container>
   </div>
 );
 export { default as Jobs_Recruit } from './Jobs_Recruit'

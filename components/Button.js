@@ -1,4 +1,4 @@
-import { Button , Label , Image } from 'semantic-ui-react'
+import { Button , Label , Image , Icon } from 'semantic-ui-react'
 import React from 'react'
 import styled from 'styled-components';
 import Link from 'next/link'
@@ -31,7 +31,8 @@ const BtnBack = styled(Button)`
     color : #fff !important;
     font-weight: 500 !important;
     height: 46px;
-    width: 30%;
+    width: 36% !important;
+    padding-top: 10px !important;
 `;
 
 export  const btn_primary =(name)=> {
@@ -52,7 +53,7 @@ export const btn_orange = (name , link , fn) =>{
 export const btn_NextBack = (nameBack , nameNext , linkImgNext , fnSaveNext , fnSavePrev ) => {
     return  <div>
                 <BtnBack basic color='orange' onClick={fnSavePrev}>
-                    {nameBack}
+                    <Icon name='left arrow' /> {nameBack}
                 </BtnBack>&nbsp;
                 <Button as='div' labelPosition='right' onClick={fnSaveNext}>
                     <ColorBTN>
